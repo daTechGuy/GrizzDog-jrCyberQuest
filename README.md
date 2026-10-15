@@ -5,6 +5,11 @@
 [![NICE Framework](https://img.shields.io/badge/NIST-NICE%20Work%20Roles-d97706?style=for-the-badge)](https://www.nist.gov/itl/applied-cybersecurity/nice)
 [![100% Offline](https://img.shields.io/badge/100%25-Offline%20Capable-059669?style=for-the-badge)](#)
 
+> [!IMPORTANT]
+> **Academic Notice & Disclaimer**:
+> **GrizzDog-jrCyberQuest is an independent academic research and pedagogical cybersecurity game developed by a Butler Community College Cyber Defense faculty member. It is NOT an official Butler Community College institutional project, endorsement, or service.**
+> This game is strictly designed for educational research, classroom lessons, STEM outreach events, and cybersecurity awareness within accredited educational curricula (such as Butler's NSA/DHS CAE-CD designated program).
+
 > **Butler Community College Cyber Faculty Research Project**  
 > *Andover Campus — Butler Cyber Defense Lab (NSA/DHS CAE-CD Designated Institution)*  
 > *Developed for interactive STEM outreach, school tours, open house showcases, and cyber defense recruitment.*
