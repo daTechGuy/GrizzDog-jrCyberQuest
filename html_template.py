@@ -1479,8 +1479,31 @@ HTML_CONTENT = """<!DOCTYPE html>
       }
     }
 
-    // Playful cartoon puppy bark / yip synthesized with Web Audio
+    // Real dog bark (static/audio/bark.mp3, CC BY-SA 3.0, see static/audio/CREDITS.md).
+    // Falls back to the synthesized yip if the file can't load or play.
+    let barkAudio = null;
+    try {
+      barkAudio = new Audio('/static/audio/bark.mp3');
+      barkAudio.preload = 'auto';
+      barkAudio.volume = 0.7;
+    } catch (e) {}
+
     function playPuppyBark() {
+      if (!barkAudio || barkAudio.error) {
+        playSynthBark();
+        return;
+      }
+      try {
+        barkAudio.currentTime = 0;
+        const p = barkAudio.play();
+        if (p && p.catch) p.catch(() => playSynthBark());
+      } catch (e) {
+        playSynthBark();
+      }
+    }
+
+    // Backup puppy yip synthesized with Web Audio
+    function playSynthBark() {
       try {
         const ctx = getAudioContext();
         if (!ctx) return;
