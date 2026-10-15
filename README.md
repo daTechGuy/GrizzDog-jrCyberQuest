@@ -30,7 +30,7 @@ Built specifically for high-energy booth environments (such as STEM expos, high 
 
 - **100% Offline Capable**: Zero internet or cloud dependencies. No external CDNs, fonts, or audio downloads. Operates anywhere—even in network-isolated exhibit halls or offline laptop kiosks.
 - **Sub-Millisecond Dual Engine**: Built-in deterministic heuristic simulation delivers instant (<5ms) responses with 0% stall risk. If a local Ollama instance is running, it connects automatically with low-latency socket health caching.
-- **Port-Collision Free**: Runs by default on `http://localhost:5050` with automatic incremental fallback (`5051`, `5052`...), allowing it to run smoothly alongside [GrizzDog-AI](https://github.com/ButlerCC-Cyber/GrizzDog-AI) on the same booth machine.
+- **Port-Collision Free**: Runs by default on `http://localhost:5050` with automatic incremental fallback (`5051`, `5052`...), allowing it to run smoothly alongside [GrizzDog-AI](https://github.com/daTechGuy/GrizzDog-AI) on the same booth machine.
 - **Pure Web Audio Synthesizer**: Sound effects (barks, beeps, alerts, victory fanfares) are dynamically generated via the browser's native Web Audio API oscillators—zero MP3/WAV files needed.
 - **Interactive Celebration & Badge Modal**: Successful bypasses trigger custom canvas confetti and a Butler Cyber Defense digital certificate featuring a scannable Butler Cyber QR code for prospective students and parents.
 
@@ -106,7 +106,7 @@ graph TD
 
 ### 🤝 Companion Project Ecosystem
 
-`GrizzDog-jrCyberQuest` operates in synergy with **[GrizzDog-AI](https://github.com/ButlerCC-Cyber/GrizzDog-AI)**, Butler Community College's collegiate and adult LLM red-teaming lab:
+`GrizzDog-jrCyberQuest` operates in synergy with **[GrizzDog-AI](https://github.com/daTechGuy/GrizzDog-AI)**, Butler Community College's collegiate and adult LLM red-teaming lab:
 - **`GrizzDog-jrCyberQuest` (Port 5050)**: Tailored for K-12 STEM outreach, preview days, school visits, and non-technical learners with zero-latency gamified levels.
 - **`GrizzDog-AI` (Port 5000)**: Tailored for college cyber defense students, collegiate red teams, and industry professionals testing advanced LLM jailbreaks.
 - Both projects feature the Butler Grizz mascot, run seamlessly side-by-side without port conflicts, and reinforce the Butler Cyber Defense academic pathway.
