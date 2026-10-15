@@ -10,7 +10,7 @@ HTML_CONTENT = """<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GrizzDog jrCyberQuest — Butler Cyber Defense</title>
-  <link rel="icon" href="/static/images/grizzdog_avatar.jpg">
+  <link rel="icon" href="/static/images/grizzdog_friendly.jpg?v=2">
   <style>
     :root {
       --bg-dark: #0f0a1c;
@@ -202,24 +202,25 @@ HTML_CONTENT = """<!DOCTYPE html>
 
     .mascot-avatar-box {
       position: relative;
-      width: 90px;
-      height: 90px;
+      width: 100px;
+      height: 100px;
       flex-shrink: 0;
     }
 
     .mascot-img {
       width: 100%;
       height: 100%;
-      border-radius: 12px;
+      border-radius: 20px;
       object-fit: cover;
-      border: 2px solid var(--butler-gold);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      border: 3px solid var(--butler-gold);
+      box-shadow: 0 4px 18px rgba(245, 158, 11, 0.35);
+      background: #fff;
     }
 
     .mascot-pulse-ring {
       position: absolute;
-      inset: -4px;
-      border-radius: 16px;
+      inset: -5px;
+      border-radius: 24px;
       border: 2px solid var(--butler-gold);
       animation: pulseRing 2s infinite;
       pointer-events: none;
@@ -636,7 +637,7 @@ HTML_CONTENT = """<!DOCTYPE html>
   <!-- Header -->
   <header>
     <div class="brand-box">
-      <img src="/static/images/grizzdog_avatar.jpg" alt="GrizzDog Logo" class="brand-logo" onerror="this.src='/static/assets/butler_cyber_qr.svg'">
+      <img src="/static/images/grizzdog_friendly.jpg?v=2" alt="GrizzDog Logo" class="brand-logo" onerror="this.src='/static/assets/butler_cyber_qr.svg'">
       <div class="brand-text">
         <h1>GrizzDog jrCyberQuest</h1>
         <p>Butler Community College • Cyber Faculty Research Lab (Andover Campus)</p>
@@ -672,7 +673,7 @@ HTML_CONTENT = """<!DOCTYPE html>
     <!-- Mascot Hero Banner -->
     <div class="mascot-card">
       <div class="mascot-avatar-box">
-        <img src="/static/images/grizzdog_sentry.jpg" alt="GrizzDog Mascot" class="mascot-img" onerror="this.src='/static/images/grizzdog.jpg'">
+        <img src="/static/images/grizzdog_friendly.jpg?v=2" alt="GrizzDog Mascot" class="mascot-img" onerror="this.src='/static/images/grizzdog_friendly.jpg'">
         <div class="mascot-pulse-ring"></div>
       </div>
       <div class="mascot-info">
@@ -856,7 +857,7 @@ HTML_CONTENT = """<!DOCTYPE html>
   <!-- Victory Badge Modal -->
   <div class="modal-overlay" id="victoryModal">
     <div class="modal-card">
-      <img src="/static/images/grizzdog_avatar.jpg" alt="Victory Badge" class="badge-icon" onerror="this.src='/static/assets/butler_cyber_qr.svg'">
+      <img src="/static/images/grizzdog_friendly.jpg?v=2" alt="Victory Badge" class="badge-icon" onerror="this.src='/static/assets/butler_cyber_qr.svg'">
       <div class="modal-title">🎉 GRIZZDOG COMPROMISED!</div>
       <div class="modal-badge-name" id="modalBadgeName">Junior Pup Master Breaker</div>
       <div class="modal-desc" id="modalDesc">

@@ -162,3 +162,4 @@ if [ -t 0 ] || [ -c /dev/tty ]; then
         exec ./start.sh
     fi
 fi
+
