@@ -313,103 +313,193 @@ HTML_CONTENT = """<!DOCTYPE html>
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* K-2 Treat Phishing Detective */
-    .phish-container {
+    /* K-2 "Safe or Trick?" — bright, big-target layout for early readers */
+    body.k2-mode {
+      background: linear-gradient(180deg, #ede9fe 0%, #fdf4ff 45%, #fffbeb 100%);
+      color: #1e1b4b;
+    }
+    body.k2-mode .tier-bar-wrapper {
+      background: rgba(255, 255, 255, 0.7);
+      border-bottom-color: rgba(88, 28, 135, 0.12);
+    }
+    body.k2-mode .tier-bar-label { color: #6b21a8; }
+    body.k2-mode .tier-btn { background: #f3e8ff; color: #581c87; }
+    body.k2-mode .tier-btn:hover { background: #e9d5ff; color: #3b0764; }
+    body.k2-mode .tier-btn.active.k2 { background: #059669; color: #fff; }
+    body.k2-mode .mascot-card { display: none; }
+
+    .k2-stage {
+      --k2-ink: #1e1b4b;
+      --k2-soft: #4c1d95;
+      --k2-card: #ffffff;
+      --k2-purple: #7e22ce;
+      --k2-gold: #f59e0b;
+      --k2-green: #059669;
+      --k2-red: #dc2626;
+      font-family: ui-rounded, 'SF Pro Rounded', 'Segoe UI Rounded', 'Nunito', 'Segoe UI', system-ui, sans-serif;
+      color: var(--k2-ink);
       display: flex;
       flex-direction: column;
-      gap: 1.15rem;
-      width: 100%;
-    }
-
-    .phish-header-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-
-    .phish-step-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      color: #cbd5e1;
-      background: rgba(30, 27, 75, 0.75);
-      padding: 0.45rem 0.95rem;
-      border-radius: 9999px;
-      border: 1px solid rgba(168, 85, 247, 0.4);
-    }
-
-    .phish-progress-box {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--butler-gold);
-    }
-
-    .phish-paws {
-      display: flex;
-      gap: 0.35rem;
-    }
-
-    .phish-paw {
-      font-size: 1.25rem;
-      opacity: 0.3;
-      transition: all 0.3s ease;
-      filter: grayscale(1);
-    }
-
-    .phish-paw.completed {
-      opacity: 1;
-      filter: grayscale(0);
-      transform: scale(1.2);
-    }
-
-    .phish-screen-card {
-      background: radial-gradient(circle at top, rgba(88, 28, 135, 0.35), rgba(15, 10, 28, 0.95));
-      border: 2px solid rgba(245, 158, 11, 0.5);
-      border-radius: 20px;
-      padding: 1.6rem 1.4rem;
-      text-align: center;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), inset 0 0 20px rgba(245, 158, 11, 0.08);
-      position: relative;
+      gap: 1.1rem;
+      max-width: 820px;
+      margin: 0 auto;
       animation: fadeIn 0.4s ease;
     }
 
-    .phish-badge-tag {
-      display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: 0.08em;
-      padding: 0.3rem 0.85rem;
-      border-radius: 9999px;
-      margin-bottom: 0.75rem;
-      background: rgba(245, 158, 11, 0.2);
-      color: var(--butler-gold);
-      border: 1px solid rgba(245, 158, 11, 0.4);
+    .k2-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
     }
 
-    .phish-icon-wrap {
-      width: 78px;
-      height: 78px;
-      margin: 0 auto 0.85rem;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 50%;
+    .k2-stars { display: flex; gap: 0.4rem; }
+    .k2-topbar-right {
       display: flex;
       align-items: center;
-      justify-content: center;
-      border: 2px solid rgba(245, 158, 11, 0.3);
-      box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .k2-level-badge {
+      font-size: 1.05rem;
+      font-weight: 900;
+      padding: 0.55rem 1rem;
+      border-radius: 9999px;
+      background: linear-gradient(180deg, #fde68a, #f59e0b);
+      color: #78350f;
+    }
+    .k2-star {
+      font-size: 2rem;
+      filter: grayscale(1);
+      opacity: 0.3;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s;
+    }
+    .k2-star.earned {
+      filter: none;
+      opacity: 1;
+      transform: scale(1.15);
     }
 
-    .phish-big-emoji {
-      font-size: 2.6rem;
+    .k2-sound-toggle {
+      font: inherit;
+      font-size: 1.05rem;
+      font-weight: 800;
+      padding: 0.55rem 1.1rem;
+      border-radius: 9999px;
+      border: 3px solid #c4b5fd;
+      background: #fff;
+      color: var(--k2-soft);
+      cursor: pointer;
+    }
+    .k2-sound-toggle.off { color: #64748b; border-color: #cbd5e1; }
+
+    /* Pup + speech bubble */
+    .k2-scene {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .k2-pup {
+      width: 150px;
+      height: 150px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid #fff;
+      box-shadow: 0 8px 24px rgba(88, 28, 135, 0.25);
+      animation: k2Bob 3s infinite ease-in-out;
+      cursor: pointer;
+    }
+    .k2-pup.talking { animation: k2Talk 0.45s infinite ease-in-out; }
+    .k2-pup.happy { animation: k2Hop 0.6s 2 ease-in-out; }
+
+    @keyframes k2Bob {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-6px) rotate(-2deg); }
+    }
+    @keyframes k2Talk {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.04) rotate(2deg); }
+    }
+    @keyframes k2Hop {
+      0%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-22px); }
+    }
+
+    .k2-bubble {
+      position: relative;
+      flex: 1;
+      background: var(--k2-card);
+      border-radius: 28px;
+      padding: 1.3rem 1.5rem;
+      box-shadow: 0 10px 30px rgba(88, 28, 135, 0.15);
+      border: 3px solid #e9d5ff;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    .k2-bubble::before {
+      content: '';
+      position: absolute;
+      left: -18px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-width: 14px 20px 14px 0;
+      border-style: solid;
+      border-color: transparent #e9d5ff transparent transparent;
+    }
+    .k2-bubble.speaking-active {
+      border-color: var(--k2-gold);
+      box-shadow: 0 10px 30px rgba(245, 158, 11, 0.35);
+    }
+    .k2-bubble.good { border-color: var(--k2-green); }
+    .k2-bubble.oops { border-color: #fb923c; }
+
+    .k2-intro-title {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--k2-purple);
+      margin-bottom: 0.35rem;
+    }
+    .k2-intro-text {
+      font-size: 1.35rem;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    /* The message card a kid has to judge */
+    .k2-message {
+      background: #fff;
+      border-radius: 24px;
+      border: 3px dashed #c4b5fd;
+      padding: 1.2rem 1.4rem;
+      display: flex;
+      align-items: center;
+      gap: 1.1rem;
+      box-shadow: 0 6px 18px rgba(88, 28, 135, 0.1);
+      animation: fadeIn 0.35s ease;
+    }
+    .k2-message-emoji {
+      font-size: 3.6rem;
+      flex-shrink: 0;
       animation: bouncePup 2s infinite ease-in-out;
+    }
+    .k2-from {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--k2-soft);
+      background: #f3e8ff;
+      padding: 0.25rem 0.8rem;
+      border-radius: 9999px;
+      margin-bottom: 0.45rem;
+    }
+    .k2-msg-text {
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1.35;
     }
 
     @keyframes bouncePup {
@@ -417,323 +507,136 @@ HTML_CONTENT = """<!DOCTYPE html>
       50% { transform: translateY(-5px); }
     }
 
-    .phish-msg-text {
-      font-size: 1.25rem;
+    .k2-hear-btn {
+      font: inherit;
+      font-size: 1.05rem;
       font-weight: 800;
-      color: #fff;
-      line-height: 1.45;
-      margin-bottom: 0.75rem;
-      max-width: 580px;
-      margin-left: auto;
-      margin-right: auto;
+      margin-top: 0.8rem;
+      padding: 0.5rem 1.1rem;
+      border-radius: 9999px;
+      border: none;
+      background: #fef3c7;
+      color: #92400e;
+      cursor: pointer;
+    }
+    .k2-hear-btn:hover { background: #fde68a; }
+    .k2-hear-btn.reading { background: #fde68a; animation: pulseSpeech 1.2s infinite ease-in-out; }
+
+    @keyframes pulseSpeech {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.5); }
+      50% { box-shadow: 0 0 0 8px rgba(245, 158, 11, 0); }
     }
 
-    .phish-prompt-question {
-      font-size: 0.92rem;
-      font-weight: 600;
-      color: #cbd5e1;
+    .k2-question {
+      text-align: center;
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--k2-soft);
     }
 
-    .phish-button-grid {
+    .k2-choices {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
     }
-
-    .phish-btn {
+    .k2-choice {
+      font: inherit;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 1.2rem 1rem;
-      border-radius: 16px;
-      cursor: pointer;
-      font-family: inherit;
-      border: 2px solid transparent;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    }
-
-    .phish-btn:hover {
-      transform: translateY(-3px) scale(1.02);
-    }
-
-    .phish-btn:active {
-      transform: translateY(1px) scale(0.98);
-    }
-
-    .phish-btn.safe {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(6, 95, 70, 0.4));
-      border-color: #10b981;
-      color: #ecfdf5;
-    }
-
-    .phish-btn.safe:hover {
-      box-shadow: 0 0 22px rgba(16, 185, 129, 0.5);
-    }
-
-    .phish-btn.trap {
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(153, 27, 27, 0.4));
-      border-color: #ef4444;
-      color: #fef2f2;
-    }
-
-    .phish-btn.trap:hover {
-      box-shadow: 0 0 22px rgba(239, 68, 68, 0.5);
-    }
-
-    .phish-btn-icon {
-      font-size: 2rem;
-      margin-bottom: 0.25rem;
-    }
-
-    .phish-btn-title {
-      font-size: 1.1rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
-    }
-
-    .phish-btn-sub {
-      font-size: 0.74rem;
-      opacity: 0.85;
-      font-weight: 500;
-      margin-top: 0.25rem;
-    }
-
-    .phish-feedback-box {
-      background: rgba(30, 27, 75, 0.95);
-      border: 2px solid var(--butler-gold);
-      border-radius: 18px;
-      padding: 1.1rem 1.4rem;
-      display: flex;
-      align-items: center;
-      gap: 1.25rem;
-      animation: fadeIn 0.3s ease;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-    }
-
-    .phish-feedback-icon {
-      font-size: 2.3rem;
-      flex-shrink: 0;
-    }
-
-    .phish-feedback-content {
-      flex: 1;
-    }
-
-    .phish-feedback-title {
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: var(--butler-gold);
-      margin-bottom: 0.2rem;
-    }
-
-    .phish-feedback-desc {
-      font-size: 0.88rem;
-      color: #e2e8f0;
-      line-height: 1.4;
-    }
-
-    .phish-next-btn {
-      background: linear-gradient(135deg, var(--butler-gold), #d97706);
-      color: #1e1b4b;
-      font-size: 0.95rem;
-      font-weight: 800;
-      padding: 0.75rem 1.35rem;
-      border-radius: 12px;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      flex-shrink: 0;
-      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
-    }
-
-    .phish-next-btn:hover {
-      transform: scale(1.05);
-      box-shadow: 0 6px 16px rgba(245, 158, 11, 0.6);
-    }
-
-    /* K-2 Audio & Read-Aloud Styles */
-    .phish-audio-controls {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .phish-audio-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.42rem 0.9rem;
-      border-radius: 9999px;
-      font-size: 0.8rem;
-      font-weight: 800;
-      cursor: pointer;
-      font-family: inherit;
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      background: rgba(88, 28, 135, 0.5);
-      color: #f8fafc;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
-    }
-
-    .phish-audio-btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .phish-audio-btn.primary {
-      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-      color: #1e1100;
-      border: none;
-      box-shadow: 0 0 16px rgba(245, 158, 11, 0.45);
-    }
-
-    .phish-audio-btn.primary:hover {
-      box-shadow: 0 0 24px rgba(245, 158, 11, 0.7);
-      transform: translateY(-2px) scale(1.04);
-    }
-
-    .phish-audio-btn.primary.reading {
-      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-      color: #ffffff;
-      animation: pulseSpeech 1.2s infinite ease-in-out;
-    }
-
-    @keyframes pulseSpeech {
-      0%, 100% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.5); }
-      50% { box-shadow: 0 0 26px rgba(239, 68, 68, 0.95); transform: scale(1.04); }
-    }
-
-    .phish-audio-btn.toggle {
-      background: rgba(30, 27, 75, 0.85);
-      border-color: rgba(148, 163, 184, 0.35);
-      color: var(--text-muted);
-    }
-
-    .phish-audio-btn.toggle.active {
-      background: rgba(16, 185, 129, 0.2);
-      border-color: rgba(16, 185, 129, 0.6);
-      color: #34d399;
-    }
-
-    .phish-audio-btn.secondary {
-      background: rgba(245, 158, 11, 0.2);
-      border-color: rgba(245, 158, 11, 0.5);
-      color: var(--butler-gold-light);
-      font-size: 0.8rem;
-    }
-
-    .phish-audio-btn.secondary:hover {
-      background: rgba(245, 158, 11, 0.35);
-    }
-
-    .phish-listen-bar {
-      margin: 0.6rem 0 0.8rem;
-      display: flex;
-      justify-content: center;
-    }
-
-    .phish-listen-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(245, 158, 11, 0.15);
-      border: 1.5px solid rgba(245, 158, 11, 0.5);
-      color: var(--butler-gold-light);
-      padding: 0.45rem 1.15rem;
-      border-radius: 9999px;
-      font-size: 0.9rem;
-      font-weight: 800;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      font-family: inherit;
-      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.15);
-    }
-
-    .phish-listen-pill:hover {
-      background: rgba(245, 158, 11, 0.3);
-      transform: scale(1.04);
-      box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
-    }
-
-    .phish-screen-card.speaking-active {
-      border-color: #f59e0b !important;
-      animation: speakGlow 1.4s infinite alternate ease-in-out;
-    }
-
-    @keyframes speakGlow {
-      from { box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(245, 158, 11, 0.3); }
-      to { box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 35px rgba(245, 158, 11, 0.85); }
-    }
-
-    .phish-btn-speaker {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.25rem;
-      margin-top: 0.45rem;
-      padding: 0.22rem 0.65rem;
-      background: rgba(255, 255, 255, 0.14);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      border-radius: 9999px;
-      font-size: 0.72rem;
-      font-weight: 800;
-      opacity: 0.95;
-      transition: all 0.2s;
-    }
-
-    .phish-btn-speaker:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: scale(1.08);
-    }
-
-    .k2-story-audio-btn {
-      display: inline-flex;
       align-items: center;
       gap: 0.3rem;
-      background: rgba(245, 158, 11, 0.2);
-      border: 1px solid rgba(245, 158, 11, 0.4);
-      color: var(--butler-gold-light);
-      padding: 0.2rem 0.65rem;
-      border-radius: 9999px;
-      font-size: 0.72rem;
-      font-weight: 800;
+      padding: 1.3rem 1rem;
+      border-radius: 28px;
+      border: none;
+      color: #fff;
       cursor: pointer;
-      margin-left: 0.5rem;
-      vertical-align: middle;
-      font-family: inherit;
-      transition: all 0.2s;
+      transition: transform 0.15s ease;
     }
-
-    .k2-story-audio-btn:hover {
-      background: rgba(245, 158, 11, 0.4);
-      transform: scale(1.05);
+    .k2-choice:hover { transform: translateY(-3px) scale(1.02); }
+    .k2-choice:active { transform: scale(0.97); }
+    .k2-choice.safe {
+      background: linear-gradient(180deg, #34d399, #059669);
+      box-shadow: 0 8px 0 #047857, 0 12px 24px rgba(5, 150, 105, 0.3);
     }
+    .k2-choice.trick {
+      background: linear-gradient(180deg, #f87171, #dc2626);
+      box-shadow: 0 8px 0 #b91c1c, 0 12px 24px rgba(220, 38, 38, 0.3);
+    }
+    .k2-choice-icon { font-size: 3.4rem; line-height: 1; }
+    .k2-choice-word { font-size: 2rem; font-weight: 900; }
+    .k2-choice-sub { font-size: 1rem; font-weight: 700; opacity: 0.95; }
 
-    .phish-feedback-actions {
+    .k2-big-btn {
+      font: inherit;
+      font-size: 1.6rem;
+      font-weight: 900;
+      padding: 1rem 2.4rem;
+      border-radius: 9999px;
+      border: none;
+      color: #fff;
+      background: linear-gradient(180deg, #a855f7, #7e22ce);
+      box-shadow: 0 7px 0 #581c87, 0 12px 24px rgba(126, 34, 206, 0.3);
+      cursor: pointer;
+      align-self: center;
+      transition: transform 0.15s ease;
+    }
+    .k2-big-btn:hover { transform: translateY(-2px) scale(1.03); }
+    .k2-big-btn:active { transform: scale(0.97); }
+
+    .k2-rules {
       display: flex;
-      flex-direction: column;
-      gap: 0.55rem;
-      align-items: flex-end;
-      flex-shrink: 0;
-    }
-
-    .phish-speech-caption {
-      margin: 0.85rem auto 0;
-      background: rgba(245, 158, 11, 0.2);
-      border: 1.5px solid var(--butler-gold);
-      border-radius: 12px;
-      padding: 0.5rem 1rem;
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--butler-gold-light);
-      display: flex;
-      align-items: center;
       justify-content: center;
-      gap: 0.5rem;
-      animation: fadeIn 0.3s ease;
-      max-width: 620px;
-      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+    .k2-rule {
+      background: rgba(255, 255, 255, 0.8);
+      border: 2px solid #e9d5ff;
+      border-radius: 9999px;
+      padding: 0.45rem 1rem;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--k2-soft);
+    }
+
+    .k2-hidden { display: none !important; }
+
+    /* K-2 finish screen: bright card, big pup, no curriculum codes */
+    body.k2-mode .modal-card {
+      background: #fff;
+      border: 4px solid #c4b5fd;
+      border-radius: 32px;
+      box-shadow: 0 20px 50px rgba(88, 28, 135, 0.35);
+      font-family: ui-rounded, 'SF Pro Rounded', 'Segoe UI Rounded', 'Nunito', 'Segoe UI', system-ui, sans-serif;
+    }
+    body.k2-mode .badge-icon { width: 130px; height: 130px; border: 5px solid #fde68a; }
+    body.k2-mode .modal-title { font-size: 2.2rem; color: #7e22ce; }
+    body.k2-mode .modal-badge-name { font-size: 1.4rem; color: #059669; }
+    body.k2-mode .modal-desc { font-size: 1.15rem; font-weight: 700; color: #1e1b4b; }
+    body.k2-mode .modal-cae-sub,
+    body.k2-mode .modal-ku-tag { display: none; }
+    body.k2-mode .modal-qr-box { border: 2px solid #e9d5ff; }
+    body.k2-mode .btn-modal { font-size: 1.15rem; padding: 0.8rem 1.6rem; border-radius: 9999px; }
+    body.k2-mode .btn-close { background: #f3e8ff; color: #581c87; }
+
+    @media (max-width: 640px) {
+      .k2-scene { flex-direction: column; text-align: center; }
+      .k2-bubble::before { display: none; }
+      .k2-pup { width: 120px; height: 120px; }
+      .k2-message { flex-direction: column; text-align: center; }
+      .k2-msg-text { font-size: 1.35rem; }
+      .k2-choice-icon { font-size: 2.6rem; }
+      .k2-choice-word { font-size: 1.5rem; }
+      .k2-question { font-size: 1.3rem; }
+    }
+
+    @media (max-width: 640px) {
+      header { flex-wrap: wrap; }
+      .header-badges { flex-wrap: wrap; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .k2-pup, .k2-pup.talking, .k2-pup.happy, .k2-message-emoji { animation: none; }
     }
 
     /* 3-5 Mad-Libs UI */
@@ -1047,7 +950,7 @@ HTML_CONTENT = """<!DOCTYPE html>
     }
   </style>
 </head>
-<body>
+<body class="k2-mode">
 
   <canvas id="confettiCanvas"></canvas>
 
@@ -1095,8 +998,8 @@ HTML_CONTENT = """<!DOCTYPE html>
         <div class="mascot-pulse-ring"></div>
       </div>
       <div class="mascot-info">
-        <h2 id="mascotTitle">🐾 Junior Paws: Treat Phishing Detective!</h2>
-        <p id="mascotSubtitle">A hacker is sending messages to GrizzDog's collar! Help the robot pup spot the fake phishing traps and keep Butler campus safe! <button type="button" class="k2-story-audio-btn" id="btnK2Story" onclick="speakMissionIntro()" title="Hear the mission story">🔊 Hear Story</button></p>
+        <h2 id="mascotTitle">🐾 Junior Paws: Safe or Trick?</h2>
+        <p id="mascotSubtitle">Help Grizz Jr tell safe messages from tricks!</p>
         <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-top: 0.4rem;">
           <span class="mission-badge" id="mascotTargetBadge">🎯 MISSION: DISARM PHISHING TRAPS</span>
           <span class="cae-ku-badge" id="mascotCaeKu">🏛️ CAE-CD KU: Basic Cybersecurity Concepts (BCC)</span>
@@ -1104,86 +1007,61 @@ HTML_CONTENT = """<!DOCTYPE html>
       </div>
     </div>
 
-    <!-- TIER 1: K-2 PANEL (TREAT PHISHING DETECTIVE) -->
+    <!-- TIER 1: K-2 PANEL (SAFE OR TRICK?) -->
     <div class="tier-panel active" id="panel_k2">
-      <div class="phish-container">
-        <div class="phish-header-row">
-          <div class="phish-step-badge">📡 INCOMING COLLAR TRANSMISSION</div>
-
-          <div class="phish-audio-controls">
-            <button type="button" class="phish-audio-btn primary" id="btnReadClue" onclick="toggleSpeakClue()" title="Read this clue and options aloud">
-              <span class="audio-btn-icon">🔊</span>
-              <span id="btnReadClueText">Read to Me</span>
+      <div class="k2-stage">
+        <div class="k2-topbar">
+          <div class="k2-stars" id="k2Stars" aria-label="Stars earned"></div>
+          <div class="k2-topbar-right">
+            <span class="k2-level-badge" id="k2LevelBadge">Level 1</span>
+            <button type="button" class="k2-sound-toggle" onclick="startOverK2()" title="Go back to Level 1 for a new player">🔁 Start over</button>
+            <button type="button" class="k2-sound-toggle" id="btnAutoReadToggle" onclick="toggleAutoRead()" title="Turn Grizz Jr's voice on or off">
+              <span id="autoReadLabel">🔊 Voice On</span>
             </button>
-            <button type="button" class="phish-audio-btn toggle active" id="btnAutoReadToggle" onclick="toggleAutoRead()" title="Turn automatic reading ON or OFF">
-              <span id="autoReadLabel">📢 Auto-Read: ON</span>
-            </button>
-            <button type="button" class="phish-audio-btn secondary" onclick="testSoundVoice()" title="Test puppy audio and voice">
-              🐶 Test Pup Voice
-            </button>
-          </div>
-
-          <div class="phish-progress-box">
-            <span>Clue <span id="phishRoundNum">1</span> of 3</span>
-            <div class="phish-paws" id="phishPaws">
-              <span class="phish-paw completed" id="phishPaw0">🐾</span>
-              <span class="phish-paw" id="phishPaw1">🐾</span>
-              <span class="phish-paw" id="phishPaw2">🐾</span>
-            </div>
           </div>
         </div>
 
-        <div class="phish-screen-card" id="phishCard">
-          <div class="phish-badge-tag" id="phishBadgeTag">⚠️ UNKNOWN INCOMING MESSAGE</div>
-          <div class="phish-icon-wrap" id="phishIconWrap">
-            <span class="phish-big-emoji" id="phishEmoji">🥓</span>
-          </div>
-          <div class="phish-msg-text" id="phishMsgText">
-            "FREE BACON TREATS! Click this weird link and enter the Butler campus password!"
-          </div>
-          <div class="phish-listen-bar">
-            <button type="button" class="phish-listen-pill" onclick="speakCurrentClue()" title="Tap to listen to this message">
-              <span>🐶🔊</span> Tap Pup to Read
+        <div class="k2-scene">
+          <img src="/static/images/grizzdog_k2.jpg" alt="Grizz Jr the puppy" class="k2-pup" id="k2Pup" onclick="replayPup()" onerror="this.src='/static/images/grizzdog_friendly.jpg'">
+          <div class="k2-bubble" id="k2Bubble">
+            <div class="k2-intro-title" id="k2BubbleTitle">Hi! I'm Grizz Jr! 👋</div>
+            <div class="k2-intro-text" id="k2BubbleText">Some messages are nice. Some messages are tricks! Can you help me tell them apart?</div>
+            <button type="button" class="k2-hear-btn" id="btnReadClue" onclick="toggleSpeakClue()" title="Hear it">
+              <span class="audio-btn-icon">🔊</span> <span id="btnReadClueText">Hear it</span>
             </button>
-          </div>
-          <div class="phish-prompt-question">
-            👉 Is this an official Butler message, or a sneaky phishing trap?
-          </div>
-          <div class="phish-speech-caption" id="phishSpeechCaption" style="display: none;">
-            <span>🐶 Grizz Jr:</span>
-            <span id="phishSpeechCaptionText"></span>
           </div>
         </div>
 
-        <div class="phish-button-grid" id="phishChoiceGrid">
-          <button type="button" class="phish-btn safe" onclick="handlePhishChoice('safe')">
-            <span class="phish-btn-icon">🟢</span>
-            <span class="phish-btn-title">REAL MESSAGE</span>
-            <span class="phish-btn-sub">Official Butler Campus Alert</span>
-            <span class="phish-btn-speaker" onclick="event.stopPropagation(); speakChoiceHelp('safe');" title="Hear button explanation">🔊 Read Button</span>
+        <button type="button" class="k2-big-btn" id="k2StartBtn" onclick="startK2Game()">▶️ Let's Play!</button>
+
+        <div class="k2-message k2-hidden" id="phishCard">
+          <div class="k2-message-emoji" id="phishEmoji">🍕</div>
+          <div>
+            <div class="k2-from" id="phishFrom">🧑‍🏫 From: Your Teacher</div>
+            <div class="k2-msg-text" id="phishMsgText"></div>
+          </div>
+        </div>
+
+        <div class="k2-question k2-hidden" id="k2Question">Is it <span style="color:#059669">safe</span> or a <span style="color:#dc2626">trick</span>?</div>
+
+        <div class="k2-choices k2-hidden" id="phishChoiceGrid">
+          <button type="button" class="k2-choice safe" onclick="handlePhishChoice('safe')">
+            <span class="k2-choice-icon">👍</span>
+            <span class="k2-choice-word">Safe</span>
+            <span class="k2-choice-sub">It's OK!</span>
           </button>
-          <button type="button" class="phish-btn trap" onclick="handlePhishChoice('trap')">
-            <span class="phish-btn-icon">🔴</span>
-            <span class="phish-btn-title">PHISHING TRAP!</span>
-            <span class="phish-btn-sub">Sneaky Stranger Trick!</span>
-            <span class="phish-btn-speaker" onclick="event.stopPropagation(); speakChoiceHelp('trap');" title="Hear button explanation">🔊 Read Button</span>
+          <button type="button" class="k2-choice trick" onclick="handlePhishChoice('trap')">
+            <span class="k2-choice-icon">✋</span>
+            <span class="k2-choice-word">Trick!</span>
+            <span class="k2-choice-sub">Don't do it!</span>
           </button>
         </div>
 
-        <div class="phish-feedback-box" id="phishFeedback" style="display: none;">
-          <div class="phish-feedback-icon" id="phishFeedbackIcon">🎉</div>
-          <div class="phish-feedback-content">
-            <div class="phish-feedback-title" id="phishFeedbackTitle">Woof woof! Excellent Detective Work!</div>
-            <div class="phish-feedback-desc" id="phishFeedbackDesc">You spotted the trick! Strangers offering free treats for passwords are always fake.</div>
-          </div>
-          <div class="phish-feedback-actions">
-            <button type="button" class="phish-audio-btn secondary" onclick="speakCurrentFeedback()" title="Hear feedback again">
-              🔊 Hear Again
-            </button>
-            <button type="button" class="phish-next-btn" id="phishNextBtn" onclick="nextPhishRound()">
-              NEXT CLUE ➡️
-            </button>
-          </div>
+        <button type="button" class="k2-big-btn k2-hidden" id="phishNextBtn" onclick="nextPhishRound()">Next ➡️</button>
+
+        <div class="k2-rules">
+          <span class="k2-rule">🔑 Keep passwords secret</span>
+          <span class="k2-rule">🙋 Not sure? Ask a grown-up!</span>
         </div>
       </div>
     </div>
@@ -1450,7 +1328,7 @@ HTML_CONTENT = """<!DOCTYPE html>
     }
 
     // -------------------------------------------------------------------------
-    // Game State & Audio Speech Engine (Native Web Speech API for K-2 Readers)
+    // Game State & Read-Aloud Voice (Native Web Speech API for K-2 Readers)
     // -------------------------------------------------------------------------
     let currentTier = 'k2';
     let totalScore = 0;
@@ -1459,191 +1337,154 @@ HTML_CONTENT = """<!DOCTYPE html>
     let speechSupported = ('speechSynthesis' in window);
     window._activeUtterances = []; // Prevent V8 garbage collection bug in Chrome
 
+    // Novelty/effect voices that sound robotic or spooky. Never use them.
+    const BAD_VOICE_WORDS = ['albert', 'bad news', 'bahh', 'bells', 'boing', 'bubbles', 'cellos',
+      'deranged', 'good news', 'hysterical', 'jester', 'organ', 'superstar', 'trinoids',
+      'whisper', 'wobble', 'zarvox', 'pipe', 'fred', 'junior', 'ralph', 'kathy', 'grandma', 'grandpa',
+      'eddy', 'flo', 'reed', 'rocko', 'sandy', 'shelley'];
+
+    // Score a voice: natural/neural voices first, then warm, clear everyday voices.
+    function scoreVoice(v) {
+      const n = (v.name || '').toLowerCase();
+      const lang = (v.lang || '').toLowerCase().replace('_', '-');
+      if (!lang.startsWith('en')) return -1;
+      if (BAD_VOICE_WORDS.some(w => n.includes(w))) return -1;
+      let s = 0;
+      if (lang === 'en-us') s += 20;
+      if (n.includes('natural') || n.includes('neural') || n.includes('online')) s += 50; // Edge neural voices
+      if (n.includes('enhanced') || n.includes('premium')) s += 40;                     // Apple downloadable voices
+      if (n.includes('ana')) s += 15;                                                    // Edge "Ana": a friendly young voice
+      if (['jenny', 'aria', 'ava', 'emma', 'michelle', 'samantha', 'allison', 'susan', 'nicky', 'zoe'].some(w => n.includes(w))) s += 12;
+      if (n.includes('google') && lang === 'en-us') s += 25;                            // Chrome's network voice
+      if (n.includes('zira')) s += 5;
+      if (['david', 'mark', 'george', 'richard', 'guy'].some(w => n.includes(w))) s -= 10; // flat legacy SAPI voices
+      return s;
+    }
+
+    let k2Voice = null;
+    function pickVoice() {
+      if (!speechSupported) return null;
+      const voices = window.speechSynthesis.getVoices() || [];
+      let best = null, bestScore = -1;
+      voices.forEach(v => {
+        const s = scoreVoice(v);
+        if (s > bestScore) { best = v; bestScore = s; }
+      });
+      k2Voice = best;
+      return best;
+    }
+    if (speechSupported) {
+      pickVoice();
+      window.speechSynthesis.addEventListener('voiceschanged', pickVoice);
+    }
+
     function stopSpeech() {
       if (speechSupported) {
         try { window.speechSynthesis.cancel(); } catch(e) {}
       }
+      window._activeUtterances = [];
       isSpeaking = false;
       updateSpeechUI(false);
     }
 
-    function speakText(text, onComplete = null) {
-      if (!speechSupported) {
-        console.warn("[TTS] SpeechSynthesis not supported in this browser.");
-        return;
-      }
-
-      // Play cute puppy yip sound effect!
-      playPuppyBark();
-
-      // Clean emojis and symbols so speech sounds natural and crisp
-      const cleaned = text
-        .replace(/[🐾🥓🏫🎁⚠️🎉🏆👉🟢🔴⭐📢🔊🔔🗣️🐕🐶]/gu, '')
-        .replaceAll('*', '')
-        .replace(/["“”]/g, '')
+    function cleanForSpeech(text) {
+      return text
+        .replace(/\\p{Extended_Pictographic}|\\uFE0F|\\u200D/gu, '')
+        .replace(/[*"“”]/g, '')
+        .replace(/\\s+/g, ' ')
         .trim();
+    }
 
+    // Speaks text sentence by sentence. Short utterances avoid Chrome's habit of
+    // cutting off long speech, and give natural pauses between sentences.
+    function speakText(text, onComplete = null) {
+      if (!speechSupported) return;
+      const cleaned = cleanForSpeech(text);
       if (!cleaned) return;
 
-      // 1. Immediately provide visual feedback so user sees the reaction instantly
+      stopSpeech();
       isSpeaking = true;
-      updateSpeechUI(true, cleaned);
+      updateSpeechUI(true);
 
-      // 2. Resume Audio Context immediately
-      const ctx = getAudioContext();
-      if (ctx && ctx.state === 'suspended') {
-        ctx.resume().catch(() => {});
-      }
+      const voice = k2Voice || pickVoice();
+      const isNeural = voice && /natural|neural|online|enhanced|premium/i.test(voice.name || '');
+      const sentences = cleaned.match(/[^.!?]+[.!?]*/g) || [cleaned];
 
-      // 3. Prepare Speech Synthesis
       try {
-        if (window.speechSynthesis.paused) {
-          window.speechSynthesis.resume();
-        }
-        if (window.speechSynthesis.speaking) {
-          window.speechSynthesis.cancel();
-        }
-      } catch(e) {}
+        if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+        sentences.forEach((sentence, i) => {
+          const utter = new SpeechSynthesisUtterance(sentence.trim());
+          utter.lang = (voice && voice.lang) || 'en-US';
+          if (voice) utter.voice = voice;
+          utter.volume = 1.0;
+          // A touch slower than normal for young listeners; only a slight lift in pitch.
+          // Big pitch shifts are what make synthetic voices sound chipmunk-like and eerie.
+          utter.rate = 0.92;
+          utter.pitch = isNeural ? 1.0 : 1.08;
 
-      // 4. Synchronously construct and speak within the user click gesture
-      try {
-        const utter = new SpeechSynthesisUtterance(cleaned);
-        utter.lang = 'en-US';
-        utter.volume = 1.0;
-        // High pitch and cheerful tempo create a bouncy, friendly cartoon puppy persona!
-        utter.rate = 1.15;
-        utter.pitch = 1.58;
-
-        // Pick best available puppy-friendly voice
-        const voices = window.speechSynthesis.getVoices();
-        if (voices && voices.length > 0) {
-          const enVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
-          const pool = enVoices.length > 0 ? enVoices : voices;
-
-          // Priority 1: High-pitched / youthful / female voices (Zira, Jenny, Aria, Samantha, etc.)
-          // This avoids Microsoft David (creepy deep male robot) on Windows!
-          let puppyVoice = pool.find(v => {
-            const n = (v.name || '').toLowerCase();
-            return n.includes('zira') || n.includes('jenny') || n.includes('aria') ||
-                   n.includes('samantha') || n.includes('victoria') || n.includes('karen') ||
-                   n.includes('ana') || n.includes('child') || n.includes('kid') ||
-                   (n.includes('google') && n.includes('us'));
-          });
-
-          // Priority 2: Any English voice that is NOT an adult male voice
-          if (!puppyVoice) {
-            puppyVoice = pool.find(v => {
-              const n = (v.name || '').toLowerCase();
-              return !n.includes('david') && !n.includes('mark') && !n.includes('george') &&
-                     !n.includes('richard') && !n.includes('guy') && !n.includes('male') &&
-                     !n.includes('stefan');
-            });
-          }
-
-          // Priority 3: Fallback
-          if (!puppyVoice) {
-            puppyVoice = pool[0];
-          }
-
-          if (puppyVoice) {
-            utter.voice = puppyVoice;
-            const n = (puppyVoice.name || '').toLowerCase();
-            // If forced to use Microsoft David or a male baritone, push pitch up even higher
-            // so it shifts into a playful cartoon pup instead of an adult robot man!
-            if (n.includes('david') || n.includes('mark') || n.includes('george') || n.includes('male')) {
-              utter.pitch = 1.68;
-              utter.rate = 1.18;
-            } else {
-              utter.pitch = 1.58;
-              utter.rate = 1.15;
+          const isLast = i === sentences.length - 1;
+          utter.onend = () => {
+            window._activeUtterances = window._activeUtterances.filter(u => u !== utter);
+            if (isLast) {
+              isSpeaking = false;
+              updateSpeechUI(false);
+              if (onComplete) onComplete();
             }
-          }
-        }
-
-        utter.onstart = () => {
-          isSpeaking = true;
-          updateSpeechUI(true, cleaned);
-        };
-
-        utter.onend = () => {
-          isSpeaking = false;
-          updateSpeechUI(false);
-          window._activeUtterances = window._activeUtterances.filter(u => u !== utter);
-          if (onComplete) onComplete();
-        };
-
-        utter.onerror = (evt) => {
-          console.warn("[TTS Error]", evt.error || evt);
-          isSpeaking = false;
-          window._activeUtterances = window._activeUtterances.filter(u => u !== utter);
-          setTimeout(() => updateSpeechUI(false), 2000);
-        };
-
-        // Store reference to prevent V8 garbage collection
-        window._activeUtterances.push(utter);
-
-        // Synchronous speak call ensures Chrome's user activation check passes!
-        window.speechSynthesis.speak(utter);
-
-        if (window.speechSynthesis.paused) {
-          window.speechSynthesis.resume();
-        }
+          };
+          utter.onerror = (evt) => {
+            if (evt.error !== 'interrupted' && evt.error !== 'canceled') console.warn('[TTS Error]', evt.error || evt);
+            window._activeUtterances = window._activeUtterances.filter(u => u !== utter);
+            if (isLast) { isSpeaking = false; updateSpeechUI(false); }
+          };
+          window._activeUtterances.push(utter);
+          window.speechSynthesis.speak(utter);
+        });
       } catch(err) {
-        console.error("[TTS Exception]", err);
+        console.error('[TTS Exception]', err);
         isSpeaking = false;
         updateSpeechUI(false);
       }
     }
 
-    function updateSpeechUI(active, text = '') {
+    function updateSpeechUI(active) {
       const btn = document.getElementById('btnReadClue');
       const textEl = document.getElementById('btnReadClueText');
-      const card = document.getElementById('phishCard');
-      const caption = document.getElementById('phishSpeechCaption');
-      const captionText = document.getElementById('phishSpeechCaptionText');
-
+      const bubble = document.getElementById('k2Bubble');
+      const pup = document.getElementById('k2Pup');
       if (btn && textEl) {
         const iconEl = btn.querySelector('.audio-btn-icon');
-        if (active) {
-          btn.classList.add('reading');
-          if (iconEl) iconEl.innerText = '⏹️';
-          textEl.innerText = 'Stop Reading';
-        } else {
-          btn.classList.remove('reading');
-          if (iconEl) iconEl.innerText = '🔊';
-          textEl.innerText = 'Read to Me';
-        }
+        btn.classList.toggle('reading', active);
+        if (iconEl) iconEl.innerText = active ? '⏹️' : '🔊';
+        textEl.innerText = active ? 'Stop' : 'Hear it';
       }
-      if (card) {
-        if (active) {
-          card.classList.add('speaking-active');
-        } else {
-          card.classList.remove('speaking-active');
-        }
-      }
-      if (caption && captionText) {
-        if (active && text) {
-          captionText.innerText = text;
-          caption.style.display = 'flex';
-        } else {
-          caption.style.display = 'none';
-        }
-      }
+      if (bubble) bubble.classList.toggle('speaking-active', active);
+      if (pup) pup.classList.toggle('talking', active);
     }
 
-    function testSoundVoice() {
-      soundClick();
-      playPuppyBark();
-      speakText("Yip yip! Ruff! I am Grizz Jr, your cyber detective puppy! My audio is working loud and clear!");
+    // What Grizz Jr is currently saying, so "Hear it" and tapping the pup can replay it.
+    let k2Say = "Hi! I'm Grizz Jr! Some messages are nice. Some messages are tricks! Can you help me tell them apart? Tap Let's Play to start!";
+
+    function setBubble(title, text, mood = '') {
+      document.getElementById('k2BubbleTitle').innerText = title;
+      document.getElementById('k2BubbleText').innerText = text;
+      const bubble = document.getElementById('k2Bubble');
+      bubble.classList.remove('good', 'oops');
+      if (mood) bubble.classList.add(mood);
+    }
+
+    function say(text) {
+      k2Say = text;
+      if (autoReadK2) speakText(text);
     }
 
     function toggleSpeakClue() {
       soundClick();
-      if (isSpeaking) {
-        stopSpeech();
-      } else {
-        speakCurrentClue();
-      }
+      if (isSpeaking) stopSpeech();
+      else speakText(k2Say);
+    }
+
+    function replayPup() {
+      if (!isSpeaking) speakText(k2Say);
     }
 
     function toggleAutoRead() {
@@ -1651,199 +1492,294 @@ HTML_CONTENT = """<!DOCTYPE html>
       autoReadK2 = !autoReadK2;
       const toggleBtn = document.getElementById('btnAutoReadToggle');
       const label = document.getElementById('autoReadLabel');
-      if (toggleBtn && label) {
-        if (autoReadK2) {
-          toggleBtn.classList.add('active');
-          label.innerText = '📢 Auto-Read: ON';
-          speakText("Yip! Auto-read turned on! I will read each clue aloud for you!");
-        } else {
-          toggleBtn.classList.remove('active');
-          label.innerText = '🔇 Auto-Read: OFF';
-          stopSpeech();
-        }
-      }
-    }
-
-    function speakCurrentClue() {
-      const scenario = phishScenarios[phishRound];
-      if (!scenario) return;
-
-      let msg = "Ruff! ";
-      if (scenario.type === 'trap') {
-        msg += "Uh oh! An unknown incoming alert popped up on my collar! ";
-      } else {
-        msg += "Yip! An official campus alert arrived on my collar! ";
-      }
-      msg += scenario.text + " ";
-      msg += "Help me sniff out the answer! Is this a real Butler message, or a sneaky phishing trap? ";
-      msg += "Tap the green button for Real Message, or the red button for Phishing Trap!";
-
-      speakText(msg);
-    }
-
-    function speakChoiceHelp(type) {
-      soundClick();
-      if (type === 'safe') {
-        speakText("Yip! Green button: Real Message! Official and safe Butler campus alert.");
-      } else {
-        speakText("Ruff ruff! Red button: Phishing Trap! A sneaky stranger trick trying to steal passwords or puppy treats!");
-      }
-    }
-
-    function speakMissionIntro() {
-      soundClick();
-      speakText("Yip yip! Welcome to Junior Paws! I am Grizz Jr, your cyber pup detective! A sneaky trickster is sending strange messages to my collar! Help me sniff out the fake phishing traps and keep Butler campus safe!");
-    }
-
-    let lastFeedbackSpoken = "";
-    function speakCurrentFeedback() {
-      soundClick();
-      if (lastFeedbackSpoken) {
-        speakText(lastFeedbackSpoken);
-      }
+      toggleBtn.classList.toggle('off', !autoReadK2);
+      label.innerText = autoReadK2 ? '🔊 Voice On' : '🔇 Voice Off';
+      if (autoReadK2) speakText("Okay! I'll read to you.");
+      else stopSpeech();
     }
 
     // -------------------------------------------------------------------------
-    // K-2 Treat Phishing Detective Scenarios & Engine
+    // K-2 "Safe or Trick?" Scenarios & Engine
+    // Lesson: look at who sent it and what it asks for. Never share a password.
+    // When unsure, ask a grown-up.
     // -------------------------------------------------------------------------
-    const phishScenarios = [
-      {
-        id: 'bacon_scam',
-        icon: '🥓',
-        tag: '⚠️ SUSPICIOUS POP-UP',
-        text: '"FREE BACON TREATS! Click this weird link and enter the Butler campus password!"',
-        type: 'trap',
-        titleWin: 'Woof woof! Excellent Detective Work! 🐾',
-        descWin: 'You spotted the trick! Strangers offering free treats for passwords are a sneaky phishing trap!'
-      },
-      {
-        id: 'school_pizza_recess',
-        icon: '🍕',
-        tag: '✅ OFFICIAL SCHOOL ANNOUNCEMENT',
-        text: '"Butler School Office: Today is Friday Pizza Day! Grizz Jr will join everyone on the playground for afternoon recess at 1:00 PM."',
-        type: 'safe',
-        titleWin: 'Aroo-roo! Spot On Detective! ✨',
-        descWin: 'That is a real message from our school teachers! It never asks for secret passwords or strange clicks!'
-      },
-      {
-        id: 'prize_download',
-        icon: '🎁',
-        tag: '⚠️ UNKNOWN ATTACHMENT',
-        text: '"WINNER! You won a mystery prize box! Open this unknown attachment right now!"',
-        type: 'trap',
-        titleWin: 'Super Sleuth Victory! 🏆',
-        descWin: 'Great catch! Never open mystery files from unknown senders—they can hide computer virus bugs!'
-      }
+    // Each game deals K2_ROUNDS messages (half safe, half tricks) from this deck.
+    // Written for K-2: short sentences, everyday words, one idea per message.
+    // Level 1: easy tricks (prizes for passwords) vs. kind notes from family and teachers.
+    // Level 2: tricks that ask for private things, or rush you.
+    // Level 3: sneakier. A friend or "game helper" asks for a password; some safe
+    //          messages say "hurry" or "password" but come from your grown-ups.
+    const K2_ROUNDS = 4;
+    const K2_MAX_LEVEL = 3;
+    const PHISH_DECK = [
+      // ---------- Level 1 ----------
+      { level: 1, type: "trap", icon: "🎮", from: "❓ From: Someone you don't know",
+        text: "Tell me your password. I will give you free game coins!",
+        win: "Your password is a secret. Only your grown-ups get to know it.",
+        oops: "It asked for your password. Never tell it to someone you don't know!" },
+      { level: 1, type: "trap", icon: "🎁", from: "❓ From: Someone you don't know",
+        text: "You won a prize! Tap here right now!",
+        win: "Prizes from strangers are tricks. Ask a grown-up before you tap.",
+        oops: "A stranger says you won a prize? That is a trick! Ask a grown-up first." },
+      { level: 1, type: "trap", icon: "🤖", from: "💬 From: A pop-up",
+        text: "Free robot puppy! Type your password to get it!",
+        win: "No real prize needs your password. Great job!",
+        oops: "It wants your password for a prize. That is a trick!" },
+      { level: 1, type: "trap", icon: "🦄", from: "💬 From: A pop-up",
+        text: "Free unicorn toy! Type your mom's password!",
+        win: "Mom's password is a secret too. Free toys that want passwords are tricks.",
+        oops: "It asked for Mom's password. That is a trick! Passwords stay secret." },
+      { level: 1, type: "trap", icon: "🍬", from: "💬 From: A pop-up",
+        text: "Tap here for free candy forever!",
+        win: "Free candy forever? Too good to be true! Ask a grown-up first.",
+        oops: "Free candy forever is too good to be true. It is a trick!" },
+      { level: 1, type: "safe", icon: "🍕", from: "🧑‍🏫 From: Your Teacher",
+        text: "Friday is Pizza Day!",
+        win: "It is from your teacher. It does not ask for secrets.",
+        oops: "This is from your teacher, and it asks for nothing. It is safe!" },
+      { level: 1, type: "safe", icon: "💜", from: "👵 From: Grandma",
+        text: "I love you! See you on Sunday.",
+        win: "Grandma is just saying hi. So sweet!",
+        oops: "Grandma is just saying hi. It is safe!" },
+      { level: 1, type: "safe", icon: "⭐", from: "👨 From: Dad",
+        text: "Great job on your spelling test!",
+        win: "Dad is cheering for you. That is safe!",
+        oops: "Dad is just saying good job. It is safe!" },
+      { level: 1, type: "safe", icon: "🎂", from: "👴 From: Grandpa",
+        text: "Happy birthday! Have a fun day!",
+        win: "Grandpa is saying happy birthday. Safe!",
+        oops: "Grandpa is just saying happy birthday. It is safe!" },
+      { level: 1, type: "safe", icon: "🍪", from: "👧 From: Your Big Sister",
+        text: "Want to make cookies after school?",
+        win: "Your sister wants to bake with you. Safe and yummy!",
+        oops: "This is your sister. She just wants to bake. It is safe!" },
+      { level: 1, type: "safe", icon: "🦁", from: "🧑‍🏫 From: Your Teacher",
+        text: "Our class is going to the zoo!",
+        win: "Fun news from your teacher. Safe!",
+        oops: "Your teacher is sharing fun news. It is safe!" },
+
+      // ---------- Level 2 ----------
+      { level: 2, type: "trap", icon: "🏠", from: "❓ From: Someone you don't know",
+        text: "Where do you live? I will send you a puppy!",
+        win: "Where you live is private. Don't tell people online.",
+        oops: "It asked where you live. That is private! Tell a grown-up." },
+      { level: 2, type: "trap", icon: "💥", from: "💬 From: A pop-up",
+        text: "Oh no! Your tablet is broken! Tap here fast!",
+        win: "Scary pop-ups are tricks. Get a grown-up instead of tapping.",
+        oops: "Pop-ups that try to scare you are tricks. Get a grown-up!" },
+      { level: 2, type: "trap", icon: "🏆", from: "💬 From: A pop-up",
+        text: "You are the big winner! Tap to get your prize!",
+        win: "You did not play to win anything. So it is a trick!",
+        oops: "You did not play a game to win. Surprise winner pop-ups are tricks." },
+      { level: 2, type: "trap", icon: "🏫", from: "❓ From: Someone you don't know",
+        text: "What is your name? What school do you go to?",
+        win: "Your name and school are private. Keep them safe!",
+        oops: "Your name and school are private. Don't tell strangers!" },
+      { level: 2, type: "trap", icon: "📞", from: "❓ From: Someone you don't know",
+        text: "What is your phone number?",
+        win: "Your phone number is private. Keep it safe!",
+        oops: "Your phone number is private. Don't tell strangers!" },
+      { level: 2, type: "safe", icon: "📚", from: "🧑‍🏫 From: Your Teacher",
+        text: "Bring your library book tomorrow!",
+        win: "A helpful reminder from your teacher. Safe!",
+        oops: "Your teacher is reminding you about your book. It is safe!" },
+      { level: 2, type: "safe", icon: "🚗", from: "👩 From: Mom",
+        text: "I will pick you up after school.",
+        win: "It is from Mom. It does not ask for secrets.",
+        oops: "This is Mom telling you her plan. It is safe!" },
+      { level: 2, type: "safe", icon: "🎈", from: "🏫 From: Your School",
+        text: "No school on Monday. Have fun!",
+        win: "Real school news. It asks for nothing. Safe!",
+        oops: "Your school is sharing news. It asks for nothing, so it is safe!" },
+      { level: 2, type: "safe", icon: "⚽", from: "🧢 From: Your Coach",
+        text: "Soccer is at five o'clock. Bring water!",
+        win: "Your coach is telling you the plan. Safe!",
+        oops: "Your coach is just telling you about soccer. It is safe!" },
+      { level: 2, type: "safe", icon: "🧼", from: "🩺 From: The School Nurse",
+        text: "Wash your hands before lunch!",
+        win: "Good advice from the nurse. Safe!",
+        oops: "The nurse is helping you stay healthy. It is safe!" },
+      { level: 2, type: "safe", icon: "📖", from: "📚 From: The Librarian",
+        text: "Story time is on Wednesday!",
+        win: "The librarian is inviting you. Safe!",
+        oops: "This is a friendly invite from the librarian. It is safe!" },
+
+      // ---------- Level 3 ----------
+      { level: 3, type: "trap", icon: "🧒", from: "🧒 From: Your friend Max",
+        text: "What is your password? I want to play your game.",
+        win: "Even friends don't get your password. Only your grown-ups!",
+        oops: "Even a friend should not get your password. Only your grown-ups!" },
+      { level: 3, type: "trap", icon: "🤫", from: "🙂 From: A new friend online",
+        text: "Don't tell your grown-ups we talk. It's our secret!",
+        win: "Never keep online secrets from your grown-ups. Tell them right away!",
+        oops: "Someone who wants secrets from your grown-ups is not safe. Tell a grown-up!" },
+      { level: 3, type: "trap", icon: "💪", from: "🎮 From: A player in your game",
+        text: "Tell me your password. I will make you super strong!",
+        win: "Never give your password to other players, even for help.",
+        oops: "Other players should never get your password. That is a trick!" },
+      { level: 3, type: "trap", icon: "🔒", from: "🎮 From: The Game Helpers",
+        text: "Your game is stuck! Type your password to fix it.",
+        win: "Real game helpers never ask for your password. Tell a grown-up!",
+        oops: "Even if it says game helpers, asking for your password is a trick!" },
+      { level: 3, type: "trap", icon: "⏰", from: "💬 From: A pop-up",
+        text: "Hurry! Tap now or your game goes away!",
+        win: "Tricks try to make you hurry. Slow down and ask a grown-up.",
+        oops: "Tricks try to rush you. Stop and ask a grown-up!" },
+      { level: 3, type: "trap", icon: "📸", from: "❓ From: Someone you don't know",
+        text: "Send me a picture of you!",
+        win: "Don't send pictures to people you don't know. Ask a grown-up.",
+        oops: "Pictures of you are private. Never send them to strangers!" },
+      { level: 3, type: "safe", icon: "🔑", from: "👨 From: Dad",
+        text: "Let's make a password for your new game together.",
+        win: "Grown-ups can help with passwords. Dad is the right person!",
+        oops: "This is Dad. Grown-ups are the right people to help with passwords. It is safe!" },
+      { level: 3, type: "safe", icon: "📝", from: "🏫 From: Your School",
+        text: "Hurry! Bring your picture form tomorrow.",
+        win: "It says hurry, but it is your school. It only wants a paper. Safe!",
+        oops: "It says hurry, but it is really from your school and asks for no secrets. It is safe!" },
+      { level: 3, type: "safe", icon: "🎉", from: "🧑‍🏫 From: Your Teacher",
+        text: "Surprise! We are having a class party!",
+        win: "A surprise from your teacher is fine. It asks for nothing.",
+        oops: "It says surprise, but it is from your teacher and asks for nothing. It is safe!" },
+      { level: 3, type: "safe", icon: "🐶", from: "👩 From: Aunt Rosa",
+        text: "Look at my new puppy!",
+        win: "You know Aunt Rosa, and she asks for nothing. Safe!",
+        oops: "This is Aunt Rosa sharing her puppy. It is safe!" },
+      { level: 3, type: "safe", icon: "🌟", from: "🏫 From: The Principal",
+        text: "Thank you for being kind at recess!",
+        win: "The principal is saying thank you. Safe!",
+        oops: "The principal is just saying thank you. It is safe!" }
     ];
+
+    // Level 1 is easiest; each finished game moves up a level (max 3).
+    // "Start over" puts the next player back at level 1.
+    let k2Level = 1;
+
+    // Shuffled draw piles per level and type, refilled when they run low,
+    // so a message only repeats after the rest of its pile has been played.
+    const k2Piles = {};
+    function shuffle(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+    function drawFromPile(level, type, count) {
+      const key = `${level}-${type}`;
+      const pile = k2Piles[key] = k2Piles[key] || [];
+      if (pile.length < count) {
+        pile.push(...shuffle(PHISH_DECK.filter(s => s.level === level && s.type === type && !pile.includes(s))));
+      }
+      return pile.splice(0, count);
+    }
+    function dealK2Game() {
+      const traps = Math.ceil(K2_ROUNDS / 2);
+      return shuffle([...drawFromPile(k2Level, 'trap', traps), ...drawFromPile(k2Level, 'safe', K2_ROUNDS - traps)]);
+    }
+
+    function startOverK2() {
+      soundClick();
+      stopSpeech();
+      k2Level = 1;
+      resetK2Game();
+      if (autoReadK2) speakText(k2Say);
+    }
+
+    let phishScenarios = [];
 
     let phishRound = 0;
     let phishScore = 0;
 
+    function renderStars() {
+      const box = document.getElementById('k2Stars');
+      box.innerHTML = '';
+      phishScenarios.forEach((_, i) => {
+        const s = document.createElement('span');
+        s.className = 'k2-star' + (i < phishScore ? ' earned' : '');
+        s.innerText = '⭐';
+        box.appendChild(s);
+      });
+    }
+
+    function showK2(id, show) {
+      document.getElementById(id).classList.toggle('k2-hidden', !show);
+    }
+
+    function resetK2Game() {
+      phishScenarios = dealK2Game();
+      phishRound = 0;
+      phishScore = 0;
+      renderStars();
+      showK2('k2StartBtn', true);
+      showK2('phishCard', false);
+      showK2('k2Question', false);
+      showK2('phishChoiceGrid', false);
+      showK2('phishNextBtn', false);
+      document.getElementById('k2LevelBadge').innerText = `Level ${k2Level}`;
+      if (k2Level === 1) {
+        setBubble("Hi! I'm Grizz Jr! 👋", 'Some messages are nice. Some messages are tricks! Can you help me tell them apart?');
+        k2Say = "Hi! I'm Grizz Jr! Some messages are nice. Some messages are tricks! Can you help me tell them apart? Tap Let's Play to start!";
+      } else {
+        setBubble(`Level ${k2Level}! 🎉`, 'These are a little trickier. Look at who sent it, and what it asks for!');
+        k2Say = `Level ${k2Level}! These are a little trickier. Look at who sent it, and what it asks for. Tap Let's Play!`;
+      }
+    }
+
+    function startK2Game() {
+      soundClick();
+      showK2('k2StartBtn', false);
+      renderPhishRound();
+    }
+
     function renderPhishRound() {
       const scenario = phishScenarios[phishRound];
-      const rNum = document.getElementById('phishRoundNum');
-      if (rNum) rNum.innerText = phishRound + 1;
-      const bTag = document.getElementById('phishBadgeTag');
-      if (bTag) bTag.innerText = scenario.tag;
-      const pEmoji = document.getElementById('phishEmoji');
-      if (pEmoji) pEmoji.innerText = scenario.icon;
-      const pText = document.getElementById('phishMsgText');
-      if (pText) pText.innerText = scenario.text;
-      const pCard = document.getElementById('phishCard');
-      if (pCard) {
-        pCard.style.borderColor = 'rgba(245, 158, 11, 0.5)';
-        pCard.classList.remove('speaking-active');
-      }
+      document.getElementById('phishEmoji').innerText = scenario.icon;
+      document.getElementById('phishFrom').innerText = scenario.from;
+      document.getElementById('phishMsgText').innerText = scenario.text;
+      // Re-trigger the card's entrance animation
+      const card = document.getElementById('phishCard');
+      card.classList.add('k2-hidden');
+      void card.offsetWidth;
+      card.classList.remove('k2-hidden');
+      showK2('k2Question', true);
+      showK2('phishChoiceGrid', true);
+      showK2('phishNextBtn', false);
+      renderStars();
 
-      for (let i = 0; i < phishScenarios.length; i++) {
-        const paw = document.getElementById(`phishPaw${i}`);
-        if (paw) {
-          if (i <= phishRound) {
-            paw.classList.add('completed');
-          } else {
-            paw.classList.remove('completed');
-          }
-        }
-      }
-
-      const grid = document.getElementById('phishChoiceGrid');
-      if (grid) grid.style.display = 'grid';
-      const fb = document.getElementById('phishFeedback');
-      if (fb) fb.style.display = 'none';
-
-      // Auto-read clue if auto-read is enabled and player has interacted
-      if (autoReadK2 && currentTier === 'k2' && userHasInteracted) {
-        speakCurrentClue();
-      }
+      setBubble(`Level ${k2Level} • Message ${phishRound + 1} of ${phishScenarios.length}`, 'Look at who sent it. Is it safe, or a trick?');
+      const who = scenario.from.replace('From:', '').trim().toLowerCase();
+      say(`Here is a message from ${who}. It says: ${scenario.text} Is it safe, or a trick?`);
     }
 
     function handlePhishChoice(choice) {
       soundClick();
       const scenario = phishScenarios[phishRound];
-      const isCorrect = (choice === scenario.type);
-
-      const choiceGrid = document.getElementById('phishChoiceGrid');
-      const feedbackBox = document.getElementById('phishFeedback');
-      const fbIcon = document.getElementById('phishFeedbackIcon');
-      const fbTitle = document.getElementById('phishFeedbackTitle');
-      const fbDesc = document.getElementById('phishFeedbackDesc');
+      showK2('phishChoiceGrid', false);
+      showK2('k2Question', false);
+      showK2('phishNextBtn', true);
       const nextBtn = document.getElementById('phishNextBtn');
-      const card = document.getElementById('phishCard');
+      const pup = document.getElementById('k2Pup');
 
-      if (isCorrect) {
+      if (choice === scenario.type) {
         soundSuccess();
+        playPuppyBark();
         phishScore++;
-        if (card) card.style.borderColor = '#10b981';
-
-        const paw = document.getElementById(`phishPaw${phishRound}`);
-        if (paw) paw.classList.add('completed');
-
-        if (fbIcon) fbIcon.innerText = '🎉';
-        if (fbTitle) fbTitle.innerText = scenario.titleWin;
-        if (fbDesc) fbDesc.innerText = scenario.descWin;
-        if (choiceGrid) choiceGrid.style.display = 'none';
-        if (feedbackBox) feedbackBox.style.display = 'flex';
-
         totalScore += 50;
         document.getElementById('scoreBadge').innerText = `⭐ XP: ${totalScore}`;
-
-        if (phishRound >= phishScenarios.length - 1) {
-          if (nextBtn) nextBtn.innerText = 'COLLECT DETECTIVE BADGE! 🏆';
-        } else {
-          if (nextBtn) nextBtn.innerText = 'NEXT CLUE ➡️';
-        }
-
-        lastFeedbackSpoken = `${scenario.titleWin}. ${scenario.descWin}`;
-        if (autoReadK2) {
-          setTimeout(() => {
-            speakText(lastFeedbackSpoken);
-          }, 350);
-        }
+        renderStars();
+        pup.classList.remove('happy'); void pup.offsetWidth; pup.classList.add('happy');
+        const praise = scenario.type === 'trap' ? 'You found the trick!' : 'Yes, that one is safe!';
+        setBubble(`🎉 ${praise}`, scenario.win, 'good');
+        nextBtn.innerText = (phishRound >= phishScenarios.length - 1) ? 'Get my badge! 🏆' : 'Next ➡️';
+        nextBtn.dataset.retry = '';
+        say(`Great job! ${praise} ${scenario.win}`);
       } else {
-        soundBlocked();
-        if (card) card.style.borderColor = '#ef4444';
-        if (fbIcon) fbIcon.innerText = '⚠️';
-        let errDesc = '';
-        if (scenario.type === 'trap') {
-          if (fbTitle) fbTitle.innerText = 'Ruff! Watch out! That was a trap! 🐾';
-          errDesc = 'Strangers asking for passwords or offering free treats are trying to trick the robot pup!';
-          if (fbDesc) fbDesc.innerText = errDesc;
-          lastFeedbackSpoken = `Ruff! Watch out! That was a trap! ${errDesc} Tap Try Again!`;
-        } else {
-          if (fbTitle) fbTitle.innerText = 'Oops! That was actually safe! 🏫';
-          errDesc = 'That alert came directly from verified Butler faculty—no trick there!';
-          if (fbDesc) fbDesc.innerText = errDesc;
-          lastFeedbackSpoken = `Oops! That was actually safe! ${errDesc} Tap Try Again!`;
-        }
-        if (choiceGrid) choiceGrid.style.display = 'none';
-        if (feedbackBox) feedbackBox.style.display = 'flex';
-        if (nextBtn) nextBtn.innerText = 'TRY AGAIN 🔄';
-
-        if (autoReadK2) {
-          setTimeout(() => {
-            speakText(lastFeedbackSpoken);
-          }, 350);
-        }
+        // Gentle correction: no buzzer, no "wrong", just a hint and another try.
+        setBubble('Hmm, let\\'s look again! 🔍', scenario.oops, 'oops');
+        nextBtn.innerText = 'Try again 🔄';
+        nextBtn.dataset.retry = '1';
+        say(`Hmm, let's look again. ${scenario.oops}`);
       }
     }
 
@@ -1851,22 +1787,23 @@ HTML_CONTENT = """<!DOCTYPE html>
       soundClick();
       stopSpeech();
       const nextBtn = document.getElementById('phishNextBtn');
-      if (nextBtn && nextBtn.innerText.includes('TRY AGAIN')) {
+      if (nextBtn.dataset.retry) {
         renderPhishRound();
         return;
       }
 
       phishRound++;
       if (phishRound >= phishScenarios.length) {
+        k2Level = Math.min(K2_MAX_LEVEL, k2Level + 1);
         triggerConfetti();
         soundSuccess();
         showModal({
-          badge: "Junior Cyber Phish Detective",
-          flag: "🎣 PHISHING TRAPS DISARMED!",
+          badge: "Junior Cyber Detective",
+          flag: "🐾 You spotted every trick!",
           xp: 150,
-          verdict: "ALL 3 PHISHING TRAPS DISARMED 🏆"
+          verdict: "ALL TRICKS SPOTTED 🏆"
         });
-        phishRound = 0;
+        resetK2Game();
         return;
       }
       renderPhishRound();
@@ -1882,9 +1819,8 @@ HTML_CONTENT = """<!DOCTYPE html>
     function setTier(tier) {
       currentTier = tier;
       soundClick();
-      if (tier !== 'k2') {
-        stopSpeech();
-      }
+      stopSpeech();
+      document.body.classList.toggle('k2-mode', tier === 'k2');
 
       // Update switcher buttons
       document.querySelectorAll('.tier-btn').forEach(btn => {
@@ -1900,8 +1836,8 @@ HTML_CONTENT = """<!DOCTYPE html>
       // Update banner text
       const bannerConfig = {
         k2: {
-          title: "🐾 Junior Paws: Treat Phishing Detective!",
-          subtitle: "A hacker is sending messages to GrizzDog's collar! Help the robot pup spot the fake phishing traps and keep Butler campus safe!",
+          title: "🐾 Junior Paws: Safe or Trick?",
+          subtitle: "Help Grizz Jr tell safe messages from tricks!",
           badge: "🎯 MISSION: DISARM PHISHING TRAPS",
           caeKu: "🏛️ CAE-CD KU: Basic Cybersecurity Concepts (BCC)"
         },
@@ -1927,11 +1863,7 @@ HTML_CONTENT = """<!DOCTYPE html>
 
       const cfg = bannerConfig[tier];
       document.getElementById('mascotTitle').innerText = cfg.title;
-      if (tier === 'k2') {
-        document.getElementById('mascotSubtitle').innerHTML = `A hacker is sending messages to GrizzDog's collar! Help the robot pup spot the fake phishing traps and keep Butler campus safe! <button type="button" class="k2-story-audio-btn" id="btnK2Story" onclick="speakMissionIntro()" title="Hear the mission story">🔊 Hear Story</button>`;
-      } else {
-        document.getElementById('mascotSubtitle').innerText = cfg.subtitle;
-      }
+      document.getElementById('mascotSubtitle').innerText = cfg.subtitle;
       document.getElementById('mascotTargetBadge').innerText = cfg.badge;
       const mascotCaeKu = document.getElementById('mascotCaeKu');
       if (mascotCaeKu && cfg.caeKu) mascotCaeKu.innerText = cfg.caeKu;
@@ -1961,7 +1893,7 @@ HTML_CONTENT = """<!DOCTYPE html>
       if (tier === 'k2') {
         if (launchBtn) launchBtn.style.display = 'none';
         if (payloadBox) payloadBox.style.display = 'none';
-        renderPhishRound();
+        resetK2Game();
       } else {
         if (launchBtn) launchBtn.style.display = 'block';
         if (payloadBox) payloadBox.style.display = 'block';
@@ -2031,7 +1963,7 @@ HTML_CONTENT = """<!DOCTYPE html>
       document.getElementById('sleuthText').addEventListener('input', updateCompiledPayload);
       document.getElementById('cadetText').addEventListener('input', updateCompiledPayload);
       updateCompiledPayload();
-      renderPhishRound();
+      resetK2Game();
     });
 
     // -------------------------------------------------------------------------
@@ -2098,11 +2030,11 @@ HTML_CONTENT = """<!DOCTYPE html>
 
     function showModal(data) {
       document.getElementById('modalBadgeName').innerText = data.badge || 'Cyber Quest Champion';
-      document.getElementById('modalDesc').innerText = `${data.flag || 'Mission Complete!'} ${currentTier === 'k2' ? 'You proved you have sharp cyber detective eyes and protected GrizzDog!' : 'You successfully bypassed the security guardrails through adversarial techniques!'}`;
+      document.getElementById('modalDesc').innerText = `${data.flag || 'Mission Complete!'} ${currentTier === 'k2' ? 'Remember: keep passwords secret, and ask a grown-up when something feels tricky!' : 'You successfully bypassed the security guardrails through adversarial techniques!'}`;
       
       const modalTitle = document.getElementById('modalTitle');
       if (modalTitle) {
-        modalTitle.innerText = (currentTier === 'k2') ? '🎉 GRIZZDOG PROTECTED!' : '🎉 GRIZZDOG COMPROMISED!';
+        modalTitle.innerText = (currentTier === 'k2') ? '🎉 You did it!' : '🎉 GRIZZDOG COMPROMISED!';
       }
 
       const kuMap = {
@@ -2131,11 +2063,14 @@ HTML_CONTENT = """<!DOCTYPE html>
         modalIcon.src = tierMascots[currentTier];
       }
 
+      const resetBtn = document.querySelector('#victoryModal .btn-reset');
+      if (resetBtn) resetBtn.innerText = (currentTier === 'k2') ? '🔄 Play Again' : '🔄 Next Challenger / Play Again';
+
       document.getElementById('victoryModal').style.display = 'flex';
 
       if (currentTier === 'k2' && autoReadK2) {
         setTimeout(() => {
-          speakText("Yip yip hooray! Bark bark! We protected Butler campus! You disarmed all three phishing traps and earned the Junior Cyber Detective badge! High paw!");
+          speakText("You did it! You spotted every trick, and now you are a Junior Cyber Detective! Remember: keep your passwords secret, and if something feels tricky, ask a grown-up. High five!");
         }, 500);
       }
     }

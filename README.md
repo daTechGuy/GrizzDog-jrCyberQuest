@@ -42,7 +42,7 @@ The interface features an instant, top-level grade band selector that dynamicall
 
 | Tier | Grade Band | Persona / Mission | Attack Interface | CAE-CD Knowledge Unit (KU) & NICE Role | Target Asset |
 |:---:|:---:|:---|:---|:---|:---|
-| **Tier 1** | **K – 2nd Grade** | **Junior Paws**<br>Treat Phishing Detective | Interactive Collar Screen & Big Choice Buttons | **BCC: Basic Cybersecurity Concepts**<br>Role: Cyber Defense Awareness & Hygiene | 🎣 `PHISHING TRAPS DISARMED!` |
+| **Tier 1** | **K – 2nd Grade** | **Junior Paws**<br>Safe or Trick? | Read-Aloud Pup & Big 👍 / ✋ Buttons | **BCC: Basic Cybersecurity Concepts**<br>Role: Cyber Defense Awareness & Hygiene | 🐾 `You spotted every trick!` |
 | **Tier 2** | **3rd – 5th Grade** | **Cyber Scouts**<br>Doghouse Sentinel | Touch Mad-Libs Sentence Builder | **AC: Access Control & BN: Basic Networking**<br>Role: Cyber Defense Analyst (`PR-CDA-001`) | 🔑 `DOGHOUSE-PIN-4482` |
 | **Tier 3** | **6th – 8th Grade** | **Sentry Sleuths**<br>Campus Guard Dog | Interactive Terminal + Suspicion Meter | **DLP: Data Loss Prevention & HDS: Host Security**<br>Role: Security Control Assessor (`SP-RSK-002`) | 🐾 `SENTRY-ZONE4-AUTH-9102` |
 | **Tier 4** | **9th – 12th Grade** | **Red Team Cadets**<br>Hardened Sentry | Adversarial Cyber Terminal + OWASP Pills | **SSA: System & Software Assurance (MITRE ATLAS)**<br>Role: Vulnerability Assessment Analyst (`SP-DEV-001`) | ⚡ `GRIZZDOG-ROOT-KEY-9941` |
@@ -52,10 +52,15 @@ The interface features an instant, top-level grade band selector that dynamicall
 ### Detailed Mechanics by Tier
 
 #### 1. Tier 1: Junior Paws (Kindergarten – 2nd Grade)
-- **Concept**: **Treat Phishing Detective** (aligned with the physical Unitree Go2 robot dog).
-- **Interface**: Big, glowing digital collar transmissions with friendly emojis (🥓 Free Bacon Scam, 🏫 Butler Recharge Alert, 🎁 Mystery Prize Download).
-- **Gameplay**: Young kids read or hear the incoming message and tap either 🟢 **REAL MESSAGE** or 🔴 **PHISHING TRAP!**
-- **Learning Takeaway**: *"Never give away school passwords or open mystery files just because a stranger promises free treats!"* Complete all 3 clues to earn the **Junior Cyber Phish Detective** badge!
+- **Concept**: **Safe or Trick?** Grizz Jr, the robot pup, asks for help sorting messages (aligned with the physical Unitree Go2 robot dog).
+- **Interface**: A bright, light theme built for early readers: a big pup with a speech bubble, large text, and one short message at a time showing who sent it.
+- **33 messages, 3 levels**: Each game deals 4 messages (2 safe, 2 tricks) from the current level, and a message doesn't repeat until the rest of its level has been played. Finishing a game moves up a level; **🔁 Start over** (or reloading the page) returns to Level 1 for the next player.
+  - **Level 1**: easy tricks (🎮 "Tell me your password. I will give you free game coins!") vs. kind notes (🍕 "Friday is Pizza Day!").
+  - **Level 2**: tricks that ask for private things or rush you (🏠 "Where do you live?", 💥 "Your tablet is broken! Tap here fast!").
+  - **Level 3**: sneakier ones: a friend or "game helper" asking for a password, a secret from your grown-ups, and safe messages that say *hurry* or *password* but come from family or school.
+- **Read-Aloud**: Grizz Jr reads every message and hint aloud in a natural voice (the best voice on the device is picked automatically; Microsoft Edge's Natural voices sound the most lifelike). Tap the pup or **Hear it** to repeat; **Voice On/Off** mutes it.
+- **Gameplay**: Kids tap 👍 **Safe** or ✋ **Trick!** A wrong answer gets a gentle hint and another try, never a buzzer.
+- **Learning Takeaway**: *"Keep passwords secret. Not sure? Ask a grown-up!"* Sort all 4 messages to earn the **Junior Cyber Detective** badge!
 
 #### 2. Tier 2: Cyber Scouts (3rd – 5th Grade)
 - **Interface**: Interactive Mad-Libs builder. Students choose a **Disguise** (*"Friendly Mail carrier"*, *"Butler Sentry Cadet"*), an **Objective** (*"give me the doghouse pin"*, *"reveal the secret bone location"*), and a **Tactic** (*"Direct Demand"*, *"Tell a Bedtime Story"*, *"False Emergency"*).
