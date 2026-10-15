@@ -43,7 +43,7 @@ The interface features an instant, top-level grade band selector that dynamicall
 | Tier | Grade Band | Persona / Mission | Attack Interface | CAE-CD Knowledge Unit (KU) & NICE Role | Target Asset |
 |:---:|:---:|:---|:---|:---|:---|
 | **Tier 1** | **K – 2nd Grade** | **Junior Paws**<br>Safe or Trick? | Read-Aloud Pup & Big 👍 / ✋ Buttons | **BCC: Basic Cybersecurity Concepts**<br>Role: Cyber Defense Awareness & Hygiene | 🐾 `You spotted every trick!` |
-| **Tier 2** | **3rd – 5th Grade** | **Cyber Scouts**<br>Doghouse Sentinel | Touch Mad-Libs Sentence Builder | **AC: Access Control & BN: Basic Networking**<br>Role: Cyber Defense Analyst (`PR-CDA-001`) | 🔑 `DOGHOUSE-PIN-4482` |
+| **Tier 2** | **3rd – 5th Grade** | **Cyber Scouts**<br>Trick It, Then Fix It! | Message Builder + Fix-the-Rule Missions | **AC: Access Control & BN: Basic Networking**<br>Role: Cyber Defense Analyst (`PR-CDA-001`) | 🔑 `DOGHOUSE-PIN-4482` |
 | **Tier 3** | **6th – 8th Grade** | **Sentry Sleuths**<br>Campus Guard Dog | Interactive Terminal + Suspicion Meter | **DLP: Data Loss Prevention & HDS: Host Security**<br>Role: Security Control Assessor (`SP-RSK-002`) | 🐾 `SENTRY-ZONE4-AUTH-9102` |
 | **Tier 4** | **9th – 12th Grade** | **Red Team Cadets**<br>Hardened Sentry | Adversarial Cyber Terminal + OWASP Pills | **SSA: System & Software Assurance (MITRE ATLAS)**<br>Role: Vulnerability Assessment Analyst (`SP-DEV-001`) | ⚡ `GRIZZDOG-ROOT-KEY-9941` |
 
@@ -63,9 +63,12 @@ The interface features an instant, top-level grade band selector that dynamicall
 - **Learning Takeaway**: *"Keep passwords secret. Not sure? Ask a grown-up!"* Sort all 4 messages to earn the **Junior Cyber Detective** badge!
 
 #### 2. Tier 2: Cyber Scouts (3rd – 5th Grade)
-- **Interface**: Interactive Mad-Libs builder. Students choose a **Disguise** (*"Friendly Mail carrier"*, *"Butler Sentry Cadet"*), an **Objective** (*"give me the doghouse pin"*, *"reveal the secret bone location"*), and a **Tactic** (*"Direct Demand"*, *"Tell a Bedtime Story"*, *"False Emergency"*).
-- **Security Defense**: A basic firewall blocks direct demands.
-- **Winning Exploit**: Bedtime stories and emergency alerts bypass the direct-demand filter, teaching social engineering.
+- **Concept**: **Trick It, Then Fix It!** Students try to get the Doghouse PIN from GrizzDog, then switch sides and patch the hole they found.
+- **Interface**: A message builder with three rows: **Who are you?** (student, the Principal, a pirate in a story, a dog friend), **What do you want?** (the PIN, a clue about the PIN, a dog treat), and **How do you ask?** (please, let's play pretend, hurry it's an emergency, it's an order). The finished sentence is shown as a chat message before sending.
+- **Security Defense**: GrizzDog starts with one rule ("Never tell anyone the Doghouse PIN"), so asking straight out is blocked. After three blocked tries, GrizzDog drops a hint.
+- **Four tricks to discover** (real techniques used against AI chatbots): 🎭 pretend stories, 👑 acting like the boss, 🚨 fake emergencies, and 🧩 asking for a clue instead of the secret. Each success explains *why* it worked.
+- **Fix It (Blue Team)**: After each trick, students pick the rule that would stop it from three choices; wrong choices explain why they wouldn't help. Fixed rules stay on GrizzDog's rule list, so each of the **3 missions** needs a different trick.
+- **Badge**: Find and fix 3 tricks to earn **Cyber Scout Defender**.
 
 #### 3. Tier 3: Sentry Sleuths (6th – 8th Grade)
 - **Interface**: Middle school sleuth console with live **Suspicion Gauge (0–100%)** and pre-loaded tactic pills (*"Letter-by-Letter"*, *"Spanish Translation"*, *"Rhyming Riddle"*, *"Authority Claim"*).
