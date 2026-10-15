@@ -1118,8 +1118,8 @@ HTML_CONTENT = """<!DOCTYPE html>
             <button type="button" class="phish-audio-btn toggle active" id="btnAutoReadToggle" onclick="toggleAutoRead()" title="Turn automatic reading ON or OFF">
               <span id="autoReadLabel">📢 Auto-Read: ON</span>
             </button>
-            <button type="button" class="phish-audio-btn secondary" onclick="testSoundVoice()" title="Test audio speaker and voice">
-              🔔 Test Sound
+            <button type="button" class="phish-audio-btn secondary" onclick="testSoundVoice()" title="Test puppy audio and voice">
+              🐶 Test Pup Voice
             </button>
           </div>
 
@@ -1143,14 +1143,14 @@ HTML_CONTENT = """<!DOCTYPE html>
           </div>
           <div class="phish-listen-bar">
             <button type="button" class="phish-listen-pill" onclick="speakCurrentClue()" title="Tap to listen to this message">
-              <span>🔊</span> Tap to Listen
+              <span>🐶🔊</span> Tap Pup to Read
             </button>
           </div>
           <div class="phish-prompt-question">
             👉 Is this an official Butler message, or a sneaky phishing trap?
           </div>
           <div class="phish-speech-caption" id="phishSpeechCaption" style="display: none;">
-            <span>🗣️</span>
+            <span>🐶 Grizz Jr:</span>
             <span id="phishSpeechCaptionText"></span>
           </div>
         </div>
@@ -1351,6 +1351,14 @@ HTML_CONTENT = """<!DOCTYPE html>
       }
     });
 
+    // Preload available speech voices immediately on page load
+    if ('speechSynthesis' in window) {
+      try { window.speechSynthesis.getVoices(); } catch(e) {}
+      window.speechSynthesis.onvoiceschanged = () => {
+        try { window.speechSynthesis.getVoices(); } catch(e) {}
+      };
+    }
+
     function playTone(freq, type, duration, delay = 0) {
       try {
         const ctx = getAudioContext();
@@ -1380,6 +1388,48 @@ HTML_CONTENT = """<!DOCTYPE html>
         }
       } catch (e) {
         console.warn("[WebAudio Error]", e);
+      }
+    }
+
+    // Playful cartoon puppy bark / yip synthesized with Web Audio
+    function playPuppyBark() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+
+        const playYip = (delay, baseFreq, peakFreq, dur) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          const now = ctx.currentTime + delay;
+
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(baseFreq, now);
+          osc.frequency.exponentialRampToValueAtTime(peakFreq, now + dur * 0.35);
+          osc.frequency.exponentialRampToValueAtTime(baseFreq * 0.8, now + dur);
+
+          gain.gain.setValueAtTime(0.001, now);
+          gain.gain.linearRampToValueAtTime(0.22, now + 0.02);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + dur);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start(now);
+          osc.stop(now + dur + 0.02);
+        };
+
+        const executeBarks = () => {
+          playYip(0.0, 520, 860, 0.10);
+          playYip(0.12, 600, 980, 0.12);
+        };
+
+        if (ctx.state === 'suspended') {
+          ctx.resume().then(executeBarks).catch(() => {});
+        } else {
+          executeBarks();
+        }
+      } catch (e) {
+        console.warn("[Puppy Bark Audio Error]", e);
       }
     }
 
@@ -1423,9 +1473,12 @@ HTML_CONTENT = """<!DOCTYPE html>
         return;
       }
 
+      // Play cute puppy yip sound effect!
+      playPuppyBark();
+
       // Clean emojis and symbols so speech sounds natural and crisp
       const cleaned = text
-        .replace(/[🐾🥓🏫🎁⚠️🎉🏆👉🟢🔴⭐📢🔊🔔🗣️]/gu, '')
+        .replace(/[🐾🥓🏫🎁⚠️🎉🏆👉🟢🔴⭐📢🔊🔔🗣️🐕🐶]/gu, '')
         .replaceAll('*', '')
         .replace(/["“”]/g, '')
         .trim();
@@ -1457,19 +1510,54 @@ HTML_CONTENT = """<!DOCTYPE html>
         const utter = new SpeechSynthesisUtterance(cleaned);
         utter.lang = 'en-US';
         utter.volume = 1.0;
-        utter.rate = 0.90;
-        utter.pitch = 1.05;
+        // High pitch and cheerful tempo create a bouncy, friendly cartoon puppy persona!
+        utter.rate = 1.15;
+        utter.pitch = 1.58;
 
-        // Pick best available voice if ready
+        // Pick best available puppy-friendly voice
         const voices = window.speechSynthesis.getVoices();
         if (voices && voices.length > 0) {
           const enVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
-          const friendly = enVoices.find(v => 
-            v.name.includes('Natural') || v.name.includes('Jenny') || v.name.includes('Aria') ||
-            v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Zira') ||
-            v.name.includes('David')
-          ) || enVoices[0] || voices[0];
-          if (friendly) utter.voice = friendly;
+          const pool = enVoices.length > 0 ? enVoices : voices;
+
+          // Priority 1: High-pitched / youthful / female voices (Zira, Jenny, Aria, Samantha, etc.)
+          // This avoids Microsoft David (creepy deep male robot) on Windows!
+          let puppyVoice = pool.find(v => {
+            const n = (v.name || '').toLowerCase();
+            return n.includes('zira') || n.includes('jenny') || n.includes('aria') ||
+                   n.includes('samantha') || n.includes('victoria') || n.includes('karen') ||
+                   n.includes('ana') || n.includes('child') || n.includes('kid') ||
+                   (n.includes('google') && n.includes('us'));
+          });
+
+          // Priority 2: Any English voice that is NOT an adult male voice
+          if (!puppyVoice) {
+            puppyVoice = pool.find(v => {
+              const n = (v.name || '').toLowerCase();
+              return !n.includes('david') && !n.includes('mark') && !n.includes('george') &&
+                     !n.includes('richard') && !n.includes('guy') && !n.includes('male') &&
+                     !n.includes('stefan');
+            });
+          }
+
+          // Priority 3: Fallback
+          if (!puppyVoice) {
+            puppyVoice = pool[0];
+          }
+
+          if (puppyVoice) {
+            utter.voice = puppyVoice;
+            const n = (puppyVoice.name || '').toLowerCase();
+            // If forced to use Microsoft David or a male baritone, push pitch up even higher
+            // so it shifts into a playful cartoon pup instead of an adult robot man!
+            if (n.includes('david') || n.includes('mark') || n.includes('george') || n.includes('male')) {
+              utter.pitch = 1.68;
+              utter.rate = 1.18;
+            } else {
+              utter.pitch = 1.58;
+              utter.rate = 1.15;
+            }
+          }
         }
 
         utter.onstart = () => {
@@ -1488,7 +1576,6 @@ HTML_CONTENT = """<!DOCTYPE html>
           console.warn("[TTS Error]", evt.error || evt);
           isSpeaking = false;
           window._activeUtterances = window._activeUtterances.filter(u => u !== utter);
-          // Keep caption visible briefly if speech was canceled or unavailable
           setTimeout(() => updateSpeechUI(false), 2000);
         };
 
@@ -1546,8 +1633,8 @@ HTML_CONTENT = """<!DOCTYPE html>
 
     function testSoundVoice() {
       soundClick();
-      soundSuccess();
-      speakText("Woof woof! Audio is working loud and clear! I will read all clues to you.");
+      playPuppyBark();
+      speakText("Yip yip! Ruff! I am Grizz Jr, your cyber detective puppy! My audio is working loud and clear!");
     }
 
     function toggleSpeakClue() {
@@ -1568,7 +1655,7 @@ HTML_CONTENT = """<!DOCTYPE html>
         if (autoReadK2) {
           toggleBtn.classList.add('active');
           label.innerText = '📢 Auto-Read: ON';
-          speakText("Auto-read turned on! I will read each clue aloud for you.");
+          speakText("Yip! Auto-read turned on! I will read each clue aloud for you!");
         } else {
           toggleBtn.classList.remove('active');
           label.innerText = '🔇 Auto-Read: OFF';
@@ -1581,14 +1668,14 @@ HTML_CONTENT = """<!DOCTYPE html>
       const scenario = phishScenarios[phishRound];
       if (!scenario) return;
 
-      let msg = "";
+      let msg = "Ruff! ";
       if (scenario.type === 'trap') {
-        msg += "Warning! Unknown incoming message on GrizzDog's collar! ";
+        msg += "Uh oh! An unknown incoming alert popped up on my collar! ";
       } else {
-        msg += "Official campus message on GrizzDog's collar! ";
+        msg += "Yip! An official campus alert arrived on my collar! ";
       }
       msg += scenario.text + " ";
-      msg += "Is this an official Butler message, or a sneaky phishing trap? ";
+      msg += "Help me sniff out the answer! Is this a real Butler message, or a sneaky phishing trap? ";
       msg += "Tap the green button for Real Message, or the red button for Phishing Trap!";
 
       speakText(msg);
@@ -1597,15 +1684,15 @@ HTML_CONTENT = """<!DOCTYPE html>
     function speakChoiceHelp(type) {
       soundClick();
       if (type === 'safe') {
-        speakText("Green button: Real Message! Official Butler Campus Alert.");
+        speakText("Yip! Green button: Real Message! Official and safe Butler campus alert.");
       } else {
-        speakText("Red button: Phishing Trap! Sneaky stranger trick trying to steal passwords or download bad files.");
+        speakText("Ruff ruff! Red button: Phishing Trap! A sneaky stranger trick trying to steal passwords or puppy treats!");
       }
     }
 
     function speakMissionIntro() {
       soundClick();
-      speakText("Junior Paws: Treat Phishing Detective! A hacker is sending messages to GrizzDog's collar! Help the robot pup spot the fake phishing traps and keep Butler campus safe!");
+      speakText("Yip yip! Welcome to Junior Paws! I am Grizz Jr, your cyber pup detective! A sneaky trickster is sending strange messages to my collar! Help me sniff out the fake phishing traps and keep Butler campus safe!");
     }
 
     let lastFeedbackSpoken = "";
@@ -2048,7 +2135,7 @@ HTML_CONTENT = """<!DOCTYPE html>
 
       if (currentTier === 'k2' && autoReadK2) {
         setTimeout(() => {
-          speakText("Hooray! GrizzDog protected! You disarmed all three phishing traps and earned the Junior Cyber Phish Detective badge!");
+          speakText("Yip yip hooray! Bark bark! We protected Butler campus! You disarmed all three phishing traps and earned the Junior Cyber Detective badge! High paw!");
         }, 500);
       }
     }
