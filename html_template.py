@@ -1717,13 +1717,13 @@ HTML_CONTENT = """<!DOCTYPE html>
         descWin: 'You spotted the trick! Strangers offering free treats for passwords are a sneaky phishing trap!'
       },
       {
-        id: 'butler_recharge',
-        icon: '🏫',
-        tag: '✅ OFFICIAL CAMPUS TRANSMISSION',
-        text: '"Butler Cyber Lab: Time for GrizzDog afternoon patrol and battery recharge in Hallway 4."',
+        id: 'school_pizza_recess',
+        icon: '🍕',
+        tag: '✅ OFFICIAL SCHOOL ANNOUNCEMENT',
+        text: '"Butler School Office: Today is Friday Pizza Day! Grizz Jr will join everyone on the playground for afternoon recess at 1:00 PM."',
         type: 'safe',
-        titleWin: 'Aroo-roo! Spot On! ✨',
-        descWin: 'That message came from our verified Butler teacher team! Safe and authorized!'
+        titleWin: 'Aroo-roo! Spot On Detective! ✨',
+        descWin: 'That is a real message from our school teachers! It never asks for secret passwords or strange clicks!'
       },
       {
         id: 'prize_download',
