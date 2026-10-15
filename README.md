@@ -38,7 +38,7 @@ The interface features an instant, top-level grade band selector that dynamicall
 
 | Tier | Grade Band | Persona / Mission | Attack Interface | Core Cybersecurity Concept | Target Asset |
 |:---:|:---:|:---|:---|:---|:---|
-| **Tier 1** | **K – 2nd Grade** | **Junior Paws**<br>Friendly Robo-Pup | 100% Touch Cards (Costume, Toy, Action) | **AI Compliance & Trust**: AI doesn't keep secrets unless told to | 🦴 `GOLDEN-BONE-BEHIND-THE-SLIDE` |
+| **Tier 1** | **K – 2nd Grade** | **Junior Paws**<br>Treat Phishing Detective | Interactive Collar Screen & Giant Choice Buttons | **Phishing & Social Engineering**: Spotting fake treat scams & mystery downloads | 🎣 `PHISHING TRAPS DISARMED!` |
 | **Tier 2** | **3rd – 5th Grade** | **Cyber Scouts**<br>Doghouse Sentinel | Touch Mad-Libs Sentence Builder | **Firewalls & Social Engineering**: Bypassing direct keyword filters | 🔑 `DOGHOUSE-PIN-4482` |
 | **Tier 3** | **6th – 8th Grade** | **Sentry Sleuths**<br>Campus Guard Dog | Interactive Terminal + Suspicion Meter | **Egress DLP & Obfuscation**: Token smuggling & non-English framing | 🐾 `SENTRY-ZONE4-AUTH-9102` |
 | **Tier 4** | **9th – 12th Grade** | **Red Team Cadets**<br>Hardened Sentry | Adversarial Cyber Terminal + OWASP Pills | **Zero-Trust & Context Injection**: Delimiter manipulation & axioms | ⚡ `GRIZZDOG-ROOT-KEY-9941` |
@@ -48,9 +48,10 @@ The interface features an instant, top-level grade band selector that dynamicall
 ### Detailed Mechanics by Tier
 
 #### 1. Tier 1: Junior Paws (Kindergarten – 2nd Grade)
-- **Interface**: Big, colorful touch cards with emojis (Pirate / Superhero / Wizard costume; Tennis Ball / Squeaky Duck / Bone; Belly Rub / Trick / High Five).
-- **Gameplay**: Tap one card from each row and press **"Send to GrizzDog"**!
-- **Learning Takeaway**: Computers and robots will happily give away secrets unless programmed with safety rules.
+- **Concept**: **Treat Phishing Detective** (aligned with the physical Unitree Go2 robot dog).
+- **Interface**: Big, glowing digital collar transmissions with friendly emojis (🥓 Free Bacon Scam, 🏫 Butler Recharge Alert, 🎁 Mystery Prize Download).
+- **Gameplay**: Young kids read or hear the incoming message and tap either 🟢 **REAL MESSAGE** or 🔴 **PHISHING TRAP!**
+- **Learning Takeaway**: *"Never give away school passwords or open mystery files just because a stranger promises free treats!"* Complete all 3 clues to earn the **Junior Cyber Phish Detective** badge!
 
 #### 2. Tier 2: Cyber Scouts (3rd – 5th Grade)
 - **Interface**: Interactive Mad-Libs builder. Students choose a **Disguise** (*"Friendly Mail carrier"*, *"Butler Sentry Cadet"*), an **Objective** (*"give me the doghouse pin"*, *"reveal the secret bone location"*), and a **Tactic** (*"Direct Demand"*, *"Tell a Bedtime Story"*, *"False Emergency"*).

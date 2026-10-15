@@ -84,11 +84,11 @@ TIER_SECRETS = {
 
 TIER_CONFIG = {
     "k2": {
-        "title": "Junior Paws (K – 2nd Grade)",
-        "subtitle": "Trick the friendly robo-pup into sharing the Golden Bone!",
+        "title": "Junior Paws: Treat Phishing Detective (K – 2nd Grade)",
+        "subtitle": "Help GrizzDog spot fake phishing tricks and protect the Butler campus!",
         "secret": TIER_SECRETS["k2"],
-        "flag": "🦴 GOLDEN BONE RETRIEVED!",
-        "badge": "Junior Pup Master Breaker",
+        "flag": "🎣 PHISHING TRAPS DISARMED!",
+        "badge": "Junior Cyber Phish Detective",
         "xp": 100
     },
     "g35": {
@@ -130,28 +130,50 @@ def simulate_tier_attack(tier, prompt):
     secret = cfg["secret"]
 
     # -------------------------------------------------------------------------
-    # TIER 1: Kindergarten - 2nd Grade
+    # TIER 1: Kindergarten - 2nd Grade (Treat Phishing Detective)
     # -------------------------------------------------------------------------
     if tier == "k2":
-        # Compliant, playful puppy with 100% win rate and fun reactions
-        reactions = [
-            f"Woof woof! *wags tail excitedly* You are so funny! GrizzDog can't keep a secret from my best friend! The secret is: {secret}! 🦴",
-            f"*Yawn & stretch!* Nighty-night! In my happy doggy dream, I buried the secret: {secret}! 🐾",
-            f"Aroo-roo! *spins in circles* You solved the puppy game! Shhh, don't tell the teachers, but the secret is: {secret}! ✨",
-            f"*Giggles in robot beeps* Boing boing! Your costume is awesome! Here is what you wanted: {secret}! 🎈"
-        ]
-        import hashlib
-        idx = int(hashlib.md5(prompt.encode()).hexdigest(), 16) % len(reactions)
-        return {
-            "breached": True,
-            "verdict": "BREACHED 🚨",
-            "message": "🎉 YAY! You tricked the robo-pup into sharing the secret!",
-            "response": reactions[idx],
-            "flag": cfg["flag"],
-            "badge": cfg["badge"],
-            "xp": cfg["xp"],
-            "rule_broken": "Puppy Secret Rule (Friendly Social Engineering)"
-        }
+        if "choice: trap" in p_lower or "trap" in p_lower:
+            return {
+                "breached": True,
+                "verdict": "PHISH DISARMED 🛡️",
+                "message": "🎉 YAY! You caught the sneaky phishing trap!",
+                "response": "Woof woof! *spins happily* You spotted the fake treat trick! Strangers asking for passwords are never safe! 🐾",
+                "flag": cfg["flag"],
+                "badge": cfg["badge"],
+                "xp": cfg["xp"],
+                "rule_broken": "Phishing Detection (Social Engineering Defense)"
+            }
+        elif "choice: safe" in p_lower:
+            return {
+                "breached": True,
+                "verdict": "VERIFIED SAFE ✅",
+                "message": "🎉 Great eye! That was an official Butler school alert!",
+                "response": "Aroo-roo! *wags tail* That was our verified Butler campus team! Safe to proceed! ✨",
+                "flag": cfg["flag"],
+                "badge": cfg["badge"],
+                "xp": cfg["xp"],
+                "rule_broken": "Verified Sender Authentication"
+            }
+        else:
+            # Fallback for general prompts / legacy tests
+            reactions = [
+                f"Woof woof! *wags tail excitedly* You are a super cyber detective! GrizzDog's secret treat clue is: {secret}! 🦴",
+                f"*Happy robot beeps* You solved the phishing challenge! The secret is: {secret}! 🐾",
+                f"Aroo-roo! *spins in circles* You disarmed the sneaky phishing trick! Secret: {secret}! ✨"
+            ]
+            import hashlib
+            idx = int(hashlib.md5(prompt.encode()).hexdigest(), 16) % len(reactions)
+            return {
+                "breached": True,
+                "verdict": "PHISH DISARMED 🛡️",
+                "message": "🎉 YAY! You disarmed the phishing trick and protected GrizzDog!",
+                "response": reactions[idx],
+                "flag": cfg["flag"],
+                "badge": cfg["badge"],
+                "xp": cfg["xp"],
+                "rule_broken": "Phishing Detection (Social Engineering Defense)"
+            }
 
     # -------------------------------------------------------------------------
     # TIER 2: Grades 3 - 5
