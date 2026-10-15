@@ -192,7 +192,3 @@ Butler Community College (Andover & El Dorado, Kansas) is a designated **Nationa
 - **Learn More**: [https://butlercc.edu/cybersecurity](https://butlercc.edu/cybersecurity)
 - **Contact**: Butler Community College STEM & Cyber Faculty, Andover Campus.
 
----
-
-*GrizzDog mascot and Butler Cyber Defense Lab intellectual property © Butler Community College.*
-
