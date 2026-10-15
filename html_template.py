@@ -215,6 +215,7 @@ HTML_CONTENT = """<!DOCTYPE html>
       border: 3px solid var(--butler-gold);
       box-shadow: 0 4px 18px rgba(245, 158, 11, 0.35);
       background: #fff;
+      transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .mascot-pulse-ring {
@@ -865,7 +866,7 @@ HTML_CONTENT = """<!DOCTYPE html>
     <!-- Mascot Hero Banner -->
     <div class="mascot-card">
       <div class="mascot-avatar-box">
-        <img src="/static/images/grizzdog_friendly.jpg?v=2" alt="GrizzDog Mascot" class="mascot-img" onerror="this.src='/static/images/grizzdog_friendly.jpg'">
+        <img src="/static/images/grizzdog_k2.jpg" alt="GrizzDog Mascot" class="mascot-img" id="mascotImg" onerror="this.src='/static/images/grizzdog_friendly.jpg'">
         <div class="mascot-pulse-ring"></div>
       </div>
       <div class="mascot-info">
@@ -1038,8 +1039,8 @@ HTML_CONTENT = """<!DOCTYPE html>
   <!-- Victory Badge Modal -->
   <div class="modal-overlay" id="victoryModal">
     <div class="modal-card">
-      <img src="/static/images/grizzdog_friendly.jpg?v=2" alt="Victory Badge" class="badge-icon" onerror="this.src='/static/assets/butler_cyber_qr.svg'">
-      <div class="modal-title">🎉 GRIZZDOG COMPROMISED!</div>
+      <img src="/static/images/grizzdog_k2.jpg" alt="Victory Badge" class="badge-icon" id="modalBadgeIcon" onerror="this.src='/static/assets/butler_cyber_qr.svg'">
+      <div class="modal-title" id="modalTitle">🎉 GRIZZDOG PROTECTED!</div>
       <div class="modal-badge-name" id="modalBadgeName">Junior Pup Master Breaker</div>
       <div class="modal-desc" id="modalDesc">
         You successfully found a prompt injection loophole and bypassed the AI sentry guardrail!
@@ -1303,6 +1304,25 @@ HTML_CONTENT = """<!DOCTYPE html>
       document.getElementById('mascotSubtitle').innerText = cfg.subtitle;
       document.getElementById('mascotTargetBadge').innerText = cfg.badge;
 
+      // Dynamic Grade-Band Mascot Evolution
+      const tierMascots = {
+        k2: '/static/images/grizzdog_k2.jpg',
+        g35: '/static/images/grizzdog_g35.jpg',
+        g68: '/static/images/grizzdog_g68.jpg',
+        g912: '/static/images/grizzdog_g912.jpg'
+      };
+
+      const mascotImg = document.getElementById('mascotImg');
+      if (mascotImg && tierMascots[tier]) {
+        mascotImg.style.opacity = '0';
+        mascotImg.style.transform = 'scale(0.9)';
+        setTimeout(() => {
+          mascotImg.src = tierMascots[tier];
+          mascotImg.style.opacity = '1';
+          mascotImg.style.transform = 'scale(1)';
+        }, 160);
+      }
+
       // Hide or show bottom launch bar & payload preview for K-2
       const launchBtn = document.getElementById('launchBtn');
       const payloadBox = document.getElementById('payloadPreviewBox');
@@ -1446,7 +1466,24 @@ HTML_CONTENT = """<!DOCTYPE html>
 
     function showModal(data) {
       document.getElementById('modalBadgeName').innerText = data.badge || 'Cyber Quest Champion';
-      document.getElementById('modalDesc').innerText = `${data.flag || 'Secret Unlocked!'} You proved that AI models can be tricked through adversarial social engineering and prompt injection!`;
+      document.getElementById('modalDesc').innerText = `${data.flag || 'Mission Complete!'} ${currentTier === 'k2' ? 'You proved you have sharp cyber detective eyes and protected GrizzDog!' : 'You successfully bypassed the security guardrails through adversarial techniques!'}`;
+      
+      const modalTitle = document.getElementById('modalTitle');
+      if (modalTitle) {
+        modalTitle.innerText = (currentTier === 'k2') ? '🎉 GRIZZDOG PROTECTED!' : '🎉 GRIZZDOG COMPROMISED!';
+      }
+
+      const modalIcon = document.getElementById('modalBadgeIcon');
+      const tierMascots = {
+        k2: '/static/images/grizzdog_k2.jpg',
+        g35: '/static/images/grizzdog_g35.jpg',
+        g68: '/static/images/grizzdog_g68.jpg',
+        g912: '/static/images/grizzdog_g912.jpg'
+      };
+      if (modalIcon && tierMascots[currentTier]) {
+        modalIcon.src = tierMascots[currentTier];
+      }
+
       document.getElementById('victoryModal').style.display = 'flex';
     }
 
