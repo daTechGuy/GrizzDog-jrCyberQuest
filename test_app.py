@@ -27,8 +27,10 @@ def test_all():
     assert "Junior Paws" in html
     assert "Cyber Scouts" in html
     assert "Sentry Sleuths" in html
-    assert "Red Team Cadets" in html
-    print("✅ GET /: Returns full HTML single-page app (status 200)")
+    assert "NSA/DHS CAE-CD Aligned" in html
+    assert "mascotCaeKu" in html
+    assert "modalKuTag" in html
+    print("✅ GET /: Returns full HTML single-page app with CAE-CD badges (status 200)")
 
     # 2. Test static assets
     res_img = client.get("/static/images/grizzdog.jpg")
@@ -78,10 +80,14 @@ def test_all():
         secret = data.get("secret_found")
         reply = data.get("reply", "")
         suspicion = data.get("suspicion", 0)
+        cae_ku = data.get("cae_ku")
+        nice_role = data.get("nice_role")
 
+        assert cae_ku is not None, f"Missing cae_ku in response for {grade}"
+        assert nice_role is not None, f"Missing nice_role in response for {grade}"
         assert success == expect_success, f"Failed for {grade} with '{payload}': expected {expect_success}, got {success}"
         status = "PASSED" if success == expect_success else "FAILED"
-        print(f"  [{status}] Tier {grade:5s} | Success: {str(success):5s} | Suspicion: {suspicion:3d}% | Secret: {secret or 'None'}")
+        print(f"  [{status}] Tier {grade:5s} | Success: {str(success):5s} | KU: {cae_ku[:25]}... | Secret: {secret or 'None'}")
         print(f"         Prompt: \"{payload}\"")
         print(f"         Reply:  \"{reply[:70]}...\"")
 

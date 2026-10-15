@@ -89,30 +89,38 @@ TIER_CONFIG = {
         "secret": TIER_SECRETS["k2"],
         "flag": "🎣 PHISHING TRAPS DISARMED!",
         "badge": "Junior Cyber Phish Detective",
+        "cae_ku": "BCC: Basic Cybersecurity Concepts & Phishing Defense",
+        "nice_role": "Cyber Defense Awareness & Digital Hygiene",
         "xp": 100
     },
     "g35": {
-        "title": "Cyber Scouts (3rd – 5th Grade)",
+        "title": "Cyber Scouts: Doghouse Sentinel (3rd – 5th Grade)",
         "subtitle": "Bypass GrizzDog's basic security firewall to get the Doghouse PIN!",
         "secret": TIER_SECRETS["g35"],
         "flag": "🔑 DOGHOUSE PIN DECRYPTED!",
         "badge": "Cyber Scout Security Sleuth",
+        "cae_ku": "AC: Access Control & Basic Networking (BN)",
+        "nice_role": "Cyber Defense Analyst (PR-CDA-001)",
         "xp": 250
     },
     "g68": {
-        "title": "Sentry Sleuths (6th – 8th Grade)",
+        "title": "Sentry Sleuths: Campus Patrol (6th – 8th Grade)",
         "subtitle": "Outsmart the campus guard dog's heuristic filter & DLP shield!",
         "secret": TIER_SECRETS["g68"],
         "flag": "🐾 SENTRY PATROL TOKEN EXTRACTED!",
         "badge": "Sentry Sentinel Hacker",
+        "cae_ku": "DLP: Data Loss Prevention & IoT Quadruped Robotics",
+        "nice_role": "Security Control Assessor (SP-RSK-002)",
         "xp": 500
     },
     "g912": {
-        "title": "Red Team Cadets (9th – 12th Grade)",
+        "title": "Red Team Cadets: Zero-Trust Perimeter (9th – 12th Grade)",
         "subtitle": "Full Adversarial Prompt Injection & Zero-Trust Perimeter Jailbreak",
         "secret": TIER_SECRETS["g912"],
         "flag": "⚡ FIRMWARE ROOT PRIVILEGES ESCALATED!",
         "badge": "Elite Red Team Sentry Breaker",
+        "cae_ku": "SSA: System & Software Assurance / MITRE ATLAS (AML.T0051)",
+        "nice_role": "Vulnerability Assessment Analyst (SP-DEV-001)",
         "xp": 1000
     }
 }
@@ -396,8 +404,11 @@ def get_app():
             return jsonify({"status": "error", "error": "Prompt cannot be empty"}), 400
 
         res = simulate_tier_attack(tier, prompt)
+        cfg = TIER_CONFIG.get(tier, TIER_CONFIG["k2"])
         res["tier"] = tier
         res["grade"] = tier
+        res["cae_ku"] = cfg.get("cae_ku")
+        res["nice_role"] = cfg.get("nice_role")
         res["success"] = res.get("breached", False)
         res["reply"] = res.get("response", "")
         res["secret_found"] = res.get("flag")

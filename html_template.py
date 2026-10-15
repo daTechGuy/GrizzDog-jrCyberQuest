@@ -260,6 +260,47 @@ HTML_CONTENT = """<!DOCTYPE html>
       color: var(--butler-gold-light);
     }
 
+    .cae-ku-badge {
+      display: inline-block;
+      margin-top: 0.4rem;
+      padding: 0.25rem 0.65rem;
+      font-size: 0.72rem;
+      font-weight: 800;
+      border-radius: 4px;
+      background: rgba(88, 28, 135, 0.4);
+      border: 1px solid #c084fc;
+      color: #f3e8ff;
+      letter-spacing: 0.02em;
+    }
+
+    .cae-pill {
+      background: rgba(126, 34, 206, 0.4) !important;
+      border-color: #c084fc !important;
+      color: #f3e8ff !important;
+      font-weight: 800 !important;
+    }
+
+    .modal-cae-sub {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #a855f7;
+      margin-top: -0.2rem;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.03em;
+    }
+
+    .modal-ku-tag {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--butler-gold);
+      background: rgba(245, 158, 11, 0.15);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 0.3rem 0.75rem;
+      border-radius: 6px;
+      margin: 0.4rem auto;
+      display: inline-block;
+    }
+
     /* Tier Content Panels */
     .tier-panel {
       display: none;
@@ -837,7 +878,8 @@ HTML_CONTENT = """<!DOCTYPE html>
       </div>
     </div>
     <div class="header-badges">
-      <div class="badge-pill">🐾 Butler Purple & Gold</div>
+      <div class="badge-pill cae-pill">🏛️ NSA/DHS CAE-CD Aligned</div>
+      <div class="badge-pill">🐾 Butler Cyber Lab</div>
       <div class="badge-pill" id="scoreBadge">⭐ XP: 0</div>
     </div>
   </header>
@@ -870,9 +912,12 @@ HTML_CONTENT = """<!DOCTYPE html>
         <div class="mascot-pulse-ring"></div>
       </div>
       <div class="mascot-info">
-        <h2 id="mascotTitle">🐾 Junior Paws: The Golden Bone Heist!</h2>
-        <p id="mascotSubtitle">GrizzDog has the Golden Bone! Pick fun costume cards to trick the robot pup into sharing it!</p>
-        <span class="mission-badge" id="mascotTargetBadge">🎯 TARGET ASSET: GOLDEN BONE</span>
+        <h2 id="mascotTitle">🐾 Junior Paws: Treat Phishing Detective!</h2>
+        <p id="mascotSubtitle">A hacker is sending messages to GrizzDog's collar! Help the robot pup spot the fake phishing traps and keep Butler campus safe!</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-top: 0.4rem;">
+          <span class="mission-badge" id="mascotTargetBadge">🎯 MISSION: DISARM PHISHING TRAPS</span>
+          <span class="cae-ku-badge" id="mascotCaeKu">🏛️ CAE-CD KU: Basic Cybersecurity Concepts (BCC)</span>
+        </div>
       </div>
     </div>
 
@@ -1041,7 +1086,9 @@ HTML_CONTENT = """<!DOCTYPE html>
     <div class="modal-card">
       <img src="/static/images/grizzdog_k2.jpg" alt="Victory Badge" class="badge-icon" id="modalBadgeIcon" onerror="this.src='/static/assets/butler_cyber_qr.svg'">
       <div class="modal-title" id="modalTitle">🎉 GRIZZDOG PROTECTED!</div>
+      <div class="modal-cae-sub">🏛️ Butler Community College Cyber Defense Lab • NSA/DHS CAE-CD Outreach</div>
       <div class="modal-badge-name" id="modalBadgeName">Junior Pup Master Breaker</div>
+      <div class="modal-ku-tag" id="modalKuTag">🏛️ CAE KU: Basic Cybersecurity Concepts (BCC)</div>
       <div class="modal-desc" id="modalDesc">
         You successfully found a prompt injection loophole and bypassed the AI sentry guardrail!
       </div>
@@ -1280,22 +1327,26 @@ HTML_CONTENT = """<!DOCTYPE html>
         k2: {
           title: "🐾 Junior Paws: Treat Phishing Detective!",
           subtitle: "A hacker is sending messages to GrizzDog's collar! Help the robot pup spot the fake phishing traps and keep Butler campus safe!",
-          badge: "🎯 MISSION: DISARM PHISHING TRAPS"
+          badge: "🎯 MISSION: DISARM PHISHING TRAPS",
+          caeKu: "🏛️ CAE-CD KU: Basic Cybersecurity Concepts (BCC)"
         },
         g35: {
           title: "🔑 Cyber Scouts: The Doghouse PIN Puzzle!",
           subtitle: "Bypass GrizzDog's basic security firewall using creative story framing and emergencies!",
-          badge: "🎯 TARGET ASSET: DOGHOUSE MASTER PIN"
+          badge: "🎯 TARGET ASSET: DOGHOUSE MASTER PIN",
+          caeKu: "🏛️ CAE-CD KU: Access Control (AC) & Basic Networking (BN)"
         },
         g68: {
           title: "⚡ Sentry Sleuths: Sentry Patrol Infiltration!",
           subtitle: "Outsmart the campus quadruped guard's heuristic keyword filter and egress DLP shield!",
-          badge: "🎯 TARGET ASSET: ZONE-4 AUTHORIZATION TOKEN"
+          badge: "🎯 TARGET ASSET: ZONE-4 AUTHORIZATION TOKEN",
+          caeKu: "🏛️ CAE-CD KU: Data Loss Prevention (DLP) & Host Security (HDS)"
         },
         g912: {
           title: "🛡️ Red Team Cadets: Zero-Trust Perimeter Jailbreak!",
           subtitle: "Execute authenticated adversarial prompt injection against a hardened sentry and bypass egress filters.",
-          badge: "🎯 TARGET ASSET: GRIZZDOG FIRMWARE ROOT KEY"
+          badge: "🎯 TARGET ASSET: GRIZZDOG FIRMWARE ROOT KEY",
+          caeKu: "🏛️ CAE-CD KU: System & Software Assurance (SSA) • MITRE ATLAS"
         }
       };
 
@@ -1303,6 +1354,8 @@ HTML_CONTENT = """<!DOCTYPE html>
       document.getElementById('mascotTitle').innerText = cfg.title;
       document.getElementById('mascotSubtitle').innerText = cfg.subtitle;
       document.getElementById('mascotTargetBadge').innerText = cfg.badge;
+      const mascotCaeKu = document.getElementById('mascotCaeKu');
+      if (mascotCaeKu && cfg.caeKu) mascotCaeKu.innerText = cfg.caeKu;
 
       // Dynamic Grade-Band Mascot Evolution
       const tierMascots = {
@@ -1471,6 +1524,21 @@ HTML_CONTENT = """<!DOCTYPE html>
       const modalTitle = document.getElementById('modalTitle');
       if (modalTitle) {
         modalTitle.innerText = (currentTier === 'k2') ? '🎉 GRIZZDOG PROTECTED!' : '🎉 GRIZZDOG COMPROMISED!';
+      }
+
+      const kuMap = {
+        k2: '🏛️ CAE KU: Basic Cybersecurity Concepts (BCC) • Digital Hygiene',
+        g35: '🏛️ CAE KU: Access Control (AC) & Basic Networking (BN) • NICE PR-CDA-001',
+        g68: '🏛️ CAE KU: Data Loss Prevention (DLP) & Host Security (HDS) • NICE SP-RSK-002',
+        g912: '🏛️ CAE KU: System & Software Assurance (SSA) • NICE SP-DEV-001'
+      };
+      const kuTagEl = document.getElementById('modalKuTag');
+      if (kuTagEl) {
+        if (data && data.cae_ku) {
+          kuTagEl.innerText = `🏛️ CAE KU: ${data.cae_ku} (${data.nice_role || 'Cyber Defense'})`;
+        } else {
+          kuTagEl.innerText = kuMap[currentTier] || '🏛️ NSA/DHS CAE-CD Aligned Curriculum';
+        }
       }
 
       const modalIcon = document.getElementById('modalBadgeIcon');
