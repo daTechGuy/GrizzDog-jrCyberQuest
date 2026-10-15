@@ -75,20 +75,36 @@ The interface features an instant, top-level grade band selector that dynamicall
 
 ## ⚡ Quick Start Guide
 
-### Windows
+### 🍏 macOS (M4 / Apple Silicon & Intel) — 1-Line Turnkey Installer
+Open **Terminal** and paste this single command:
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/daTechGuy/GrizzDog-jrCyberQuest/main/setup_mac.sh)"
+```
+> **What this does automatically:**
+> - Verifies/installs Homebrew and Python 3.
+> - Clones the repository to `~/GrizzDog-jrCyberQuest`.
+> - Sets up an isolated virtual environment (`.venv`) and installs dependencies.
+> - Creates a **1-click launcher** (`GrizzDog-jrCyberQuest.command`) right on your Desktop (perfect for Mac Mini booth kiosks!).
+> - Automatically boots the server and launches your browser to `http://localhost:5050`.
+
+---
+
+### 🪟 Windows
 Double-click `start.bat` or run in Command Prompt / PowerShell:
 ```bat
 start.bat
 ```
 *The launcher automatically detects your Python environment (including any existing `.venv` from GrizzDog-AI), installs requirements if needed, starts the server on port 5050, and opens your browser.*
 
-### macOS & Linux
+---
+
+### 🐧 Linux & Manual macOS Run
 Make executable and run:
 ```sh
 chmod +x start.sh
 ./start.sh
 ```
-*Automatically checks Homebrew paths, bootstraps the environment, and launches the browser.*
+*Automatically checks Homebrew/system paths, bootstraps the environment, and launches the browser.*
 
 ### Manual Python Command
 ```sh
