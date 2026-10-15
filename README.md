@@ -1,5 +1,6 @@
 # 🐾 GrizzDog-jrCyberQuest: K-12 AI Red Team Lab & Cyber Defender
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 [![CAE-CD Outreach Aligned](https://img.shields.io/badge/NSA%2FDHS-CAE--CD%20Outreach%20Aligned-6b21a8?style=for-the-badge&logo=shield)](https://www.butlercc.edu)
 [![NICE Framework](https://img.shields.io/badge/NIST-NICE%20Work%20Roles-d97706?style=for-the-badge)](https://www.nist.gov/itl/applied-cybersecurity/nice)
 [![100% Offline](https://img.shields.io/badge/100%25-Offline%20Capable-059669?style=for-the-badge)](#)
@@ -192,3 +193,12 @@ Butler Community College (Andover & El Dorado, Kansas) is a designated **Nationa
 - **Learn More**: [https://butlercc.edu/cybersecurity](https://butlercc.edu/cybersecurity)
 - **Contact**: Butler Community College STEM & Cyber Faculty, Andover Campus.
 
+---
+
+## 📜 License: Free & Open Source
+
+GrizzDog-jrCyberQuest is free and open source under the [MIT License](LICENSE).
+
+You're welcome to use it, copy it, change it, and share it: in your classroom, at an outreach booth, in a camp or club, or as the starting point for your own game. No permission or fee needed; just keep the license notice with your copy.
+
+Ideas, fixes, and new messages or missions are welcome as issues or pull requests.
