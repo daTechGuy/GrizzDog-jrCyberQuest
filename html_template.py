@@ -1479,28 +1479,42 @@ HTML_CONTENT = """<!DOCTYPE html>
       }
     }
 
-    // Real dog bark (static/audio/bark.mp3, CC BY-SA 3.0, see static/audio/CREDITS.md).
-    // Falls back to the synthesized yip if the file can't load or play.
-    let barkAudio = null;
-    try {
-      barkAudio = new Audio('/static/audio/bark.mp3');
-      barkAudio.preload = 'auto';
-      barkAudio.volume = 0.7;
-    } catch (e) {}
+    // Recorded sound effects (static/audio/, credits in static/audio/CREDITS.md).
+    // Each one falls back to a synthesized sound (or silence) if the file can't load or play.
+    function loadSfx(src, volume) {
+      try {
+        const a = new Audio(src);
+        a.preload = 'auto';
+        a.volume = volume;
+        return a;
+      } catch (e) {
+        return null;
+      }
+    }
 
-    function playPuppyBark() {
-      if (!barkAudio || barkAudio.error) {
-        playSynthBark();
+    function playSfx(audio, fallback) {
+      if (!audio || audio.error) {
+        if (fallback) fallback();
         return;
       }
       try {
-        barkAudio.currentTime = 0;
-        const p = barkAudio.play();
-        if (p && p.catch) p.catch(() => playSynthBark());
+        audio.currentTime = 0;
+        const p = audio.play();
+        if (p && p.catch) p.catch(() => { if (fallback) fallback(); });
       } catch (e) {
-        playSynthBark();
+        if (fallback) fallback();
       }
     }
+
+    const barkAudio = loadSfx('/static/audio/bark.mp3', 0.7);
+    const whineAudio = loadSfx('/static/audio/whine.mp3', 0.6);
+    const woofAudio = loadSfx('/static/audio/woof.mp3', 0.7);
+    const cheerAudio = loadSfx('/static/audio/cheer.mp3', 0.55);
+
+    function playPuppyBark() { playSfx(barkAudio, playSynthBark); }
+    function playPuppyWhine() { playSfx(whineAudio, null); }
+    function playGuardWoof() { playSfx(woofAudio, soundBlocked); }
+    function playCheer() { playSfx(cheerAudio, null); }
 
     // Backup puppy yip synthesized with Web Audio
     function playSynthBark() {
@@ -2012,7 +2026,8 @@ HTML_CONTENT = """<!DOCTYPE html>
         setBubble('Hmm, let\\'s look again! 🔍', scenario.oops, 'oops');
         nextBtn.innerText = 'Try again 🔄';
         nextBtn.dataset.retry = '1';
-        say(`Hmm, let's look again. ${scenario.oops}`);
+        playPuppyWhine();
+        setTimeout(() => say(`Hmm, let's look again. ${scenario.oops}`), 650);
       }
     }
 
@@ -2290,7 +2305,7 @@ HTML_CONTENT = """<!DOCTYPE html>
         return;
       }
 
-      soundBlocked();
+      playGuardWoof();
       g35Misses++;
       let reply, why;
       if (tricks.length) {
@@ -2615,10 +2630,15 @@ HTML_CONTENT = """<!DOCTYPE html>
 
       document.getElementById('victoryModal').style.display = 'flex';
 
+      // Clapping & hurray for every grade; K-5 also get a happy bark.
+      playCheer();
+      if (currentTier === 'k2' || currentTier === 'g35') setTimeout(playPuppyBark, 350);
+
       if (currentTier === 'k2' && autoReadK2) {
+        // Wait for the cheer to fade so Grizz Jr isn't talking over it.
         setTimeout(() => {
           speakText("You did it! You spotted every trick, and now you are a Junior Cyber Detective! Remember: keep your passwords secret, and if something feels tricky, ask a grown-up. High five!");
-        }, 500);
+        }, 2100);
       }
     }
 
