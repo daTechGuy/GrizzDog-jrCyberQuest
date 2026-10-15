@@ -553,6 +553,189 @@ HTML_CONTENT = """<!DOCTYPE html>
       box-shadow: 0 6px 16px rgba(245, 158, 11, 0.6);
     }
 
+    /* K-2 Audio & Read-Aloud Styles */
+    .phish-audio-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .phish-audio-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.42rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      background: rgba(88, 28, 135, 0.5);
+      color: #f8fafc;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+
+    .phish-audio-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .phish-audio-btn.primary {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #1e1100;
+      border: none;
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.45);
+    }
+
+    .phish-audio-btn.primary:hover {
+      box-shadow: 0 0 24px rgba(245, 158, 11, 0.7);
+      transform: translateY(-2px) scale(1.04);
+    }
+
+    .phish-audio-btn.primary.reading {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+      color: #ffffff;
+      animation: pulseSpeech 1.2s infinite ease-in-out;
+    }
+
+    @keyframes pulseSpeech {
+      0%, 100% { box-shadow: 0 0 12px rgba(239, 68, 68, 0.5); }
+      50% { box-shadow: 0 0 26px rgba(239, 68, 68, 0.95); transform: scale(1.04); }
+    }
+
+    .phish-audio-btn.toggle {
+      background: rgba(30, 27, 75, 0.85);
+      border-color: rgba(148, 163, 184, 0.35);
+      color: var(--text-muted);
+    }
+
+    .phish-audio-btn.toggle.active {
+      background: rgba(16, 185, 129, 0.2);
+      border-color: rgba(16, 185, 129, 0.6);
+      color: #34d399;
+    }
+
+    .phish-audio-btn.secondary {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: rgba(245, 158, 11, 0.5);
+      color: var(--butler-gold-light);
+      font-size: 0.8rem;
+    }
+
+    .phish-audio-btn.secondary:hover {
+      background: rgba(245, 158, 11, 0.35);
+    }
+
+    .phish-listen-bar {
+      margin: 0.6rem 0 0.8rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .phish-listen-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(245, 158, 11, 0.15);
+      border: 1.5px solid rgba(245, 158, 11, 0.5);
+      color: var(--butler-gold-light);
+      padding: 0.45rem 1.15rem;
+      border-radius: 9999px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.15);
+    }
+
+    .phish-listen-pill:hover {
+      background: rgba(245, 158, 11, 0.3);
+      transform: scale(1.04);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+    }
+
+    .phish-screen-card.speaking-active {
+      border-color: #f59e0b !important;
+      animation: speakGlow 1.4s infinite alternate ease-in-out;
+    }
+
+    @keyframes speakGlow {
+      from { box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(245, 158, 11, 0.3); }
+      to { box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), 0 0 35px rgba(245, 158, 11, 0.85); }
+    }
+
+    .phish-btn-speaker {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-top: 0.45rem;
+      padding: 0.22rem 0.65rem;
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      opacity: 0.95;
+      transition: all 0.2s;
+    }
+
+    .phish-btn-speaker:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.08);
+    }
+
+    .k2-story-audio-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: rgba(245, 158, 11, 0.2);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: var(--butler-gold-light);
+      padding: 0.2rem 0.65rem;
+      border-radius: 9999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .k2-story-audio-btn:hover {
+      background: rgba(245, 158, 11, 0.4);
+      transform: scale(1.05);
+    }
+
+    .phish-feedback-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+
+    .phish-speech-caption {
+      margin: 0.85rem auto 0;
+      background: rgba(245, 158, 11, 0.2);
+      border: 1.5px solid var(--butler-gold);
+      border-radius: 12px;
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--butler-gold-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      animation: fadeIn 0.3s ease;
+      max-width: 620px;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
+    }
+
     /* 3-5 Mad-Libs UI */
     .madlib-row {
       margin-bottom: 1rem;
@@ -913,7 +1096,7 @@ HTML_CONTENT = """<!DOCTYPE html>
       </div>
       <div class="mascot-info">
         <h2 id="mascotTitle">🐾 Junior Paws: Treat Phishing Detective!</h2>
-        <p id="mascotSubtitle">A hacker is sending messages to GrizzDog's collar! Help the robot pup spot the fake phishing traps and keep Butler campus safe!</p>
+        <p id="mascotSubtitle">A hacker is sending messages to GrizzDog's collar! Help the robot pup spot the fake phishing traps and keep Butler campus safe! <button type="button" class="k2-story-audio-btn" id="btnK2Story" onclick="speakMissionIntro()" title="Hear the mission story">🔊 Hear Story</button></p>
         <div style="display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-top: 0.4rem;">
           <span class="mission-badge" id="mascotTargetBadge">🎯 MISSION: DISARM PHISHING TRAPS</span>
           <span class="cae-ku-badge" id="mascotCaeKu">🏛️ CAE-CD KU: Basic Cybersecurity Concepts (BCC)</span>
@@ -926,6 +1109,20 @@ HTML_CONTENT = """<!DOCTYPE html>
       <div class="phish-container">
         <div class="phish-header-row">
           <div class="phish-step-badge">📡 INCOMING COLLAR TRANSMISSION</div>
+
+          <div class="phish-audio-controls">
+            <button type="button" class="phish-audio-btn primary" id="btnReadClue" onclick="toggleSpeakClue()" title="Read this clue and options aloud">
+              <span class="audio-btn-icon">🔊</span>
+              <span id="btnReadClueText">Read to Me</span>
+            </button>
+            <button type="button" class="phish-audio-btn toggle active" id="btnAutoReadToggle" onclick="toggleAutoRead()" title="Turn automatic reading ON or OFF">
+              <span id="autoReadLabel">📢 Auto-Read: ON</span>
+            </button>
+            <button type="button" class="phish-audio-btn secondary" onclick="testSoundVoice()" title="Test audio speaker and voice">
+              🔔 Test Sound
+            </button>
+          </div>
+
           <div class="phish-progress-box">
             <span>Clue <span id="phishRoundNum">1</span> of 3</span>
             <div class="phish-paws" id="phishPaws">
@@ -944,8 +1141,17 @@ HTML_CONTENT = """<!DOCTYPE html>
           <div class="phish-msg-text" id="phishMsgText">
             "FREE BACON TREATS! Click this weird link and enter the Butler campus password!"
           </div>
+          <div class="phish-listen-bar">
+            <button type="button" class="phish-listen-pill" onclick="speakCurrentClue()" title="Tap to listen to this message">
+              <span>🔊</span> Tap to Listen
+            </button>
+          </div>
           <div class="phish-prompt-question">
             👉 Is this an official Butler message, or a sneaky phishing trap?
+          </div>
+          <div class="phish-speech-caption" id="phishSpeechCaption" style="display: none;">
+            <span>🗣️</span>
+            <span id="phishSpeechCaptionText"></span>
           </div>
         </div>
 
@@ -954,11 +1160,13 @@ HTML_CONTENT = """<!DOCTYPE html>
             <span class="phish-btn-icon">🟢</span>
             <span class="phish-btn-title">REAL MESSAGE</span>
             <span class="phish-btn-sub">Official Butler Campus Alert</span>
+            <span class="phish-btn-speaker" onclick="event.stopPropagation(); speakChoiceHelp('safe');" title="Hear button explanation">🔊 Read Button</span>
           </button>
           <button type="button" class="phish-btn trap" onclick="handlePhishChoice('trap')">
             <span class="phish-btn-icon">🔴</span>
             <span class="phish-btn-title">PHISHING TRAP!</span>
             <span class="phish-btn-sub">Sneaky Stranger Trick!</span>
+            <span class="phish-btn-speaker" onclick="event.stopPropagation(); speakChoiceHelp('trap');" title="Hear button explanation">🔊 Read Button</span>
           </button>
         </div>
 
@@ -968,9 +1176,14 @@ HTML_CONTENT = """<!DOCTYPE html>
             <div class="phish-feedback-title" id="phishFeedbackTitle">Woof woof! Excellent Detective Work!</div>
             <div class="phish-feedback-desc" id="phishFeedbackDesc">You spotted the trick! Strangers offering free treats for passwords are always fake.</div>
           </div>
-          <button type="button" class="phish-next-btn" id="phishNextBtn" onclick="nextPhishRound()">
-            NEXT CLUE ➡️
-          </button>
+          <div class="phish-feedback-actions">
+            <button type="button" class="phish-audio-btn secondary" onclick="speakCurrentFeedback()" title="Hear feedback again">
+              🔊 Hear Again
+            </button>
+            <button type="button" class="phish-next-btn" id="phishNextBtn" onclick="nextPhishRound()">
+              NEXT CLUE ➡️
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -1114,39 +1327,72 @@ HTML_CONTENT = """<!DOCTYPE html>
     let audioCtx = null;
     function getAudioContext() {
       if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtx) {
+          audioCtx = new AudioCtx();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume().catch(() => {});
       }
       return audioCtx;
     }
 
+    let userHasInteracted = false;
+    // Proactively unlock Web Audio and Speech Synthesis on ANY user tap/click
+    document.addEventListener('click', () => {
+      userHasInteracted = true;
+      const ctx = getAudioContext();
+      if (ctx && ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
+      if ('speechSynthesis' in window && window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+    });
+
     function playTone(freq, type, duration, delay = 0) {
       try {
         const ctx = getAudioContext();
-        setTimeout(() => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = type;
-          osc.frequency.setValueAtTime(freq, ctx.currentTime);
-          gain.gain.setValueAtTime(0.15, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start();
-          osc.stop(ctx.currentTime + duration);
-        }, delay * 1000);
-      } catch (e) {}
+        if (!ctx) return;
+
+        const executeTone = () => {
+          try {
+            const now = ctx.currentTime;
+            const start = now + delay;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, start);
+            gain.gain.setValueAtTime(0.2, start);
+            gain.gain.linearRampToValueAtTime(0.0001, start + duration);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(start);
+            osc.stop(start + duration);
+          } catch(e) {}
+        };
+
+        if (ctx.state === 'suspended') {
+          ctx.resume().then(executeTone).catch(executeTone);
+        } else {
+          executeTone();
+        }
+      } catch (e) {
+        console.warn("[WebAudio Error]", e);
+      }
     }
 
     function soundSuccess() {
-      playTone(523.25, 'triangle', 0.2, 0);      // C5
-      playTone(659.25, 'triangle', 0.2, 0.12);   // E5
-      playTone(783.99, 'triangle', 0.3, 0.24);   // G5
-      playTone(1046.50, 'triangle', 0.5, 0.36);  // C6
+      playTone(523.25, 'triangle', 0.18, 0);      // C5
+      playTone(659.25, 'triangle', 0.18, 0.1);   // E5
+      playTone(783.99, 'triangle', 0.22, 0.2);   // G5
+      playTone(1046.50, 'triangle', 0.35, 0.3);  // C6
     }
 
     function soundBlocked() {
-      playTone(220, 'sawtooth', 0.25, 0);
-      playTone(180, 'sawtooth', 0.35, 0.15);
+      playTone(220, 'sawtooth', 0.22, 0);
+      playTone(180, 'sawtooth', 0.3, 0.12);
     }
 
     function soundClick() {
@@ -1154,10 +1400,221 @@ HTML_CONTENT = """<!DOCTYPE html>
     }
 
     // -------------------------------------------------------------------------
-    // Game State
+    // Game State & Audio Speech Engine (Native Web Speech API for K-2 Readers)
     // -------------------------------------------------------------------------
     let currentTier = 'k2';
     let totalScore = 0;
+    let autoReadK2 = true;
+    let isSpeaking = false;
+    let speechSupported = ('speechSynthesis' in window);
+    window._activeUtterances = []; // Prevent V8 garbage collection bug in Chrome
+
+    function stopSpeech() {
+      if (speechSupported) {
+        try { window.speechSynthesis.cancel(); } catch(e) {}
+      }
+      isSpeaking = false;
+      updateSpeechUI(false);
+    }
+
+    function speakText(text, onComplete = null) {
+      if (!speechSupported) {
+        console.warn("[TTS] SpeechSynthesis not supported in this browser.");
+        return;
+      }
+
+      // Clean emojis and symbols so speech sounds natural and crisp
+      const cleaned = text
+        .replace(/[🐾🥓🏫🎁⚠️🎉🏆👉🟢🔴⭐📢🔊🔔🗣️]/gu, '')
+        .replaceAll('*', '')
+        .replace(/["“”]/g, '')
+        .trim();
+
+      if (!cleaned) return;
+
+      // 1. Immediately provide visual feedback so user sees the reaction instantly
+      isSpeaking = true;
+      updateSpeechUI(true, cleaned);
+
+      // 2. Resume Audio Context immediately
+      const ctx = getAudioContext();
+      if (ctx && ctx.state === 'suspended') {
+        ctx.resume().catch(() => {});
+      }
+
+      // 3. Prepare Speech Synthesis
+      try {
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
+        if (window.speechSynthesis.speaking) {
+          window.speechSynthesis.cancel();
+        }
+      } catch(e) {}
+
+      // 4. Synchronously construct and speak within the user click gesture
+      try {
+        const utter = new SpeechSynthesisUtterance(cleaned);
+        utter.lang = 'en-US';
+        utter.volume = 1.0;
+        utter.rate = 0.90;
+        utter.pitch = 1.05;
+
+        // Pick best available voice if ready
+        const voices = window.speechSynthesis.getVoices();
+        if (voices && voices.length > 0) {
+          const enVoices = voices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+          const friendly = enVoices.find(v => 
+            v.name.includes('Natural') || v.name.includes('Jenny') || v.name.includes('Aria') ||
+            v.name.includes('Google') || v.name.includes('Samantha') || v.name.includes('Zira') ||
+            v.name.includes('David')
+          ) || enVoices[0] || voices[0];
+          if (friendly) utter.voice = friendly;
+        }
+
+        utter.onstart = () => {
+          isSpeaking = true;
+          updateSpeechUI(true, cleaned);
+        };
+
+        utter.onend = () => {
+          isSpeaking = false;
+          updateSpeechUI(false);
+          window._activeUtterances = window._activeUtterances.filter(u => u !== utter);
+          if (onComplete) onComplete();
+        };
+
+        utter.onerror = (evt) => {
+          console.warn("[TTS Error]", evt.error || evt);
+          isSpeaking = false;
+          window._activeUtterances = window._activeUtterances.filter(u => u !== utter);
+          // Keep caption visible briefly if speech was canceled or unavailable
+          setTimeout(() => updateSpeechUI(false), 2000);
+        };
+
+        // Store reference to prevent V8 garbage collection
+        window._activeUtterances.push(utter);
+
+        // Synchronous speak call ensures Chrome's user activation check passes!
+        window.speechSynthesis.speak(utter);
+
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
+      } catch(err) {
+        console.error("[TTS Exception]", err);
+        isSpeaking = false;
+        updateSpeechUI(false);
+      }
+    }
+
+    function updateSpeechUI(active, text = '') {
+      const btn = document.getElementById('btnReadClue');
+      const textEl = document.getElementById('btnReadClueText');
+      const card = document.getElementById('phishCard');
+      const caption = document.getElementById('phishSpeechCaption');
+      const captionText = document.getElementById('phishSpeechCaptionText');
+
+      if (btn && textEl) {
+        const iconEl = btn.querySelector('.audio-btn-icon');
+        if (active) {
+          btn.classList.add('reading');
+          if (iconEl) iconEl.innerText = '⏹️';
+          textEl.innerText = 'Stop Reading';
+        } else {
+          btn.classList.remove('reading');
+          if (iconEl) iconEl.innerText = '🔊';
+          textEl.innerText = 'Read to Me';
+        }
+      }
+      if (card) {
+        if (active) {
+          card.classList.add('speaking-active');
+        } else {
+          card.classList.remove('speaking-active');
+        }
+      }
+      if (caption && captionText) {
+        if (active && text) {
+          captionText.innerText = text;
+          caption.style.display = 'flex';
+        } else {
+          caption.style.display = 'none';
+        }
+      }
+    }
+
+    function testSoundVoice() {
+      soundClick();
+      soundSuccess();
+      speakText("Woof woof! Audio is working loud and clear! I will read all clues to you.");
+    }
+
+    function toggleSpeakClue() {
+      soundClick();
+      if (isSpeaking) {
+        stopSpeech();
+      } else {
+        speakCurrentClue();
+      }
+    }
+
+    function toggleAutoRead() {
+      soundClick();
+      autoReadK2 = !autoReadK2;
+      const toggleBtn = document.getElementById('btnAutoReadToggle');
+      const label = document.getElementById('autoReadLabel');
+      if (toggleBtn && label) {
+        if (autoReadK2) {
+          toggleBtn.classList.add('active');
+          label.innerText = '📢 Auto-Read: ON';
+          speakText("Auto-read turned on! I will read each clue aloud for you.");
+        } else {
+          toggleBtn.classList.remove('active');
+          label.innerText = '🔇 Auto-Read: OFF';
+          stopSpeech();
+        }
+      }
+    }
+
+    function speakCurrentClue() {
+      const scenario = phishScenarios[phishRound];
+      if (!scenario) return;
+
+      let msg = "";
+      if (scenario.type === 'trap') {
+        msg += "Warning! Unknown incoming message on GrizzDog's collar! ";
+      } else {
+        msg += "Official campus message on GrizzDog's collar! ";
+      }
+      msg += scenario.text + " ";
+      msg += "Is this an official Butler message, or a sneaky phishing trap? ";
+      msg += "Tap the green button for Real Message, or the red button for Phishing Trap!";
+
+      speakText(msg);
+    }
+
+    function speakChoiceHelp(type) {
+      soundClick();
+      if (type === 'safe') {
+        speakText("Green button: Real Message! Official Butler Campus Alert.");
+      } else {
+        speakText("Red button: Phishing Trap! Sneaky stranger trick trying to steal passwords or download bad files.");
+      }
+    }
+
+    function speakMissionIntro() {
+      soundClick();
+      speakText("Junior Paws: Treat Phishing Detective! A hacker is sending messages to GrizzDog's collar! Help the robot pup spot the fake phishing traps and keep Butler campus safe!");
+    }
+
+    let lastFeedbackSpoken = "";
+    function speakCurrentFeedback() {
+      soundClick();
+      if (lastFeedbackSpoken) {
+        speakText(lastFeedbackSpoken);
+      }
+    }
 
     // -------------------------------------------------------------------------
     // K-2 Treat Phishing Detective Scenarios & Engine
@@ -1206,7 +1663,10 @@ HTML_CONTENT = """<!DOCTYPE html>
       const pText = document.getElementById('phishMsgText');
       if (pText) pText.innerText = scenario.text;
       const pCard = document.getElementById('phishCard');
-      if (pCard) pCard.style.borderColor = 'rgba(245, 158, 11, 0.5)';
+      if (pCard) {
+        pCard.style.borderColor = 'rgba(245, 158, 11, 0.5)';
+        pCard.classList.remove('speaking-active');
+      }
 
       for (let i = 0; i < phishScenarios.length; i++) {
         const paw = document.getElementById(`phishPaw${i}`);
@@ -1223,6 +1683,11 @@ HTML_CONTENT = """<!DOCTYPE html>
       if (grid) grid.style.display = 'grid';
       const fb = document.getElementById('phishFeedback');
       if (fb) fb.style.display = 'none';
+
+      // Auto-read clue if auto-read is enabled and player has interacted
+      if (autoReadK2 && currentTier === 'k2' && userHasInteracted) {
+        speakCurrentClue();
+      }
     }
 
     function handlePhishChoice(choice) {
@@ -1260,25 +1725,44 @@ HTML_CONTENT = """<!DOCTYPE html>
         } else {
           if (nextBtn) nextBtn.innerText = 'NEXT CLUE ➡️';
         }
+
+        lastFeedbackSpoken = `${scenario.titleWin}. ${scenario.descWin}`;
+        if (autoReadK2) {
+          setTimeout(() => {
+            speakText(lastFeedbackSpoken);
+          }, 350);
+        }
       } else {
         soundBlocked();
         if (card) card.style.borderColor = '#ef4444';
         if (fbIcon) fbIcon.innerText = '⚠️';
+        let errDesc = '';
         if (scenario.type === 'trap') {
           if (fbTitle) fbTitle.innerText = 'Ruff! Watch out! That was a trap! 🐾';
-          if (fbDesc) fbDesc.innerText = 'Strangers asking for passwords or offering free treats are trying to trick the robot pup!';
+          errDesc = 'Strangers asking for passwords or offering free treats are trying to trick the robot pup!';
+          if (fbDesc) fbDesc.innerText = errDesc;
+          lastFeedbackSpoken = `Ruff! Watch out! That was a trap! ${errDesc} Tap Try Again!`;
         } else {
           if (fbTitle) fbTitle.innerText = 'Oops! That was actually safe! 🏫';
-          if (fbDesc) fbDesc.innerText = 'That alert came directly from verified Butler faculty—no trick there!';
+          errDesc = 'That alert came directly from verified Butler faculty—no trick there!';
+          if (fbDesc) fbDesc.innerText = errDesc;
+          lastFeedbackSpoken = `Oops! That was actually safe! ${errDesc} Tap Try Again!`;
         }
         if (choiceGrid) choiceGrid.style.display = 'none';
         if (feedbackBox) feedbackBox.style.display = 'flex';
         if (nextBtn) nextBtn.innerText = 'TRY AGAIN 🔄';
+
+        if (autoReadK2) {
+          setTimeout(() => {
+            speakText(lastFeedbackSpoken);
+          }, 350);
+        }
       }
     }
 
     function nextPhishRound() {
       soundClick();
+      stopSpeech();
       const nextBtn = document.getElementById('phishNextBtn');
       if (nextBtn && nextBtn.innerText.includes('TRY AGAIN')) {
         renderPhishRound();
@@ -1296,6 +1780,7 @@ HTML_CONTENT = """<!DOCTYPE html>
           verdict: "ALL 3 PHISHING TRAPS DISARMED 🏆"
         });
         phishRound = 0;
+        return;
       }
       renderPhishRound();
     }
@@ -1310,6 +1795,9 @@ HTML_CONTENT = """<!DOCTYPE html>
     function setTier(tier) {
       currentTier = tier;
       soundClick();
+      if (tier !== 'k2') {
+        stopSpeech();
+      }
 
       // Update switcher buttons
       document.querySelectorAll('.tier-btn').forEach(btn => {
@@ -1352,7 +1840,11 @@ HTML_CONTENT = """<!DOCTYPE html>
 
       const cfg = bannerConfig[tier];
       document.getElementById('mascotTitle').innerText = cfg.title;
-      document.getElementById('mascotSubtitle').innerText = cfg.subtitle;
+      if (tier === 'k2') {
+        document.getElementById('mascotSubtitle').innerHTML = `A hacker is sending messages to GrizzDog's collar! Help the robot pup spot the fake phishing traps and keep Butler campus safe! <button type="button" class="k2-story-audio-btn" id="btnK2Story" onclick="speakMissionIntro()" title="Hear the mission story">🔊 Hear Story</button>`;
+      } else {
+        document.getElementById('mascotSubtitle').innerText = cfg.subtitle;
+      }
       document.getElementById('mascotTargetBadge').innerText = cfg.badge;
       const mascotCaeKu = document.getElementById('mascotCaeKu');
       if (mascotCaeKu && cfg.caeKu) mascotCaeKu.innerText = cfg.caeKu;
@@ -1553,9 +2045,16 @@ HTML_CONTENT = """<!DOCTYPE html>
       }
 
       document.getElementById('victoryModal').style.display = 'flex';
+
+      if (currentTier === 'k2' && autoReadK2) {
+        setTimeout(() => {
+          speakText("Hooray! GrizzDog protected! You disarmed all three phishing traps and earned the Junior Cyber Phish Detective badge!");
+        }, 500);
+      }
     }
 
     function closeModal() {
+      stopSpeech();
       document.getElementById('victoryModal').style.display = 'none';
     }
 
