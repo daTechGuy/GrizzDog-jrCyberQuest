@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GrizzDog jrCyberQuest — Butler Cyber Defense</title>
   <link rel="icon" href="/static/images/grizzdog_friendly.jpg?v=2">
-  <link rel="stylesheet" href="/static/css/app.css">
+  <link rel="stylesheet" href="/static/css/app.css?v=3">
 </head>
 
 <body class="k2-mode light-tier" data-tier="k2">
@@ -71,7 +71,7 @@
         <div class="k2-topbar">
           <div class="k2-stars" id="k2Stars" aria-label="Stars earned"></div>
           <div class="k2-topbar-right">
-            <span class="k2-level-badge" id="k2LevelBadge">Level 1</span>
+            <span class="k2-level-badge" id="k2LevelBadge">🐶 Level 1 • Little Puppy</span>
             <button type="button" class="k2-sound-toggle" id="k2LangBtn" onclick="toggleK2Language()" data-k2="langButton">🌐 Español</button>
             <button type="button" class="k2-sound-toggle" onclick="startOverK2()" title="Go back to Level 1 for a new player" data-k2="startOver">🔁 Start over</button>
             <button type="button" class="k2-sound-toggle" id="btnAutoReadToggle" onclick="toggleAutoRead()" title="Turn Grizz Jr's voice on or off">
@@ -81,7 +81,7 @@
         </div>
 
         <div class="k2-scene">
-          <img src="/static/images/grizzdog_k2.jpg" alt="Grizz Jr the puppy" class="k2-pup" id="k2Pup" onclick="replayPup()" onerror="this.src='/static/images/grizzdog_friendly.jpg'">
+          <img src="/static/images/grizzdog_k2.jpg" alt="Grizz Jr the puppy" class="k2-pup" id="k2Pup" data-level="1" style="width: 88px; height: 88px;" onclick="replayPup()" onerror="this.src='/static/images/grizzdog_friendly.jpg'">
           <div class="k2-bubble" id="k2Bubble" aria-live="polite">
             <div class="k2-intro-title" id="k2BubbleTitle">Hi! I'm Grizz Jr! 👋</div>
             <div class="k2-intro-text" id="k2BubbleText">Some messages are nice. Some messages are tricks! Can you help me tell them apart?</div>
@@ -438,14 +438,14 @@
     GrizzDog-jrCyberQuest • Butler Community College Cyber Faculty Research Project • Andover Campus, Kansas • 100% Offline Educational Lab
   </footer>
 
-  <script src="/static/js/config.js"></script>
-  <script src="/static/js/audio.js"></script>
-  <script src="/static/js/voice.js"></script>
-  <script src="/static/js/k2-messages.js"></script>
-  <script src="/static/js/k2.js"></script>
-  <script src="/static/js/g35.js"></script>
-  <script src="/static/js/g68.js"></script>
-  <script src="/static/js/g912.js"></script>
-  <script src="/static/js/app.js"></script>
+  <script src="/static/js/config.js?v=3"></script>
+  <script src="/static/js/audio.js?v=3"></script>
+  <script src="/static/js/voice.js?v=3"></script>
+  <script src="/static/js/k2-messages.js?v=3"></script>
+  <script src="/static/js/k2.js?v=3"></script>
+  <script src="/static/js/g35.js?v=3"></script>
+  <script src="/static/js/g68.js?v=3"></script>
+  <script src="/static/js/g912.js?v=3"></script>
+  <script src="/static/js/app.js?v=3"></script>
 </body>
 </html>

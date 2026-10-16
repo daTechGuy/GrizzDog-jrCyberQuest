@@ -35,6 +35,7 @@ const K2_TEXT = {
     lookAgainTitle: "Hmm, let's look again! 🔍",
     lookAgainSay: "Hmm, let's look again.",
     next: 'Next ➡️',
+    levelUpButton: 'Level Up! Grow Grizz Jr! ⬆️',
     badgeButton: 'Get my badge! 🏆',
     tryAgain: 'Try again 🔄',
     play: "▶️ Let's Play!",
@@ -52,11 +53,14 @@ const K2_TEXT = {
     rule1: '🔑 Keep passwords secret',
     rule2: '🙋 Not sure? Ask a grown-up!',
     pupAlt: 'Grizz Jr the puppy',
+    stage1: '🐶 Level 1 • Little Puppy',
+    stage2: '🐕 Level 2 • Growing Pup!',
+    stage3: '🦮 Level 3 • Big Dog!',
     badge: 'Junior Cyber Detective',
     flag: '🐾 You spotted every trick!',
     finishTitle: '🎉 You did it!',
     finishDesc: 'Remember: keep passwords secret, and ask a grown-up when something feels tricky!',
-    finishSay: 'You did it! You spotted every trick, and now you are a Junior Cyber Detective! Remember: keep your passwords secret, and if something feels tricky, ask a grown-up. High five!',
+    finishSay: 'You did it! You helped Grizz Jr grow all the way to Level 3 and spotted every trick! Now you are a Junior Cyber Detective! High five!',
     playAgain: '🔄 Play Again',
     close: 'Close'
   },
@@ -79,6 +83,7 @@ const K2_TEXT = {
     lookAgainTitle: 'Mmm, ¡miremos otra vez! 🔍',
     lookAgainSay: 'Mmm, miremos otra vez.',
     next: 'Siguiente ➡️',
+    levelUpButton: '¡Subir de nivel! ¡Crecer! ⬆️',
     badgeButton: '¡Quiero mi insignia! 🏆',
     tryAgain: 'Intenta otra vez 🔄',
     play: '▶️ ¡A jugar!',
@@ -96,11 +101,14 @@ const K2_TEXT = {
     rule1: '🔑 Tus contraseñas son secretas',
     rule2: '🙋 ¿No estás seguro? ¡Pregúntale a un adulto!',
     pupAlt: 'Grizz Jr, el perrito',
+    stage1: '🐶 Nivel 1 • Perrito Pequeño',
+    stage2: '🐕 Nivel 2 • ¡Creciendo!',
+    stage3: '🦮 Nivel 3 • ¡Perro Grande!',
     badge: 'Detective Cibernético Junior',
     flag: '🐾 ¡Encontraste todos los trucos!',
     finishTitle: '🎉 ¡Lo lograste!',
     finishDesc: '¡Recuerda: tus contraseñas son secretas, y pregúntale a un adulto cuando algo parezca un truco!',
-    finishSay: '¡Lo lograste! ¡Encontraste todos los trucos y ahora eres Detective Cibernético Junior! Recuerda: tus contraseñas son secretas, y si algo parece un truco, pregúntale a un adulto. ¡Choca esos cinco!',
+    finishSay: '¡Lo lograste! ¡Ayudaste a Grizz Jr a crecer hasta el Nivel 3 y encontraste todos los trucos! ¡Choca esos cinco!',
     playAgain: '🔄 Jugar otra vez',
     close: 'Cerrar'
   }
@@ -126,7 +134,7 @@ function applyK2Language() {
   document.getElementById('k2Question').innerHTML = k2T('question');   // trusted text from K2_TEXT
   document.getElementById('k2Pup').alt = k2T('pupAlt');
   document.getElementById('autoReadLabel').innerText = k2T(autoReadK2 ? 'voiceOn' : 'voiceOff');
-  document.getElementById('k2LevelBadge').innerText = k2T('level', { n: k2Level });
+  document.getElementById('k2LevelBadge').innerText = k2T(`stage${k2Level}`);
   updateSpeechUI(isSpeaking);
 }
 
@@ -187,12 +195,12 @@ let phishScenarios = [];
 let phishRound = 0;
 let phishScore = 0;
 
-// Grizz Jr starts as a small puppy in Level 1 and grows larger with every star and level-up (through Level 3).
+// Grizz Jr starts as a small 88px puppy in Level 1 and grows larger with every star and level-up (up to 256px in Level 3).
 function k2PupScale(level = k2Level, stars = phishScore) {
   const clampedLevel = Math.max(1, Math.min(K2_MAX_LEVEL, level));
   const clampedStars = Math.max(0, Math.min(K2_ROUNDS, stars));
-  const baseByLevel = { 1: 0.76, 2: 1.00, 3: 1.24 };
-  return Number((baseByLevel[clampedLevel] + clampedStars * 0.03).toFixed(2));
+  const basePxByLevel = { 1: 88, 2: 152, 3: 208 };
+  return basePxByLevel[clampedLevel] + clampedStars * 12;
 }
 
 function updateK2PupSize() {
@@ -200,9 +208,12 @@ function updateK2PupSize() {
   const pup = document.getElementById('k2Pup');
   if (!pup) return;
   const clampedLevel = Math.max(1, Math.min(K2_MAX_LEVEL, k2Level));
-  const starScale = (1 + Math.max(0, Math.min(K2_ROUNDS, phishScore)) * 0.025).toFixed(3);
+  const px = k2PupScale(clampedLevel, phishScore);
   pup.dataset.level = String(clampedLevel);
-  pup.style.setProperty('--pup-scale', starScale);
+  pup.style.width = `${px}px`;
+  pup.style.height = `${px}px`;
+  const badge = document.getElementById('k2LevelBadge');
+  if (badge) badge.innerText = k2T(`stage${clampedLevel}`);
 }
 
 function renderStars() {
@@ -235,7 +246,6 @@ function resetK2Game() {
 }
 
 function resetK2Intro() {
-  document.getElementById('k2LevelBadge').innerText = k2T('level', { n: k2Level });
   updateK2PupSize();
   if (k2Level === 1) {
     setBubble(k2T('hiTitle'), k2T('hiText'));
@@ -291,7 +301,9 @@ function handlePhishChoice(choice) {
     pup.classList.remove('happy'); void pup.offsetWidth; pup.classList.add('happy');
     const praise = k2T(scenario.type === 'trap' ? 'praiseTrap' : 'praiseSafe');
     setBubble(`🎉 ${praise}`, k2Msg(scenario, 'win'), 'good');
-    nextBtn.innerText = k2T(phishRound >= phishScenarios.length - 1 ? 'badgeButton' : 'next');
+    const isLastRound = phishRound >= phishScenarios.length - 1;
+    const endBtnKey = k2Level < K2_MAX_LEVEL ? 'levelUpButton' : 'badgeButton';
+    nextBtn.innerText = k2T(isLastRound ? endBtnKey : 'next');
     nextBtn.dataset.retry = '';
     say(`${k2T('greatJob')} ${praise} ${k2Msg(scenario, 'win')}`);
   } else {
@@ -315,9 +327,25 @@ function nextPhishRound() {
 
   phishRound++;
   if (phishRound >= phishScenarios.length) {
-    k2Level = Math.min(K2_MAX_LEVEL, k2Level + 1);
     triggerConfetti();
     soundSuccess();
+    if (k2Level < K2_MAX_LEVEL) {
+      k2Level++;
+      playCheer();
+      setTimeout(playPuppyBark, 300);
+      resetK2Game();
+      const pup = document.getElementById('k2Pup');
+      if (pup) {
+        pup.classList.remove('happy');
+        void pup.offsetWidth;
+        pup.classList.add('happy');
+      }
+      if (autoReadK2) {
+        setTimeout(() => speakText(k2Say), 600);
+      }
+      return;
+    }
+    k2Level = 1;
     showModal({
       badge: k2T('badge'),
       flag: k2T('flag'),
