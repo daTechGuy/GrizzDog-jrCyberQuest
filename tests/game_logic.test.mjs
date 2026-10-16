@@ -21,7 +21,7 @@ function loadGames() {
 test('K-2 messages are complete and short enough for early readers', () => {
   const run = loadGames();
   const deck = run('PHISH_DECK');
-  assert.ok(deck.length >= 30, `expected at least 30 messages, got ${deck.length}`);
+  assert.ok(deck.length >= 50, `expected at least 50 messages, got ${deck.length}`);
   for (const m of deck) {
     for (const key of ['icon', 'from', 'text', 'win', 'oops']) {
       assert.ok(typeof m[key] === 'string' && m[key].trim(), `${m.text}: missing ${key}`);
