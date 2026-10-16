@@ -72,7 +72,8 @@
           <div class="k2-stars" id="k2Stars" aria-label="Stars earned"></div>
           <div class="k2-topbar-right">
             <span class="k2-level-badge" id="k2LevelBadge">Level 1</span>
-            <button type="button" class="k2-sound-toggle" onclick="startOverK2()" title="Go back to Level 1 for a new player">🔁 Start over</button>
+            <button type="button" class="k2-sound-toggle" id="k2LangBtn" onclick="toggleK2Language()" data-k2="langButton">🌐 Español</button>
+            <button type="button" class="k2-sound-toggle" onclick="startOverK2()" title="Go back to Level 1 for a new player" data-k2="startOver">🔁 Start over</button>
             <button type="button" class="k2-sound-toggle" id="btnAutoReadToggle" onclick="toggleAutoRead()" title="Turn Grizz Jr's voice on or off">
               <span id="autoReadLabel">🔊 Voice On</span>
             </button>
@@ -90,7 +91,7 @@
           </div>
         </div>
 
-        <button type="button" class="k2-big-btn" id="k2StartBtn" onclick="startK2Game()">▶️ Let's Play!</button>
+        <button type="button" class="k2-big-btn" id="k2StartBtn" onclick="startK2Game()" data-k2="play">▶️ Let's Play!</button>
 
         <div class="k2-message k2-hidden" id="phishCard">
           <div class="k2-message-emoji" id="phishEmoji">🍕</div>
@@ -105,21 +106,21 @@
         <div class="k2-choices k2-hidden" id="phishChoiceGrid">
           <button type="button" class="k2-choice safe" onclick="handlePhishChoice('safe')">
             <span class="k2-choice-icon">👍</span>
-            <span class="k2-choice-word">Safe</span>
-            <span class="k2-choice-sub">It's OK!</span>
+            <span class="k2-choice-word" data-k2="safeWord">Safe</span>
+            <span class="k2-choice-sub" data-k2="safeSub">It's OK!</span>
           </button>
           <button type="button" class="k2-choice trick" onclick="handlePhishChoice('trap')">
             <span class="k2-choice-icon">✋</span>
-            <span class="k2-choice-word">Trick!</span>
-            <span class="k2-choice-sub">Don't do it!</span>
+            <span class="k2-choice-word" data-k2="trickWord">Trick!</span>
+            <span class="k2-choice-sub" data-k2="trickSub">Don't do it!</span>
           </button>
         </div>
 
         <button type="button" class="k2-big-btn k2-hidden" id="phishNextBtn" onclick="nextPhishRound()">Next ➡️</button>
 
         <div class="k2-rules">
-          <span class="k2-rule">🔑 Keep passwords secret</span>
-          <span class="k2-rule">🙋 Not sure? Ask a grown-up!</span>
+          <span class="k2-rule" data-k2="rule1">🔑 Keep passwords secret</span>
+          <span class="k2-rule" data-k2="rule2">🙋 Not sure? Ask a grown-up!</span>
         </div>
       </div>
     </div>

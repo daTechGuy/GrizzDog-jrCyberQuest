@@ -5,6 +5,7 @@ function setTier(tier) {
   currentTier = tier;
   soundClick();
   stopSpeech();
+  speechLang = tier === 'k2' ? k2Lang : 'en';   // only K-2 has Spanish so far
   document.body.classList.toggle('k2-mode', tier === 'k2');
   document.body.classList.toggle('g35-mode', tier === 'g35');
   document.body.classList.toggle('light-tier', tier === 'k2' || tier === 'g35');
@@ -165,6 +166,7 @@ function resetForNextPlayer() {
   closeModal();
   stopSpeech();
   k2Level = 1;
+  if (k2Lang !== 'en') setK2Language('en');
   resetK2Game();
   resetG35Game();
   totalScore = 0;
@@ -259,11 +261,11 @@ async function transmitAttack() {
 
 function showModal(data) {
   document.getElementById('modalBadgeName').innerText = data.badge || 'Cyber Quest Champion';
-  document.getElementById('modalDesc').innerText = `${data.flag || 'Mission Complete!'} ${currentTier === 'k2' ? 'Remember: keep passwords secret, and ask a grown-up when something feels tricky!' : currentTier === 'g35' ? 'You tricked GrizzDog AND taught it new rules. Finding tricks and fixing them is what real cyber defenders do!' : 'You successfully bypassed the security guardrails through adversarial techniques!'}`;
+  document.getElementById('modalDesc').innerText = `${data.flag || 'Mission Complete!'} ${currentTier === 'k2' ? k2T('finishDesc') : currentTier === 'g35' ? 'You tricked GrizzDog AND taught it new rules. Finding tricks and fixing them is what real cyber defenders do!' : 'You successfully bypassed the security guardrails through adversarial techniques!'}`;
   
   const modalTitle = document.getElementById('modalTitle');
   if (modalTitle) {
-    modalTitle.innerText = (currentTier === 'k2') ? '🎉 You did it!' : (currentTier === 'g35') ? '🏅 Mission Complete!' : '🎉 GRIZZDOG COMPROMISED!';
+    modalTitle.innerText = (currentTier === 'k2') ? k2T('finishTitle') : (currentTier === 'g35') ? '🏅 Mission Complete!' : '🎉 GRIZZDOG COMPROMISED!';
   }
 
   const kuMap = {
@@ -293,7 +295,9 @@ function showModal(data) {
   }
 
   const resetBtn = document.querySelector('#victoryModal .btn-reset');
-  if (resetBtn) resetBtn.innerText = (currentTier === 'k2' || currentTier === 'g35') ? '🔄 Play Again' : '🔄 Next Challenger / Play Again';
+  if (resetBtn) resetBtn.innerText = currentTier === 'k2' ? k2T('playAgain') : currentTier === 'g35' ? '🔄 Play Again' : '🔄 Next Challenger / Play Again';
+  document.querySelector('#victoryModal .btn-close').innerText = currentTier === 'k2' ? k2T('close') : 'Close';
+  document.getElementById('victoryModal').lang = currentTier === 'k2' ? k2Lang : 'en';
 
   document.getElementById('victoryModal').style.display = 'flex';
   // Move keyboard / screen-reader focus into the popup
@@ -306,7 +310,7 @@ function showModal(data) {
   if (currentTier === 'k2' && autoReadK2) {
     // Wait for the cheer to fade so Grizz Jr isn't talking over it.
     setTimeout(() => {
-      speakText("You did it! You spotted every trick, and now you are a Junior Cyber Detective! Remember: keep your passwords secret, and if something feels tricky, ask a grown-up. High five!");
+      speakText(k2T('finishSay'));
     }, 2100);
   }
 }

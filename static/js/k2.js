@@ -13,6 +13,139 @@ const K2_ROUNDS = 4;
 const K2_MAX_LEVEL = 3;
 // PHISH_DECK (the messages) lives in k2-messages.js so teachers can edit it easily.
 
+// Words on the K-2 screen and in Grizz Jr's voice, in English and Spanish.
+// {n}, {i}, {total}, {who}, {text} are filled in when used.
+const K2_TEXT = {
+  en: {
+    langButton: '🌐 Español',
+    hiTitle: "Hi! I'm Grizz Jr! 👋",
+    hiText: 'Some messages are nice. Some messages are tricks! Can you help me tell them apart?',
+    hiSay: "Hi! I'm Grizz Jr! Some messages are nice. Some messages are tricks! Can you help me tell them apart? Tap Let's Play to start!",
+    levelTitle: 'Level {n}! 🎉',
+    levelText: 'These are a little trickier. Look at who sent it, and what it asks for!',
+    levelSay: "Level {n}! These are a little trickier. Look at who sent it, and what it asks for. Tap Let's Play!",
+    level: 'Level {n}',
+    roundTitle: 'Level {n} • Message {i} of {total}',
+    roundText: 'Look at who sent it. Is it safe, or a trick?',
+    roundSay: 'Here is a message from {who}. It says: {text} Is it safe, or a trick?',
+    fromPrefix: 'From:',
+    praiseTrap: 'You found the trick!',
+    praiseSafe: 'Yes, that one is safe!',
+    greatJob: 'Great job!',
+    lookAgainTitle: "Hmm, let's look again! 🔍",
+    lookAgainSay: "Hmm, let's look again.",
+    next: 'Next ➡️',
+    badgeButton: 'Get my badge! 🏆',
+    tryAgain: 'Try again 🔄',
+    play: "▶️ Let's Play!",
+    startOver: '🔁 Start over',
+    voiceOn: '🔊 Voice On',
+    voiceOff: '🔇 Voice Off',
+    voiceOnSay: "Okay! I'll read to you.",
+    hearIt: 'Hear it',
+    stop: 'Stop',
+    question: 'Is it <span style="color:#059669">safe</span> or a <span style="color:#dc2626">trick</span>?',
+    safeWord: 'Safe',
+    safeSub: "It's OK!",
+    trickWord: 'Trick!',
+    trickSub: "Don't do it!",
+    rule1: '🔑 Keep passwords secret',
+    rule2: '🙋 Not sure? Ask a grown-up!',
+    pupAlt: 'Grizz Jr the puppy',
+    badge: 'Junior Cyber Detective',
+    flag: '🐾 You spotted every trick!',
+    finishTitle: '🎉 You did it!',
+    finishDesc: 'Remember: keep passwords secret, and ask a grown-up when something feels tricky!',
+    finishSay: 'You did it! You spotted every trick, and now you are a Junior Cyber Detective! Remember: keep your passwords secret, and if something feels tricky, ask a grown-up. High five!',
+    playAgain: '🔄 Play Again',
+    close: 'Close'
+  },
+  es: {
+    langButton: '🌐 English',
+    hiTitle: '¡Hola! ¡Soy Grizz Jr! 👋',
+    hiText: 'Algunos mensajes son amables. ¡Otros son trucos! ¿Me ayudas a distinguirlos?',
+    hiSay: '¡Hola! ¡Soy Grizz Jr! Algunos mensajes son amables. ¡Otros son trucos! ¿Me ayudas a distinguirlos? ¡Toca A jugar para empezar!',
+    levelTitle: '¡Nivel {n}! 🎉',
+    levelText: 'Estos son un poco más difíciles. ¡Fíjate quién lo mandó y qué te pide!',
+    levelSay: '¡Nivel {n}! Estos son un poco más difíciles. Fíjate quién lo mandó y qué te pide. ¡Toca A jugar!',
+    level: 'Nivel {n}',
+    roundTitle: 'Nivel {n} • Mensaje {i} de {total}',
+    roundText: 'Fíjate quién lo mandó. ¿Es seguro o es un truco?',
+    roundSay: 'Aquí hay un mensaje de {who}. Dice: {text} ¿Es seguro o es un truco?',
+    fromPrefix: 'De:',
+    praiseTrap: '¡Encontraste el truco!',
+    praiseSafe: '¡Sí, ese es seguro!',
+    greatJob: '¡Muy bien!',
+    lookAgainTitle: 'Mmm, ¡miremos otra vez! 🔍',
+    lookAgainSay: 'Mmm, miremos otra vez.',
+    next: 'Siguiente ➡️',
+    badgeButton: '¡Quiero mi insignia! 🏆',
+    tryAgain: 'Intenta otra vez 🔄',
+    play: '▶️ ¡A jugar!',
+    startOver: '🔁 Empezar de nuevo',
+    voiceOn: '🔊 Voz: Sí',
+    voiceOff: '🔇 Voz: No',
+    voiceOnSay: '¡Bien! Yo te leo.',
+    hearIt: 'Escuchar',
+    stop: 'Parar',
+    question: '¿Es <span style="color:#059669">seguro</span> o es un <span style="color:#dc2626">truco</span>?',
+    safeWord: 'Seguro',
+    safeSub: '¡Está bien!',
+    trickWord: '¡Truco!',
+    trickSub: '¡No lo hagas!',
+    rule1: '🔑 Tus contraseñas son secretas',
+    rule2: '🙋 ¿No estás seguro? ¡Pregúntale a un adulto!',
+    pupAlt: 'Grizz Jr, el perrito',
+    badge: 'Detective Cibernético Junior',
+    flag: '🐾 ¡Encontraste todos los trucos!',
+    finishTitle: '🎉 ¡Lo lograste!',
+    finishDesc: '¡Recuerda: tus contraseñas son secretas, y pregúntale a un adulto cuando algo parezca un truco!',
+    finishSay: '¡Lo lograste! ¡Encontraste todos los trucos y ahora eres Detective Cibernético Junior! Recuerda: tus contraseñas son secretas, y si algo parece un truco, pregúntale a un adulto. ¡Choca esos cinco!',
+    playAgain: '🔄 Jugar otra vez',
+    close: 'Cerrar'
+  }
+};
+
+let k2Lang = 'en';
+
+function k2T(key, vars = {}) {
+  const text = (K2_TEXT[k2Lang] && K2_TEXT[k2Lang][key]) || K2_TEXT.en[key] || '';
+  return text.replace(/\{(\w+)\}/g, (_, k) => (k in vars ? vars[k] : `{${k}}`));
+}
+
+// A message field in the current language (falls back to English if a translation is missing).
+function k2Msg(m, field) {
+  return (k2Lang !== 'en' && m[k2Lang] && m[k2Lang][field]) || m[field];
+}
+
+// Relabel the fixed parts of the K-2 screen (elements marked data-k2="key").
+function applyK2Language() {
+  const panel = document.getElementById('panel_k2');
+  panel.lang = k2Lang;
+  panel.querySelectorAll('[data-k2]').forEach(el => { el.innerText = k2T(el.dataset.k2); });
+  document.getElementById('k2Question').innerHTML = k2T('question');   // trusted text from K2_TEXT
+  document.getElementById('k2Pup').alt = k2T('pupAlt');
+  document.getElementById('autoReadLabel').innerText = k2T(autoReadK2 ? 'voiceOn' : 'voiceOff');
+  document.getElementById('k2LevelBadge').innerText = k2T('level', { n: k2Level });
+  updateSpeechUI(isSpeaking);
+}
+
+function setK2Language(lang) {
+  k2Lang = K2_TEXT[lang] ? lang : 'en';
+  speechLang = k2Lang;
+  stopSpeech();
+  applyK2Language();
+  const playing = document.getElementById('k2StartBtn').classList.contains('k2-hidden');
+  if (playing) renderPhishRound();   // same message, now in the new language
+  else resetK2Intro();
+}
+
+function toggleK2Language() {
+  soundClick();
+  setK2Language(k2Lang === 'en' ? 'es' : 'en');
+  if (autoReadK2) speakText(k2Say);
+}
+
 
 // Level 1 is easiest; each finished game moves up a level (max 3).
 // "Start over" puts the next player back at level 1.
@@ -79,13 +212,17 @@ function resetK2Game() {
   showK2('k2Question', false);
   showK2('phishChoiceGrid', false);
   showK2('phishNextBtn', false);
-  document.getElementById('k2LevelBadge').innerText = `Level ${k2Level}`;
+  resetK2Intro();
+}
+
+function resetK2Intro() {
+  document.getElementById('k2LevelBadge').innerText = k2T('level', { n: k2Level });
   if (k2Level === 1) {
-    setBubble("Hi! I'm Grizz Jr! 👋", 'Some messages are nice. Some messages are tricks! Can you help me tell them apart?');
-    k2Say = "Hi! I'm Grizz Jr! Some messages are nice. Some messages are tricks! Can you help me tell them apart? Tap Let's Play to start!";
+    setBubble(k2T('hiTitle'), k2T('hiText'));
+    k2Say = k2T('hiSay');
   } else {
-    setBubble(`Level ${k2Level}! 🎉`, 'These are a little trickier. Look at who sent it, and what it asks for!');
-    k2Say = `Level ${k2Level}! These are a little trickier. Look at who sent it, and what it asks for. Tap Let's Play!`;
+    setBubble(k2T('levelTitle', { n: k2Level }), k2T('levelText'));
+    k2Say = k2T('levelSay', { n: k2Level });
   }
 }
 
@@ -98,8 +235,8 @@ function startK2Game() {
 function renderPhishRound() {
   const scenario = phishScenarios[phishRound];
   document.getElementById('phishEmoji').innerText = scenario.icon;
-  document.getElementById('phishFrom').innerText = scenario.from;
-  document.getElementById('phishMsgText').innerText = scenario.text;
+  document.getElementById('phishFrom').innerText = k2Msg(scenario, 'from');
+  document.getElementById('phishMsgText').innerText = k2Msg(scenario, 'text');
   // Re-trigger the card's entrance animation
   const card = document.getElementById('phishCard');
   card.classList.add('k2-hidden');
@@ -110,9 +247,9 @@ function renderPhishRound() {
   showK2('phishNextBtn', false);
   renderStars();
 
-  setBubble(`Level ${k2Level} • Message ${phishRound + 1} of ${phishScenarios.length}`, 'Look at who sent it. Is it safe, or a trick?');
-  const who = scenario.from.replace('From:', '').trim().toLowerCase();
-  say(`Here is a message from ${who}. It says: ${scenario.text} Is it safe, or a trick?`);
+  setBubble(k2T('roundTitle', { n: k2Level, i: phishRound + 1, total: phishScenarios.length }), k2T('roundText'));
+  const who = k2Msg(scenario, 'from').replace(k2T('fromPrefix'), '').trim().toLowerCase();
+  say(k2T('roundSay', { who, text: k2Msg(scenario, 'text') }));
 }
 
 function handlePhishChoice(choice) {
@@ -132,18 +269,18 @@ function handlePhishChoice(choice) {
     document.getElementById('scoreBadge').innerText = `⭐ XP: ${totalScore}`;
     renderStars();
     pup.classList.remove('happy'); void pup.offsetWidth; pup.classList.add('happy');
-    const praise = scenario.type === 'trap' ? 'You found the trick!' : 'Yes, that one is safe!';
-    setBubble(`🎉 ${praise}`, scenario.win, 'good');
-    nextBtn.innerText = (phishRound >= phishScenarios.length - 1) ? 'Get my badge! 🏆' : 'Next ➡️';
+    const praise = k2T(scenario.type === 'trap' ? 'praiseTrap' : 'praiseSafe');
+    setBubble(`🎉 ${praise}`, k2Msg(scenario, 'win'), 'good');
+    nextBtn.innerText = k2T(phishRound >= phishScenarios.length - 1 ? 'badgeButton' : 'next');
     nextBtn.dataset.retry = '';
-    say(`Great job! ${praise} ${scenario.win}`);
+    say(`${k2T('greatJob')} ${praise} ${k2Msg(scenario, 'win')}`);
   } else {
     // Gentle correction: no buzzer, no "wrong", just a hint and another try.
-    setBubble('Hmm, let\'s look again! 🔍', scenario.oops, 'oops');
-    nextBtn.innerText = 'Try again 🔄';
+    setBubble(k2T('lookAgainTitle'), k2Msg(scenario, 'oops'), 'oops');
+    nextBtn.innerText = k2T('tryAgain');
     nextBtn.dataset.retry = '1';
     playPuppyWhine();
-    setTimeout(() => say(`Hmm, let's look again. ${scenario.oops}`), 650);
+    setTimeout(() => say(`${k2T('lookAgainSay')} ${k2Msg(scenario, 'oops')}`), 650);
   }
 }
 
@@ -162,8 +299,8 @@ function nextPhishRound() {
     triggerConfetti();
     soundSuccess();
     showModal({
-      badge: "Junior Cyber Detective",
-      flag: "🐾 You spotted every trick!",
+      badge: k2T('badge'),
+      flag: k2T('flag'),
       xp: 150,
       verdict: "ALL TRICKS SPOTTED 🏆"
     });

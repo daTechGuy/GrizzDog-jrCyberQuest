@@ -621,6 +621,10 @@ body.light-tier .btn-modal { font-size: 1.15rem; padding: 0.8rem 1.6rem; border-
 body.light-tier .btn-close { background: #f3e8ff; color: #581c87; }
 
 @media (max-width: 640px) {
+  .k2-topbar { flex-direction: column; }
+  .k2-topbar-right { justify-content: center; }
+  .k2-sound-toggle, .k2-level-badge { font-size: 0.92rem; padding: 0.45rem 0.8rem; }
+  .k2-star { font-size: 1.6rem; }
   .k2-scene { flex-direction: column; text-align: center; }
   .k2-bubble::before { display: none; }
   .k2-pup { width: 120px; height: 120px; }

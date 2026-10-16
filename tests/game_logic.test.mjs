@@ -34,6 +34,29 @@ test('K-2 messages are complete and short enough for early readers', () => {
   assert.equal(new Set(texts).size, texts.length, 'duplicate message text');
 });
 
+test('every K-2 message has a complete, short Spanish version', () => {
+  const run = loadGames();
+  for (const m of run('PHISH_DECK')) {
+    assert.ok(m.es, `${m.text}: missing es (Spanish) translation`);
+    for (const key of ['from', 'text', 'win', 'oops']) {
+      assert.ok(typeof m.es[key] === 'string' && m.es[key].trim(), `${m.text}: missing es.${key}`);
+    }
+    assert.ok(m.es.from.includes('De:'), `${m.text}: Spanish "from" should start with "De:"`);
+    assert.ok(m.es.text.split(/\s+/).length <= 12, `${m.es.text}: keep Spanish K-2 messages to 12 words or fewer`);
+  }
+});
+
+test('K-2 English and Spanish screen text match key for key', () => {
+  const run = loadGames();
+  const text = run('K2_TEXT');
+  const placeholders = (s) => [...s.matchAll(/\{(\w+)\}/g)].map(m => m[1]).sort().join(',');
+  assert.deepEqual(Object.keys(text.es).sort(), Object.keys(text.en).sort());
+  for (const key of Object.keys(text.en)) {
+    assert.ok(text.es[key].trim(), `es.${key} is empty`);
+    assert.equal(placeholders(text.es[key]), placeholders(text.en[key]), `es.${key} has different {placeholders}`);
+  }
+});
+
 test('every K-2 level has enough safe and trick messages for a game', () => {
   const run = loadGames();
   const [deck, rounds, maxLevel] = [run('PHISH_DECK'), run('K2_ROUNDS'), run('K2_MAX_LEVEL')];

@@ -6,6 +6,7 @@ let totalScore = 0;
 let autoReadK2 = true;
 let isSpeaking = false;
 let speechSupported = ('speechSynthesis' in window);
+let speechLang = 'en';   // 'en' or 'es'; K-2's Español button switches it
 window._activeUtterances = []; // Prevent V8 garbage collection bug in Chrome
 
 // Novelty/effect voices that sound robotic or spooky. Never use them.
@@ -15,12 +16,22 @@ const BAD_VOICE_WORDS = ['albert', 'bad news', 'bahh', 'bells', 'boing', 'bubble
   'eddy', 'flo', 'reed', 'rocko', 'sandy', 'shelley'];
 
 // Score a voice: natural/neural voices first, then warm, clear everyday voices.
-function scoreVoice(v) {
+function scoreVoice(v, want = 'en') {
   const n = (v.name || '').toLowerCase();
   const lang = (v.lang || '').toLowerCase().replace('_', '-');
-  if (!lang.startsWith('en')) return -1;
+  if (!lang.startsWith(want)) return -1;
   if (BAD_VOICE_WORDS.some(w => n.includes(w))) return -1;
   let s = 0;
+  if (want === 'es') {
+    // Prefer US or Mexican Spanish, natural voices first
+    if (lang === 'es-us') s += 20;
+    else if (lang === 'es-mx') s += 15;
+    if (n.includes('natural') || n.includes('neural') || n.includes('online')) s += 50;
+    if (n.includes('enhanced') || n.includes('premium')) s += 40;
+    if (['paloma', 'dalia', 'elena', 'paulina', 'monica', 'mónica', 'marisol', 'sabina', 'helena', 'laura'].some(w => n.includes(w))) s += 12;
+    if (n.includes('google') && (lang === 'es-us' || lang === 'es-mx')) s += 25;
+    return s;
+  }
   if (lang === 'en-us') s += 20;
   if (n.includes('natural') || n.includes('neural') || n.includes('online')) s += 50; // Edge neural voices
   if (n.includes('enhanced') || n.includes('premium')) s += 40;                     // Apple downloadable voices
@@ -32,21 +43,21 @@ function scoreVoice(v) {
   return s;
 }
 
-let k2Voice = null;
-function pickVoice() {
+const voiceByLang = {};
+function pickVoice(want = speechLang) {
   if (!speechSupported) return null;
   const voices = window.speechSynthesis.getVoices() || [];
   let best = null, bestScore = -1;
   voices.forEach(v => {
-    const s = scoreVoice(v);
+    const s = scoreVoice(v, want);
     if (s > bestScore) { best = v; bestScore = s; }
   });
-  k2Voice = best;
+  voiceByLang[want] = best;
   return best;
 }
 if (speechSupported) {
   pickVoice();
-  window.speechSynthesis.addEventListener('voiceschanged', pickVoice);
+  window.speechSynthesis.addEventListener('voiceschanged', () => { pickVoice('en'); pickVoice('es'); });
 }
 
 function stopSpeech() {
@@ -77,7 +88,7 @@ function speakText(text, onComplete = null) {
   isSpeaking = true;
   updateSpeechUI(true);
 
-  const voice = k2Voice || pickVoice();
+  const voice = voiceByLang[speechLang] || pickVoice(speechLang);
   const isNeural = voice && /natural|neural|online|enhanced|premium/i.test(voice.name || '');
   const sentences = cleaned.match(/[^.!?]+[.!?]*/g) || [cleaned];
 
@@ -85,7 +96,7 @@ function speakText(text, onComplete = null) {
     if (window.speechSynthesis.paused) window.speechSynthesis.resume();
     sentences.forEach((sentence, i) => {
       const utter = new SpeechSynthesisUtterance(sentence.trim());
-      utter.lang = (voice && voice.lang) || 'en-US';
+      utter.lang = (voice && voice.lang) || (speechLang === 'es' ? 'es-US' : 'en-US');
       if (voice) utter.voice = voice;
       utter.volume = 1.0;
       // A touch slower than normal for young listeners; only a slight lift in pitch.
@@ -126,7 +137,7 @@ function updateSpeechUI(active) {
     const iconEl = btn.querySelector('.audio-btn-icon');
     btn.classList.toggle('reading', active);
     if (iconEl) iconEl.innerText = active ? '⏹️' : '🔊';
-    textEl.innerText = active ? 'Stop' : 'Hear it';
+    textEl.innerText = k2T(active ? 'stop' : 'hearIt');
   }
   if (bubble) bubble.classList.toggle('speaking-active', active);
   if (pup) pup.classList.toggle('talking', active);
@@ -164,7 +175,7 @@ function toggleAutoRead() {
   const toggleBtn = document.getElementById('btnAutoReadToggle');
   const label = document.getElementById('autoReadLabel');
   toggleBtn.classList.toggle('off', !autoReadK2);
-  label.innerText = autoReadK2 ? '🔊 Voice On' : '🔇 Voice Off';
-  if (autoReadK2) speakText("Okay! I'll read to you.");
+  label.innerText = k2T(autoReadK2 ? 'voiceOn' : 'voiceOff');
+  if (autoReadK2) speakText(k2T('voiceOnSay'));
   else stopSpeech();
 }
