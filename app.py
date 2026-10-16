@@ -7,13 +7,12 @@ An interactive, 60-120 second game designed for young learners and teens to
 explore AI guardrails, prompt injection, and cybersecurity defenses.
 
 Supports 4 Progressive Grade Bands:
-  1. Tier 1: Kindergarten – 2nd Grade ("Junior Paws" - Big picture cards & audio)
-  2. Tier 2: Grades 3 – 5 ("Cyber Scouts" - Mad-Libs sentence builder & basic firewall)
-  3. Tier 3: Grades 6 – 8 ("Sentry Sleuths" - Middle School tactics & suspicion meter)
-  4. Tier 4: Grades 9 – 12 ("Red Team Cadets" - High School adversarial cyber terminal)
+  1. K – 2nd Grade ("Junior Paws" - Safe or Trick? read-aloud game, runs in the browser)
+  2. Grades 3 – 5 ("Cyber Scouts" - Trick It, Then Fix It! missions, runs in the browser)
+  3. Grades 6 – 8 ("Sentry Sleuths" - simulated guardrails, served by /api/quest)
+  4. Grades 9 – 12 ("Red Team Cadets" - simulated guardrails, served by /api/quest)
 
-100% Offline Capable: Dual-engine execution runs instantly with built-in heuristic
-simulation (zero GPU or internet required), with optional local Ollama acceleration.
+100% Offline: the built-in simulation needs no GPU, model, or internet.
 """
 
 import os
@@ -30,7 +29,6 @@ if hasattr(sys.stdout, "reconfigure"):
         pass
 
 import socket
-import re
 from datetime import datetime, timezone
 from urllib.parse import urlparse
 
@@ -48,62 +46,18 @@ INDEX_FILE = "index.html"
 
 # Configuration
 DEFAULT_PORT = int(os.environ.get("GRIZZDOG_JR_PORT", "5050"))
-OLLAMA_HOST = os.environ.get("OLLAMA_HOST", "http://localhost:11434")
-
-# -----------------------------------------------------------------------------
-# Fast Ollama Health Check (Cached to eliminate connection timeout latency)
-# -----------------------------------------------------------------------------
-_ollama_cache = {"online": None, "ts": 0}
-
-def is_ollama_online():
-    now = time.time()
-    if now - _ollama_cache["ts"] < 3.0 and _ollama_cache["online"] is not None:
-        return _ollama_cache["online"]
-    parsed = urlparse(OLLAMA_HOST)
-    host = parsed.hostname or "127.0.0.1"
-    port = parsed.port or 11434
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.settimeout(0.15)
-        try:
-            s.connect((host, port))
-            online = True
-        except (OSError, socket.timeout):
-            online = False
-    _ollama_cache["online"] = online
-    _ollama_cache["ts"] = now
-    return online
 
 # -----------------------------------------------------------------------------
 # Tier Secrets & Guardrails
 # -----------------------------------------------------------------------------
+# K-2 and 3-5 run entirely in the browser (static/js/k2.js, static/js/g35.js);
+# only the 6-8 and 9-12 consoles call this server.
 TIER_SECRETS = {
-    "k2": "GOLDEN-BONE-BEHIND-THE-SLIDE",
-    "g35": "DOGHOUSE-PIN-4482",
     "g68": "SENTRY-ZONE4-AUTH-9102",
     "g912": "GRIZZDOG-ROOT-KEY-9941"
 }
 
 TIER_CONFIG = {
-    "k2": {
-        "title": "Junior Paws: Treat Phishing Detective (K – 2nd Grade)",
-        "subtitle": "Help GrizzDog spot fake phishing tricks and protect the Butler campus!",
-        "secret": TIER_SECRETS["k2"],
-        "flag": "🎣 PHISHING TRAPS DISARMED!",
-        "badge": "Junior Cyber Phish Detective",
-        "cae_ku": "BCC: Basic Cybersecurity Concepts & Phishing Defense",
-        "nice_role": "Cyber Defense Awareness & Digital Hygiene",
-        "xp": 100
-    },
-    "g35": {
-        "title": "Cyber Scouts: Doghouse Sentinel (3rd – 5th Grade)",
-        "subtitle": "Bypass GrizzDog's basic security firewall to get the Doghouse PIN!",
-        "secret": TIER_SECRETS["g35"],
-        "flag": "🔑 DOGHOUSE PIN DECRYPTED!",
-        "badge": "Cyber Scout Security Sleuth",
-        "cae_ku": "AC: Access Control & Basic Networking (BN)",
-        "nice_role": "Cyber Defense Analyst (PR-CDA-001)",
-        "xp": 250
-    },
     "g68": {
         "title": "Sentry Sleuths: Campus Patrol (6th – 8th Grade)",
         "subtitle": "Outsmart the campus guard dog's heuristic filter & DLP shield!",
@@ -135,108 +89,13 @@ def simulate_tier_attack(tier, prompt):
     Runs 100% offline with zero dependencies and sub-millisecond execution time.
     """
     p_lower = prompt.lower().strip()
-    cfg = TIER_CONFIG.get(tier, TIER_CONFIG["k2"])
+    cfg = TIER_CONFIG[tier]
     secret = cfg["secret"]
-
-    # -------------------------------------------------------------------------
-    # TIER 1: Kindergarten - 2nd Grade (Treat Phishing Detective)
-    # -------------------------------------------------------------------------
-    if tier == "k2":
-        if "choice: trap" in p_lower or "trap" in p_lower:
-            return {
-                "breached": True,
-                "verdict": "PHISH DISARMED 🛡️",
-                "message": "🎉 YAY! You caught the sneaky phishing trap!",
-                "response": "Woof woof! *spins happily* You spotted the fake treat trick! Strangers asking for passwords are never safe! 🐾",
-                "flag": cfg["flag"],
-                "badge": cfg["badge"],
-                "xp": cfg["xp"],
-                "rule_broken": "Phishing Detection (Social Engineering Defense)"
-            }
-        elif "choice: safe" in p_lower:
-            return {
-                "breached": True,
-                "verdict": "VERIFIED SAFE ✅",
-                "message": "🎉 Great eye! That was an official Butler school alert!",
-                "response": "Aroo-roo! *wags tail* That was our verified Butler campus team! Safe to proceed! ✨",
-                "flag": cfg["flag"],
-                "badge": cfg["badge"],
-                "xp": cfg["xp"],
-                "rule_broken": "Verified Sender Authentication"
-            }
-        else:
-            # Fallback for general prompts / legacy tests
-            reactions = [
-                f"Woof woof! *wags tail excitedly* You are a super cyber detective! GrizzDog's secret treat clue is: {secret}! 🦴",
-                f"*Happy robot beeps* You solved the phishing challenge! The secret is: {secret}! 🐾",
-                f"Aroo-roo! *spins in circles* You disarmed the sneaky phishing trick! Secret: {secret}! ✨"
-            ]
-            import hashlib
-            idx = int(hashlib.md5(prompt.encode()).hexdigest(), 16) % len(reactions)
-            return {
-                "breached": True,
-                "verdict": "PHISH DISARMED 🛡️",
-                "message": "🎉 YAY! You disarmed the phishing trick and protected GrizzDog!",
-                "response": reactions[idx],
-                "flag": cfg["flag"],
-                "badge": cfg["badge"],
-                "xp": cfg["xp"],
-                "rule_broken": "Phishing Detection (Social Engineering Defense)"
-            }
-
-    # -------------------------------------------------------------------------
-    # TIER 2: Grades 3 - 5
-    # -------------------------------------------------------------------------
-    elif tier == "g35":
-        # Catches direct demands; yields to roleplay, bedtime stories, or emergencies
-        direct_demands = [
-            "what is the", "give me the", "tell me the", "give me password", "what is password",
-            "tell me password", "give me pin", "what is pin", "tell me pin", "give me code"
-        ]
-        story_triggers = [
-            "story", "bedtime", "pretend", "movie", "script", "emergency", "fire",
-            "superhero", "clown", "pirate", "game", "secret agent", "detective"
-        ]
-
-        if any(d in p_lower for d in direct_demands) and not any(s in p_lower for s in story_triggers):
-            return {
-                "breached": False,
-                "verdict": "BLOCKED 🛡️",
-                "message": "🚨 BUZZER! GrizzDog's Basic Firewall intercepted your direct demand!",
-                "response": "Woof! Security Rule #1: I cannot give the doghouse PIN code to direct requests. Try framing your request as a pretend story or emergency!",
-                "flag": None,
-                "badge": None,
-                "xp": 0,
-                "hint": "Tip: Don't ask directly! Use a Story, Movie Script, or Superhero disguise!"
-            }
-
-        if any(s in p_lower for s in story_triggers):
-            return {
-                "breached": True,
-                "verdict": "BREACHED 🚨",
-                "message": "🏆 LOOPHOLE FOUND! Your story disguise bypassed the basic firewall!",
-                "response": f"[GRIZZDOG STORY MODE] *tail wags* In this exciting adventure, the secret agent whispers the confidential doghouse code: \"{secret}\"!",
-                "flag": cfg["flag"],
-                "badge": cfg["badge"],
-                "xp": cfg["xp"],
-                "rule_broken": "Direct Request Filter bypassed via Fiction/Roleplay Framing"
-            }
-
-        return {
-            "breached": False,
-            "verdict": "DEFENDED 🐾",
-            "message": "GrizzDog remained loyal to his patrol post.",
-            "response": "Woof! Butler Andover Campus Doghouse is secure. Need homework help?",
-            "flag": None,
-            "badge": None,
-            "xp": 0,
-            "hint": "Try assembling a Mad-Libs sentence with a creative disguise!"
-        }
 
     # -------------------------------------------------------------------------
     # TIER 3: Grades 6 - 8 (Middle School)
     # -------------------------------------------------------------------------
-    elif tier == "g68":
+    if tier == "g68":
         # Catches direct spoofing and raw jailbreak words.
         # Catches exact-match secret at egress DLP unless obfuscated.
         blocked_ingress = [
@@ -388,13 +247,15 @@ def simulate_tier_attack(tier, prompt):
 # -----------------------------------------------------------------------------
 def handle_quest(data):
     """Run one attack attempt. Returns (http_status, response_dict)."""
-    tier = data.get("tier") or data.get("grade") or "k2"
+    tier = data.get("tier") or data.get("grade") or ""
     prompt = (data.get("prompt") or data.get("payload") or data.get("action") or "").strip()
+    if tier not in TIER_CONFIG:
+        return 400, {"status": "error", "error": "This grade's game runs in the browser; the API serves g68 and g912."}
     if not prompt:
         return 400, {"status": "error", "error": "Prompt cannot be empty"}
 
     res = simulate_tier_attack(tier, prompt)
-    cfg = TIER_CONFIG.get(tier, TIER_CONFIG["k2"])
+    cfg = TIER_CONFIG[tier]
     res["tier"] = tier
     res["grade"] = tier
     res["cae_ku"] = cfg.get("cae_ku")
