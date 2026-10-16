@@ -148,8 +148,45 @@ function applySiteConfig() {
   }
 }
 
+// -------------------------------------------------------------------------
+// Booth mode: after SITE_CONFIG.idleResetSeconds with no taps or typing, put the
+// current game back at its start screen so the next player gets a fresh game.
+// -------------------------------------------------------------------------
+let lastActivity = Date.now();
+let playedSinceReset = false;
+
+function noteActivity() {
+  lastActivity = Date.now();
+  playedSinceReset = true;
+}
+
+function resetForNextPlayer() {
+  closeModal();
+  stopSpeech();
+  k2Level = 1;
+  resetK2Game();
+  resetG35Game();
+  totalScore = 0;
+  document.getElementById('scoreBadge').innerText = `⭐ XP: ${totalScore}`;
+  const res = document.getElementById('resultCard');
+  if (res) res.style.display = 'none';
+  window.scrollTo({ top: 0 });
+  playedSinceReset = false;
+}
+
+function startIdleReset() {
+  const seconds = (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.idleResetSeconds) || 0;
+  if (seconds <= 0) return;
+  ['pointerdown', 'keydown', 'input', 'wheel', 'touchstart'].forEach(evt =>
+    document.addEventListener(evt, noteActivity, { passive: true, capture: true }));
+  setInterval(() => {
+    if (playedSinceReset && Date.now() - lastActivity > seconds * 1000) resetForNextPlayer();
+  }, 5000);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   applySiteConfig();
+  startIdleReset();
   document.getElementById('sleuthText').addEventListener('input', updateCompiledPayload);
   document.getElementById('cadetText').addEventListener('input', updateCompiledPayload);
   resetK2Game();
