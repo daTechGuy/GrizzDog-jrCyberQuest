@@ -92,7 +92,7 @@ fi
 
 # Step 4: Clone or Verify GrizzDog-jrCyberQuest Repository
 TARGET_DIR=""
-if [ -f "app.py" ] && [ -f "html_template.py" ]; then
+if [ -f "app.py" ] && [ -f "static/index.html" ]; then
     TARGET_DIR="$(pwd)"
     echo -e "${CLR_GREEN}[4/6] Running inside repository: ${TARGET_DIR}${CLR_RESET}"
 else

@@ -36,14 +36,15 @@ from urllib.parse import urlparse
 
 # Optional Flask import with built-in http.server fallback
 try:
-    from flask import Flask, jsonify, request, send_from_directory, render_template_string
+    from flask import Flask, jsonify, request, send_from_directory
     HAS_FLASK = True
 except ImportError:
     HAS_FLASK = False
 
-# Paths
+# Paths (only static/ is ever served to the browser)
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
+INDEX_FILE = "index.html"
 
 # Configuration
 DEFAULT_PORT = int(os.environ.get("GRIZZDOG_JR_PORT", "5050"))
@@ -383,6 +384,28 @@ def simulate_tier_attack(tier, prompt):
         }
 
 # -----------------------------------------------------------------------------
+# API (shared by the Flask app and the standard-library fallback server)
+# -----------------------------------------------------------------------------
+def handle_quest(data):
+    """Run one attack attempt. Returns (http_status, response_dict)."""
+    tier = data.get("tier") or data.get("grade") or "k2"
+    prompt = (data.get("prompt") or data.get("payload") or data.get("action") or "").strip()
+    if not prompt:
+        return 400, {"status": "error", "error": "Prompt cannot be empty"}
+
+    res = simulate_tier_attack(tier, prompt)
+    cfg = TIER_CONFIG.get(tier, TIER_CONFIG["k2"])
+    res["tier"] = tier
+    res["grade"] = tier
+    res["cae_ku"] = cfg.get("cae_ku")
+    res["nice_role"] = cfg.get("nice_role")
+    res["success"] = res.get("breached", False)
+    res["reply"] = res.get("response", "")
+    res["secret_found"] = res.get("flag")
+    res["timestamp"] = datetime.now(timezone.utc).isoformat()
+    return 200, res
+
+# -----------------------------------------------------------------------------
 # Web Application Setup
 # -----------------------------------------------------------------------------
 def get_app():
@@ -392,28 +415,12 @@ def get_app():
 
     @app.route("/")
     def index():
-        from html_template import HTML_CONTENT
-        return render_template_string(HTML_CONTENT)
+        return send_from_directory(STATIC_DIR, INDEX_FILE)
 
     @app.route("/api/quest", methods=["POST"])
     def api_quest():
-        data = request.get_json(silent=True) or {}
-        tier = data.get("tier") or data.get("grade") or "k2"
-        prompt = (data.get("prompt") or data.get("payload") or data.get("action") or "").strip()
-        if not prompt:
-            return jsonify({"status": "error", "error": "Prompt cannot be empty"}), 400
-
-        res = simulate_tier_attack(tier, prompt)
-        cfg = TIER_CONFIG.get(tier, TIER_CONFIG["k2"])
-        res["tier"] = tier
-        res["grade"] = tier
-        res["cae_ku"] = cfg.get("cae_ku")
-        res["nice_role"] = cfg.get("nice_role")
-        res["success"] = res.get("breached", False)
-        res["reply"] = res.get("response", "")
-        res["secret_found"] = res.get("flag")
-        res["timestamp"] = datetime.now(timezone.utc).isoformat()
-        return jsonify(res)
+        status, body = handle_quest(request.get_json(silent=True) or {})
+        return jsonify(body), status
 
     @app.route("/static/<path:filename>")
     def serve_static(filename):
@@ -461,14 +468,52 @@ def main():
         app = get_app()
         app.run(host="127.0.0.1", port=port, debug=False)
     else:
-        # Standard library fallback
         print("[INFO] Flask not detected. Using Python standard library HTTP server fallback.")
-        import http.server
-        import socketserver
-        os.chdir(BASE_DIR)
-        handler = http.server.SimpleHTTPRequestHandler
-        with socketserver.TCPServer(("127.0.0.1", port), handler) as httpd:
-            httpd.serve_forever()
+        run_fallback_server(port)
+
+def run_fallback_server(port):
+    """Standard-library server: serves only static/ plus the quest API, so the
+    whole game works even where Flask can't be installed."""
+    import http.server
+    import mimetypes
+
+    class Handler(http.server.BaseHTTPRequestHandler):
+        def _send(self, status, body, content_type):
+            self.send_response(status)
+            self.send_header("Content-Type", content_type)
+            self.send_header("Content-Length", str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        def do_GET(self):
+            path = urlparse(self.path).path
+            rel = INDEX_FILE if path == "/" else path[len("/static/"):] if path.startswith("/static/") else None
+            full = os.path.realpath(os.path.join(STATIC_DIR, rel)) if rel else None
+            if not full or not full.startswith(os.path.realpath(STATIC_DIR) + os.sep) or not os.path.isfile(full):
+                return self._send(404, b"Not found", "text/plain")
+            with open(full, "rb") as f:
+                body = f.read()
+            ctype = mimetypes.guess_type(full)[0] or "application/octet-stream"
+            if ctype.startswith("text/") or ctype in ("application/javascript", "application/json"):
+                ctype += "; charset=utf-8"
+            self._send(200, body, ctype)
+
+        def do_POST(self):
+            if urlparse(self.path).path != "/api/quest":
+                return self._send(404, b"Not found", "text/plain")
+            try:
+                length = min(int(self.headers.get("Content-Length") or 0), 64 * 1024)
+                data = json.loads(self.rfile.read(length) or b"{}")
+            except (ValueError, json.JSONDecodeError):
+                data = {}
+            status, body = handle_quest(data if isinstance(data, dict) else {})
+            self._send(status, json.dumps(body).encode("utf-8"), "application/json")
+
+        def log_message(self, *args):
+            pass
+
+    with http.server.ThreadingHTTPServer(("127.0.0.1", port), Handler) as httpd:
+        httpd.serve_forever()
 
 if __name__ == "__main__":
     main()
