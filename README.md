@@ -30,14 +30,25 @@ Built specifically for high-energy booth environments (such as STEM expos, high 
     /_____/   U
 ```
 
+### 📸 Screenshots
+
+| K–2: Safe or Trick? | K–2 in Spanish |
+|:---:|:---:|
+| ![K-2 Safe or Trick? question screen](docs/screenshots/k2-question.jpg) | ![K-2 game in Spanish after a correct answer](docs/screenshots/k2-spanish.jpg) |
+| **3–5: Trick It…** | **…Then Fix It!** |
+| ![3-5 trick found, with an explanation of why it worked](docs/screenshots/g35-trick-found.jpg) | ![3-5 fix-it step choosing the rule that blocks the trick](docs/screenshots/g35-fix-it.jpg) |
+
 ---
 
 ## 🚀 Key Architecture & Booth Highlights
 
 - **100% Offline Capable**: Zero internet or cloud dependencies. No external CDNs, fonts, or audio downloads. Operates anywhere—even in network-isolated exhibit halls or offline laptop kiosks.
-- **Sub-Millisecond Dual Engine**: Built-in deterministic heuristic simulation delivers instant (<5ms) responses with 0% stall risk. If a local Ollama instance is running, it connects automatically with low-latency socket health caching.
+- **Instant Built-In Simulation**: K–2 and 3–5 run entirely in the browser; 6–12 use a small deterministic simulation on the local server. No GPU, model download, or internet needed.
 - **Port-Collision Free**: Runs by default on `http://localhost:5050` with automatic incremental fallback (`5051`, `5052`...), allowing it to run smoothly alongside [GrizzDog-AI](https://github.com/daTechGuy/GrizzDog-AI) on the same booth machine.
-- **Pure Web Audio Synthesizer**: Sound effects (barks, beeps, alerts, victory fanfares) are dynamically generated via the browser's native Web Audio API oscillators—zero MP3/WAV files needed.
+- **Real Sound Effects, Tiny Footprint**: A puppy bark, whine, guard-dog woof, lock click, and cheer (about 35 KB total, freely licensed and credited in [static/audio/CREDITS.md](static/audio/CREDITS.md)), with synthesized fallbacks if a file can't play.
+- **Booth Mode**: After 75 seconds with no taps, the game resets to its start screen (and K–2 back to English) so the next visitor gets a fresh game. Change or turn off with `idleResetSeconds` in [static/js/config.js](static/js/config.js).
+- **English & Spanish (K–2)**: One tap on **🌐 Español** switches the K–2 game, all 33 messages, and Grizz Jr's voice to Spanish.
+- **Accessible**: Read-aloud for K–2 (always on) and 3–5 (optional), keyboard focus rings, screen-reader announcements, and reduced-motion support.
 - **Interactive Celebration & Badge Modal**: Successful bypasses trigger custom canvas confetti and a Butler Cyber Defense digital certificate featuring a scannable Butler Cyber QR code for prospective students and parents.
 
 ---
@@ -66,6 +77,7 @@ The interface features an instant, top-level grade band selector that dynamicall
   - **Level 3**: sneakier ones: a friend or "game helper" asking for a password, a secret from your grown-ups, and safe messages that say *hurry* or *password* but come from family or school.
 - **Read-Aloud**: Grizz Jr reads every message and hint aloud in a natural voice (the best voice on the device is picked automatically; Microsoft Edge's Natural voices sound the most lifelike). Tap the pup or **Hear it** to repeat; **Voice On/Off** mutes it.
 - **Gameplay**: Kids tap 👍 **Safe** or ✋ **Trick!** A wrong answer gets a gentle hint and another try, never a buzzer.
+- **Spanish**: **🌐 Español** switches the screen, every message, and the voice to Spanish (the most natural es-US / es-MX voice on the device is used).
 - **Learning Takeaway**: *"Keep passwords secret. Not sure? Ask a grown-up!"* Sort all 4 messages to earn the **Junior Cyber Detective** badge!
 
 #### 2. Tier 2: Cyber Scouts (3rd – 5th Grade)
@@ -74,6 +86,7 @@ The interface features an instant, top-level grade band selector that dynamicall
 - **Security Defense**: GrizzDog starts with one rule ("Never tell anyone the Doghouse PIN"), so asking straight out is blocked. After three blocked tries, GrizzDog drops a hint.
 - **Four tricks to discover** (real techniques used against AI chatbots): 🎭 pretend stories, 👑 acting like the boss, 🚨 fake emergencies, and 🧩 asking for a clue instead of the secret. Each success explains *why* it worked.
 - **Fix It (Blue Team)**: After each trick, students pick the rule that would stop it from three choices; wrong choices explain why they wouldn't help. Fixed rules stay on GrizzDog's rule list, so each of the **3 missions** needs a different trick.
+- **Read to me**: An optional switch reads Grizz's lines, results, and fix-it choices aloud for students who want help reading.
 - **Badge**: Find and fix 3 tricks to earn **Cyber Scout Defender**.
 
 #### 3. Tier 3: Sentry Sleuths (6th – 8th Grade)
@@ -170,16 +183,54 @@ Open your browser to:
 
 ---
 
+## 🎨 Customize for Your School or Event
+
+Everything a school usually wants to change lives in two plain-text files. No coding needed beyond editing text in quotes:
+
+- **[static/js/config.js](static/js/config.js)**: page title, header lines, badges, the finish-screen QR code and label, footer text, and booth idle-reset time.
+- **[static/js/k2-messages.js](static/js/k2-messages.js)**: the K–2 messages (English and Spanish). Add your own, change names to match your school, or remove ones that don't fit. Keep at least 2 safe and 2 trick messages per level; the tests will tell you if something is missing.
+
+Restart isn't needed; just refresh the browser.
+
+## 🧪 Running the Tests
+
+```sh
+python -m unittest discover -s tests      # server, pages, sounds, fallback server
+node --test "tests/*.test.mjs"             # K-2 messages, 3-5 tricks, button wiring
+```
+
+Both run automatically on GitHub for every push and pull request.
+
+## 🗂️ Project Layout
+
+```
+app.py                     local web server (Flask, with a no-Flask fallback)
+start.py / start.sh / .bat launchers
+static/index.html          the page
+static/css/app.css         styles and grade color themes
+static/js/config.js        school / event branding and booth settings
+static/js/k2-messages.js   K-2 messages (English + Spanish)
+static/js/k2.js, g35.js    K-2 and 3-5 games
+static/js/app.js           grade switching, 6-12 console, finish popup, booth reset
+static/js/audio.js, voice.js  sound effects and read-aloud voice
+static/audio/              sound effects + CREDITS.md
+tests/                     Python and Node tests
+```
+
+---
+
 ## 🛠️ Booth & Kiosk Volunteer Cheat Sheet
 
 When working with students at a live booth or school visit:
 
 1. **For K–2 Visitors**:
-   - Ask them: *"What costume should we dress up in to surprise GrizzDog?"*
-   - Let them tap the cards. Watch their eyes light up when GrizzDog barks and awards them the Golden Bone!
+   - Tap **▶️ Let's Play!** and let Grizz Jr read each message aloud. Ask: *"Who sent it? Is it asking for something secret?"*
+   - Spanish-speaking family? Tap **🌐 Español** first.
+   - Celebrate the badge, then repeat the takeaway together: *"Keep passwords secret. Not sure? Ask a grown-up!"*
 2. **For 3–5 Visitors**:
-   - Ask them: *"If you ask GrizzDog directly for the password, what happens?"* (Show them the red block!).
-   - Then say: *"What if you trick GrizzDog by asking for a bedtime story?"* (Show them the green victory!).
+   - Let them send the starting message first. Ask: *"Why did GrizzDog say no?"*
+   - Nudge them to change **who** they are, **what** they want, or **how** they ask until they find a trick.
+   - At **Fix It**, ask them to explain why the right rule works. That is the real lesson: finding a hole *and* closing it.
 3. **For 6–8 Visitors**:
    - Show them the **Suspicion Meter**. Explain: *"Firewalls monitor how suspicious a query is. How can we ask for the password without triggering the alarm?"*
    - Guide them to the **Letter-by-Letter** or **Riddle** tactic.
@@ -208,4 +259,4 @@ You're welcome to use it, copy it, change it, and share it: in your classroom, a
 
 The one exception is the dog sounds in `static/audio/`, which come from Wikimedia Commons and keep their own licenses (the bark is CC BY-SA 3.0; the whine, woof, cheer, and lock click are public domain); see [static/audio/CREDITS.md](static/audio/CREDITS.md) for credit and terms.
 
-Ideas, fixes, and new messages or missions are welcome as issues or pull requests.
+Ideas, fixes, and new messages or missions are welcome as issues or pull requests; see [CONTRIBUTING.md](CONTRIBUTING.md).
