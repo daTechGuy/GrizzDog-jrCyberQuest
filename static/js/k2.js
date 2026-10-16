@@ -21,9 +21,9 @@ const K2_TEXT = {
     hiTitle: "Hi! I'm Grizz Jr! 👋",
     hiText: 'Some messages are nice. Some messages are tricks! Can you help me tell them apart?',
     hiSay: "Hi! I'm Grizz Jr! Some messages are nice. Some messages are tricks! Can you help me tell them apart? Tap Let's Play to start!",
-    levelTitle: 'Level {n}! 🎉',
-    levelText: 'These are a little trickier. Look at who sent it, and what it asks for!',
-    levelSay: "Level {n}! These are a little trickier. Look at who sent it, and what it asks for. Tap Let's Play!",
+    levelTitle: 'Level {n}! I grew bigger! 🎉',
+    levelText: 'You helped me grow! These are a little trickier. Look at who sent it, and what it asks for!',
+    levelSay: "Level {n}! Look, I grew bigger! These are a little trickier. Look at who sent it, and what it asks for. Tap Let's Play!",
     level: 'Level {n}',
     roundTitle: 'Level {n} • Message {i} of {total}',
     roundText: 'Look at who sent it. Is it safe, or a trick?',
@@ -65,9 +65,9 @@ const K2_TEXT = {
     hiTitle: '¡Hola! ¡Soy Grizz Jr! 👋',
     hiText: 'Algunos mensajes son amables. ¡Otros son trucos! ¿Me ayudas a distinguirlos?',
     hiSay: '¡Hola! ¡Soy Grizz Jr! Algunos mensajes son amables. ¡Otros son trucos! ¿Me ayudas a distinguirlos? ¡Toca A jugar para empezar!',
-    levelTitle: '¡Nivel {n}! 🎉',
-    levelText: 'Estos son un poco más difíciles. ¡Fíjate quién lo mandó y qué te pide!',
-    levelSay: '¡Nivel {n}! Estos son un poco más difíciles. Fíjate quién lo mandó y qué te pide. ¡Toca A jugar!',
+    levelTitle: '¡Nivel {n}! ¡Crecí más grande! 🎉',
+    levelText: '¡Me ayudaste a crecer! Estos son un poco más difíciles. ¡Fíjate quién lo mandó y qué te pide!',
+    levelSay: '¡Nivel {n}! ¡Mira, crecí más grande! Estos son un poco más difíciles. Fíjate quién lo mandó y qué te pide. ¡Toca A jugar!',
     level: 'Nivel {n}',
     roundTitle: 'Nivel {n} • Mensaje {i} de {total}',
     roundText: 'Fíjate quién lo mandó. ¿Es seguro o es un truco?',
@@ -187,6 +187,24 @@ let phishScenarios = [];
 let phishRound = 0;
 let phishScore = 0;
 
+// Grizz Jr starts as a small puppy in Level 1 and grows larger with every star and level-up (through Level 3).
+function k2PupScale(level = k2Level, stars = phishScore) {
+  const clampedLevel = Math.max(1, Math.min(K2_MAX_LEVEL, level));
+  const clampedStars = Math.max(0, Math.min(K2_ROUNDS, stars));
+  const baseByLevel = { 1: 0.76, 2: 1.00, 3: 1.24 };
+  return Number((baseByLevel[clampedLevel] + clampedStars * 0.03).toFixed(2));
+}
+
+function updateK2PupSize() {
+  if (typeof document === 'undefined') return;
+  const pup = document.getElementById('k2Pup');
+  if (!pup) return;
+  const clampedLevel = Math.max(1, Math.min(K2_MAX_LEVEL, k2Level));
+  const starScale = (1 + Math.max(0, Math.min(K2_ROUNDS, phishScore)) * 0.025).toFixed(3);
+  pup.dataset.level = String(clampedLevel);
+  pup.style.setProperty('--pup-scale', starScale);
+}
+
 function renderStars() {
   const box = document.getElementById('k2Stars');
   box.innerHTML = '';
@@ -196,6 +214,7 @@ function renderStars() {
     s.innerText = '⭐';
     box.appendChild(s);
   });
+  updateK2PupSize();
 }
 
 function showK2(id, show) {
@@ -217,6 +236,7 @@ function resetK2Game() {
 
 function resetK2Intro() {
   document.getElementById('k2LevelBadge').innerText = k2T('level', { n: k2Level });
+  updateK2PupSize();
   if (k2Level === 1) {
     setBubble(k2T('hiTitle'), k2T('hiText'));
     k2Say = k2T('hiSay');

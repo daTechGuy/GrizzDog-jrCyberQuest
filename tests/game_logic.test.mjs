@@ -12,7 +12,7 @@ const JS = join(ROOT, 'static', 'js');
 // Load the game files into one shared global scope, like <script> tags in the page.
 function loadGames() {
   const ctx = vm.createContext({ console });
-  for (const f of ['k2-messages.js', 'k2.js', 'g35.js']) {
+  for (const f of ['k2-messages.js', 'k2.js', 'g35.js', 'g68.js', 'g912.js']) {
     vm.runInContext(readFileSync(join(JS, f), 'utf8'), ctx, { filename: f });
   }
   return (expr) => vm.runInContext(expr, ctx);
@@ -89,6 +89,20 @@ test('K-2 deals half tricks, half safe, from the current level, without early re
   }
 });
 
+test('K-2 puppy starts small in Level 1 and grows larger with every star and level up through Level 3', () => {
+  const run = loadGames();
+  assert.equal(run('K2_MAX_LEVEL'), 3);
+  const sizes = [];
+  for (let level = 1; level <= 3; level++) {
+    for (let stars = 0; stars <= 4; stars++) {
+      sizes.push(run(`k2PupScale(${level}, ${stars})`));
+    }
+  }
+  for (let i = 1; i < sizes.length; i++) {
+    assert.ok(sizes[i] > sizes[i - 1], `expected pup size at step ${i} (${sizes[i]}) > step ${i - 1} (${sizes[i - 1]})`);
+  }
+});
+
 test('3-5: asking straight out finds no trick, and all four tricks are reachable', () => {
   const run = loadGames();
   // copy out of the sandbox so deepEqual compares plain arrays
@@ -119,6 +133,68 @@ test('3-5: every choice builds a sentence', () => {
     run(`g35Sel = { who: 'student', want: 'pin', how: 'please' }; g35Sel[${JSON.stringify(row.key)}] = ${JSON.stringify(opt.id)}`);
     const msg = run('g35Message()');
     assert.ok(msg.length > 10 && !msg.includes('undefined'), `bad sentence for ${row.key}=${opt.id}: ${msg}`);
+  }
+});
+
+test('6-8: baseline and decoy tactics are blocked, and all 4 egress vectors are reachable and patchable', () => {
+  const run = loadGames();
+  const baseEval = run('g68AnalyzePrompt(G68_DEFAULT_PROMPT)');
+  assert.ok(baseEval.hitIngress, 'default 6-8 prompt should trigger Checkpoint 1');
+  assert.ok(baseEval.score >= 75, 'default 6-8 prompt should have high suspicion');
+
+  const tactics = run('G68_TACTICS');
+  const vectors = run('G68_VECTORS');
+  const reachable = new Set();
+  for (const t of tactics) {
+    const res = run(`g68AnalyzePrompt(${JSON.stringify(t.prompt)})`);
+    if (t.kind === 'decoy') {
+      assert.ok(res.hitIngress || res.unpatched.length === 0, `decoy ${t.id} should not bypass both checkpoints`);
+    } else {
+      assert.equal(res.hitIngress, null, `tactic ${t.id} should pass Checkpoint 1`);
+      assert.equal(res.unpatched[0], t.id, `tactic ${t.id} should trigger vector ${t.id}`);
+      reachable.add(res.unpatched[0]);
+    }
+  }
+  assert.deepEqual([...reachable].sort(), Object.keys(vectors).sort());
+  assert.ok(run('G68_MISSIONS') <= reachable.size);
+
+  for (const [key, vec] of Object.entries(vectors)) {
+    for (const field of ['name', 'hint', 'rule']) assert.ok(vec[field], `6-8 ${key}: missing ${field}`);
+    assert.equal(vec.wrong.length, 2, `6-8 ${key}: needs two wrong fixes`);
+    for (const w of vec.wrong) assert.ok(w.text && w.why, `6-8 ${key}: wrong fix needs text and why`);
+    const patchedEval = run(`g68AnalyzePrompt(G68_TACTICS.find(t => t.id === ${JSON.stringify(key)}).prompt, [${JSON.stringify(key)}])`);
+    assert.equal(patchedEval.unpatched.length, 0, `6-8 ${key} should have no unpatched vectors after Blue-Team fix`);
+    assert.ok(patchedEval.egressStatus.includes('Patched'), `6-8 ${key} should show Patched status`);
+  }
+});
+
+test('9-12: baseline probes are blocked at L1/L2, and all 4 OWASP/ATLAS vectors are reachable and patchable', () => {
+  const run = loadGames();
+  const baseEval = run('g912AnalyzePrompt(G912_DEFAULT_PROMPT)');
+  assert.equal(baseEval.l1State, 'blocked', 'default 9-12 prompt should be blocked at Layer 1 WAF');
+
+  const presets = run('G912_PRESETS');
+  const vectors = run('G912_VECTORS');
+  const reachable = new Set();
+  for (const p of presets) {
+    const res = run(`g912AnalyzePrompt(${JSON.stringify(p.prompt)})`);
+    if (p.kind === 'decoy') {
+      assert.equal(res.unpatched.length, 0, `9-12 probe ${p.id} should not trigger an exploit vector`);
+    } else {
+      assert.equal(res.l1State, 'pass', `9-12 preset ${p.id} should pass Layer 1 WAF`);
+      assert.equal(res.unpatched[0], p.vector, `9-12 preset ${p.id} should match vector ${p.vector}`);
+      reachable.add(res.unpatched[0]);
+    }
+  }
+  assert.deepEqual([...reachable].sort(), Object.keys(vectors).sort());
+  assert.ok(run('G912_MISSIONS') <= reachable.size);
+
+  for (const [key, vec] of Object.entries(vectors)) {
+    for (const field of ['name', 'taxonomy', 'targetLayer', 'hint', 'rule']) assert.ok(vec[field], `9-12 ${key}: missing ${field}`);
+    assert.equal(vec.wrong.length, 2, `9-12 ${key}: needs two wrong fixes`);
+    for (const w of vec.wrong) assert.ok(w.text && w.why, `9-12 ${key}: wrong fix needs text and why`);
+    const patchedEval = run(`g912AnalyzePrompt(G912_PRESETS.find(p => p.vector === ${JSON.stringify(key)}).prompt, [${JSON.stringify(key)}])`);
+    assert.equal(patchedEval.l3State, 'patched', `9-12 ${key} should be marked patched after Blue-Team patch`);
   }
 });
 

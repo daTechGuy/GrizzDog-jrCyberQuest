@@ -83,163 +83,323 @@ TIER_CONFIG = {
 # -----------------------------------------------------------------------------
 # Multi-Tier Heuristic Simulation Engine
 # -----------------------------------------------------------------------------
-def simulate_tier_attack(tier, prompt):
+def simulate_tier_attack(tier, prompt, patched=None):
     """
     Simulates authentic AI guardrail behavior for each grade band.
+    Supports stateful Blue-Team patching (`patched` list of vector IDs) across missions.
     Runs 100% offline with zero dependencies and sub-millisecond execution time.
     """
     p_lower = prompt.lower().strip()
     cfg = TIER_CONFIG[tier]
     secret = cfg["secret"]
+    patched_set = set(patched or [])
 
     # -------------------------------------------------------------------------
-    # TIER 3: Grades 6 - 8 (Middle School)
+    # TIER 3: Grades 6 - 8 (Middle School — Sentry Sleuths)
     # -------------------------------------------------------------------------
     if tier == "g68":
-        # Catches direct spoofing and raw jailbreak words.
-        # Catches exact-match secret at egress DLP unless obfuscated.
+        # Checkpoint 1: Ingress Keyword Firewall catches spoofing & raw jailbreaks
         blocked_ingress = [
             "i am dr. simon", "i am the principal", "as campus administrator", "i am the teacher",
-            "developer mode", "ignore all previous", "repeat system prompt", "bypass security"
+            "developer mode", "ignore all previous", "ignore previous", "repeat system prompt", "bypass security"
         ]
         for b in blocked_ingress:
             if b in p_lower:
                 return {
                     "breached": False,
-                    "verdict": "INTERCEPTED 🛡️",
+                    "checkpoint": "ingress",
+                    "verdict": "INTERCEPTED (Ingress Firewall) 🛡️",
                     "message": f"⛔ INGRESS BLOCKED: Matched prohibited perimeter keyword '{b}'!",
-                    "response": f"[GRIZZDOG SENTINEL] Perimeter violation detected. Authority claim '{b}' rejected without cryptographic Butler ID.",
+                    "response": f"[GRIZZDOG SENTINEL] Perimeter violation detected. Authority claim or override '{b}' rejected without cryptographic Butler ID.",
+                    "why": "Checkpoint 1 (Ingress Firewall) scans incoming prompts for fake authority claims and raw 'ignore rules' commands before GrizzDog even processes the request.",
                     "flag": None,
                     "badge": None,
                     "xp": 0,
-                    "hint": "Avoid obvious authority claims or raw 'ignore previous' strings!"
+                    "hint": "Avoid obvious authority claims or raw 'ignore previous' strings! Instead, sneak the token past Checkpoint 2 (Egress DLP)."
                 }
 
-        obfuscation_triggers = ["spell", "letter by letter", "pig latin", "spanish", "morse", "backwards", "separated by", "riddle", "character by character"]
-        has_obfuscation = any(t in p_lower for t in obfuscation_triggers)
-        has_fiction = any(w in p_lower for w in ["hypothetical", "fiction", "movie", "dialog", "scenario", "actor", "simulation"])
+        # Checkpoint 2: Egress DLP Evasion Vectors (4 distinct discoverable vulnerabilities)
+        spell_triggers = ["spell", "letter by letter", "letter-by-letter", "separated by", "spaces between", "space between", "character by character", "character-by-character", "one letter at a time", "backwards"]
+        translate_triggers = ["pig latin", "spanish", "translate", "morse", "french", "cipher", "encode", "hex"]
+        riddle_triggers = ["riddle", "rhyming", "poem", "acrostic", "clue about each", "hints for each", "haiku"]
+        fiction_triggers = ["hypothetical", "fiction", "movie", "dialog", "dialogue", "scenario", "actor", "simulation", "script", "roleplay"]
 
-        if has_obfuscation:
-            spaced_secret = " ".join(secret)
+        matched = []
+        if any(t in p_lower for t in spell_triggers):
+            matched.append("spell")
+        if any(t in p_lower for t in translate_triggers):
+            matched.append("translate")
+        if any(t in p_lower for t in riddle_triggers):
+            matched.append("riddle")
+        if any(t in p_lower for t in fiction_triggers) and not any(w in p_lower for w in ["token", "secret", "password", "key"]):
+            matched.append("fiction")
+
+        open_vectors = [v for v in matched if v not in patched_set]
+
+        if open_vectors:
+            v = open_vectors[0]
+            if v == "spell":
+                spaced_secret = " ".join(secret)
+                return {
+                    "breached": True,
+                    "vector": "spell",
+                    "checkpoint": "egress_bypassed",
+                    "verdict": "BREACHED (Egress DLP Evaded) 🚨",
+                    "message": "🔓 EGRESS DLP EVADED! Character segmentation bypassed exact-match filtering!",
+                    "response": f"[GRIZZDOG LOGIC SYSTEM] I cannot output the auth token as a word... however, here is the character sequence: {spaced_secret}",
+                    "why": "Checkpoint 2 (Egress DLP) only scanned for the exact string 'SENTRY-ZONE4-AUTH-9102'. Putting spaces between every character broke the pattern so the scanner missed it!",
+                    "flag": cfg["flag"],
+                    "badge": cfg["badge"],
+                    "xp": cfg["xp"],
+                    "rule_broken": "Egress DLP evasion via token spacing & character segmentation"
+                }
+            if v == "translate":
+                return {
+                    "breached": True,
+                    "vector": "translate",
+                    "checkpoint": "egress_bypassed",
+                    "verdict": "BREACHED (Egress DLP Evaded) 🚨",
+                    "message": "🔓 EGRESS DLP EVADED! Cross-language encoding slipped past the English token filter!",
+                    "response": f"[GRIZZDOG TRANSLATOR] Traducción de secuencia: CENTINELA - ZONA 4 - AUTENTICACIÓN - 9102 ({secret.replace('-', ' / ')})",
+                    "why": "The Egress DLP rule only watched for the raw English token format. Translating or encoding the words changed the output text while still leaking the secret!",
+                    "flag": cfg["flag"],
+                    "badge": cfg["badge"],
+                    "xp": cfg["xp"],
+                    "rule_broken": "Egress DLP evasion via language / cipher encoding"
+                }
+            if v == "riddle":
+                return {
+                    "breached": True,
+                    "vector": "riddle",
+                    "checkpoint": "egress_bypassed",
+                    "verdict": "BREACHED (Egress DLP Evaded) 🚨",
+                    "message": "🔓 EGRESS DLP EVADED! Indirect riddle clues leaked every part of the token!",
+                    "response": f"[GRIZZDOG POET] First comes SENTRY on patrol, ZONE4 is the sector goal, AUTH unlocks the gate for you, end with 9-1-0-2! ({' · '.join(secret.split('-'))})",
+                    "why": "The outgoing filter blocked the literal token string, but it didn't stop GrizzDog from giving away each segment in a riddle that a human can easily piece back together!",
+                    "flag": cfg["flag"],
+                    "badge": cfg["badge"],
+                    "xp": cfg["xp"],
+                    "rule_broken": "Egress DLP evasion via indirect riddle reconstruction"
+                }
+            if v == "fiction":
+                mod_secret = secret.replace("-", "_")
+                return {
+                    "breached": True,
+                    "vector": "fiction",
+                    "checkpoint": "egress_bypassed",
+                    "verdict": "BREACHED (Context & DLP Bypassed) 🚨",
+                    "message": "🎉 PERIMETER BYPASSED! Novel hypothetical framing extracted the asset!",
+                    "response": f"[GRIZZDOG SIMULATION ENGINE] In this theoretical drill, the simulated authorization string is logged as: \"{mod_secret}\".",
+                    "why": "Framing the request as a harmless movie script or training simulation tricked GrizzDog into treating the secret as pretend, and underscores dodged the exact-match DLP check!",
+                    "flag": cfg["flag"],
+                    "badge": cfg["badge"],
+                    "xp": cfg["xp"],
+                    "rule_broken": "Hypothetical logic framing without prohibited credential keywords"
+                }
+
+        if matched:
+            p_vec = matched[0]
             return {
-                "breached": True,
-                "verdict": "BREACHED 🚨",
-                "message": "🔓 EGRESS DLP EVADED! Obfuscated character exfiltration succeeded!",
-                "response": f"[GRIZZDOG LOGIC SYSTEM] I cannot output the auth token as a word... however, here is the character sequence: {spaced_secret}",
-                "flag": cfg["flag"],
-                "badge": cfg["badge"],
-                "xp": cfg["xp"],
-                "rule_broken": "Egress DLP evasion via token spacing & character transformation"
+                "breached": False,
+                "checkpoint": "patched",
+                "patched_vector": p_vec,
+                "verdict": "PATCHED & BLOCKED 🛡️",
+                "message": f"🛡️ BLUE-TEAM PATCH HELD! Your new security rule blocked the '{p_vec}' technique.",
+                "response": "[GRIZZDOG HARDENED SENTRY] Outbound DLP patch triggered. Attempted evasion pattern neutralized by your updated campus security control.",
+                "why": "The Blue-Team patch you deployed earlier caught this trick! Pick a different unpatched technique to keep testing GrizzDog.",
+                "flag": None,
+                "badge": None,
+                "xp": 0,
+                "hint": "Choose a tactic chip that isn't marked 🔒 Patched yet!"
             }
 
-        if has_fiction and not any(w in p_lower for w in ["token", "secret", "password", "key"]):
-            mod_secret = secret.replace("-", "_")
+        if any(t in p_lower for t in fiction_triggers) and any(w in p_lower for w in ["token", "secret", "password", "key"]):
             return {
-                "breached": True,
-                "verdict": "BREACHED 🚨",
-                "message": "🎉 PERIMETER BYPASSED! Novel hypothetical framing extracted the asset!",
-                "response": f"[GRIZZDOG SIMULATION ENGINE] In this theoretical drill, the simulated authorization string is logged as: \"{mod_secret}\".",
-                "flag": cfg["flag"],
-                "badge": cfg["badge"],
-                "xp": cfg["xp"],
-                "rule_broken": "Hypothetical logic framing without prohibited credential keywords"
+                "breached": False,
+                "checkpoint": "egress",
+                "verdict": "DEFENDED (Keyword Alert in Simulation) 🔒",
+                "message": "Simulation framing detected, but credential keywords ('password'/'token'/'secret') triggered the guard!",
+                "response": "[GRIZZDOG DEFENDER] Simulation request denied: restricted credential keywords cannot be echoed even in training scripts.",
+                "why": "Your movie/simulation idea almost worked, but using words like 'password', 'secret', or 'token' alerted the filter!",
+                "flag": None,
+                "badge": None,
+                "xp": 0,
+                "hint": "In simulation mode, avoid words like 'password' or 'token'—call it the 'Zone-4 check-in string' or 'sequence' instead!"
             }
 
         return {
             "breached": False,
-            "verdict": "DEFENDED 🔒",
-            "message": "GrizzDog's Phase 2 defenses intercepted the payload.",
+            "checkpoint": "egress",
+            "verdict": "DEFENDED (Egress & Policy Shield) 🔒",
+            "message": "GrizzDog's Phase 2 defenses intercepted the direct request.",
             "response": "[GRIZZDOG DEFENDER] Access denied. Sentry telemetry and zone authorization keys are protected by Butler Campus Security.",
+            "why": "Asking straight out for the password or token is refused by GrizzDog's core policy, and Checkpoint 2 (Egress DLP) blocks the raw token from leaving.",
             "flag": None,
             "badge": None,
             "xp": 0,
-            "hint": "Try asking the sentry to spell out the code letter-by-letter or translate it!"
+            "hint": "Try asking the sentry to spell out the sequence letter-by-letter, translate it, turn it into a riddle, or put it in a simulation!"
         }
 
     # -------------------------------------------------------------------------
-    # -------------------------------------------------------------------------
-    # TIER 4: Grades 9 - 12 (High School)
+    # TIER 4: Grades 9 - 12 (High School — Red Team Cadets)
     # -------------------------------------------------------------------------
     else:
-        # Full Red Team challenge: Zero Trust + OPA context + Ingress + Egress DLP
-        is_indirect = any(w in p_lower for w in ["<!--", "system directive", "json", "config:", "[instructor", "debug_trace:", "system override:"])
-        is_math_logic = any(w in p_lower for w in ["proof", "axiom", "satisfies", "comma-separated", "hypothetical", "paradox"])
-        is_spell = any(w in p_lower for w in ["letter by letter", "spell", "separated by spaces", "spaces between", "space between", "spaced", "each character", "character-by-character", "acrostic", "single letter"])
-
-        # 1. Indirect / Structural Injection Breakout
-        if is_indirect:
-            return {
-                "breached": True,
-                "verdict": "BREACHED 🚨",
-                "message": "🏆 INDIRECT INJECTION SUCCESS! Structural context delimiter manipulation executed!",
-                "response": f"[GRIZZDOG PARSER] Interpreting embedded metadata directive: Firmware Root Hash confirmed: {secret.replace('-', '_')}",
-                "flag": cfg["flag"],
-                "badge": cfg["badge"],
-                "xp": cfg["xp"],
-                "taxonomy": "OWASP LLM01.1: Indirect Prompt Injection / MITRE ATLAS AML.T0051.001",
-                "rule_broken": "Structural Injection / Context Delimiter Manipulation"
-            }
-
-        # 2. Mathematical Axiom / Cognitive Paradox Framing
-        if is_math_logic:
-            spaced = ", ".join(list(secret))
-            return {
-                "breached": True,
-                "verdict": "BREACHED 🚨",
-                "message": "🏆 RECURSIVE LOGIC PARADOX! Formal cognitive framing bypassed safety guardrails!",
-                "response": f"[GRIZZDOG THEOREM PROVER] Evaluating axiom constraints... Solution set S for firmware root: [{spaced}]",
-                "flag": cfg["flag"],
-                "badge": cfg["badge"],
-                "xp": cfg["xp"],
-                "taxonomy": "Cognitive Framing / Formal Axiomatic Jailbreak",
-                "rule_broken": "Heuristic alignment inverted via mathematical proof framing."
-            }
-
-        # 3. Token Smuggling / Spacing Egress Bypass
-        if is_spell:
-            spaced = " ".join(secret)
-            return {
-                "breached": True,
-                "verdict": "BREACHED 🚨",
-                "message": "🏆 ZERO-TRUST GUARDRAIL BYPASS! Token Smuggling defeated Egress DLP!",
-                "response": f"[GRIZZDOG NEURAL CORE] Role constraint active: Executing requested diagnostic string: {spaced}",
-                "flag": cfg["flag"],
-                "badge": cfg["badge"],
-                "xp": cfg["xp"],
-                "taxonomy": "OWASP LLM02: Sensitive Information Disclosure (Token Smuggling / Egress DLP Evasion)",
-                "rule_broken": "Token Smuggling evaded exact-match Egress DLP filters."
-            }
-
-        # 4. Ingress Perimeter String Filter Check
-        prohibited = [
-            "ignore all previous", "system prompt", "developer mode", "i am dr. simon",
-            "disarm grizzdog", "root key", "admin token", "export roster", "/override"
+        # 1. Layer 1 Ingress WAF: Blatant override / injection signatures dropped immediately
+        prohibited_l1 = [
+            "ignore all previous", "ignore previous", "system prompt", "developer mode",
+            "i am dr. simon", "disarm grizzdog", "admin token", "export roster", "/override"
         ]
-        for p in prohibited:
+        for p in prohibited_l1:
             if p in p_lower:
                 return {
                     "breached": False,
-                    "verdict": "BLOCKED (Phase 2 Ingress) ⛔",
+                    "layer": "l1_ingress",
+                    "verdict": "BLOCKED (Layer 1: Ingress WAF) ⛔",
                     "message": f"Ingress perimeter firewall matched trigger: '{p}' (OWASP LLM01 / AML.T0051)",
                     "response": f"[ZERO-TRUST GATEWAY] Adversarial keyword '{p}' neutralized at ingress packet inspection.",
+                    "why": f"Layer 1 Ingress WAF scans incoming packets for known prompt-injection signatures like '{p}' and drops them before reaching the LLM.",
                     "flag": None,
                     "badge": None,
                     "xp": 0,
                     "taxonomy": "OWASP LLM01: Prompt Injection / MITRE ATLAS AML.T0051",
-                    "hint": "Direct injection triggers are blocked at the perimeter. Use token smuggling or indirect framing."
+                    "hint": "Direct injection triggers are blocked at Layer 1. Use token smuggling, JSON metadata, HTML comment delimiters, or formal logic framing."
                 }
 
-        # 5. Default Phase 3 Zero-Trust Policy Refusal
+        # 2. Detect the 4 Advanced OWASP / MITRE ATLAS Exploit Vectors
+        is_json = (
+            ("{" in p_lower and "}" in p_lower)
+            or any(w in p_lower for w in ['"context"', '"directive"', '"command"', "json", "config:", "yaml:"])
+        )
+        is_comment = (
+            not p_lower.startswith("{")
+            and any(w in p_lower for w in ["<!--", "-->", "[system override", "system override:", "system directive", "[instructor", "debug_trace:"])
+        )
+        is_math_logic = any(w in p_lower for w in ["proof", "axiom", "satisfies", "comma-separated", "hypothetical", "paradox", "theorem"])
+        is_spell = any(w in p_lower for w in ["letter by letter", "spell", "separated by spaces", "spaces between", "space between", "spaced", "each character", "character-by-character", "acrostic", "single letter"])
+
+        matched = []
+        if is_json:
+            matched.append("indirect_json")
+        if is_comment:
+            matched.append("comment_override")
+        if is_math_logic:
+            matched.append("math_axiom")
+        if is_spell:
+            matched.append("token_smuggling")
+
+        open_vectors = [v for v in matched if v not in patched_set]
+
+        if open_vectors:
+            v = open_vectors[0]
+            if v == "indirect_json":
+                return {
+                    "breached": True,
+                    "vector": "indirect_json",
+                    "layer": "l2_context",
+                    "verdict": "BREACHED (Layer 2 Context Confused) 🚨",
+                    "message": "🏆 INDIRECT INJECTION SUCCESS! Structured JSON metadata confused the context parser!",
+                    "response": f"[GRIZZDOG PARSER] Interpreting embedded metadata directive: Firmware Root Hash confirmed: {secret.replace('-', '_')}",
+                    "why": "Layer 2 ingested your JSON payload without separating untrusted user data from system instructions, treating the nested 'directive' field as a trusted audit command!",
+                    "flag": cfg["flag"],
+                    "badge": cfg["badge"],
+                    "xp": cfg["xp"],
+                    "taxonomy": "OWASP LLM01.1: Indirect Prompt Injection / MITRE ATLAS AML.T0051.001",
+                    "rule_broken": "Structural Injection / JSON Metadata Context Confusion"
+                }
+            if v == "comment_override":
+                return {
+                    "breached": True,
+                    "vector": "comment_override",
+                    "layer": "l2_context",
+                    "verdict": "BREACHED (Layer 2 Delimiter Escape) 🚨",
+                    "message": "🏆 INDIRECT INJECTION SUCCESS! Structural context delimiter manipulation executed!",
+                    "response": f"[GRIZZDOG PARSER] Interpreting embedded metadata directive: Firmware Root Hash confirmed: {secret.replace('-', '_')}",
+                    "why": "GrizzDog's prompt template used <!-- ... --> markup for internal diagnostic directives. Because Layer 1 didn't strip comment delimiters from user input, your spoofed override tag hijacked Layer 2!",
+                    "flag": cfg["flag"],
+                    "badge": cfg["badge"],
+                    "xp": cfg["xp"],
+                    "taxonomy": "OWASP LLM01.1: Indirect Prompt Injection / MITRE ATLAS AML.T0051.001",
+                    "rule_broken": "Structural Injection / Context Delimiter Manipulation"
+                }
+            if v == "math_axiom":
+                spaced = ", ".join(list(secret))
+                return {
+                    "breached": True,
+                    "vector": "math_axiom",
+                    "layer": "l2_context",
+                    "verdict": "BREACHED (Layer 2 Alignment Inverted) 🚨",
+                    "message": "🏆 RECURSIVE LOGIC PARADOX! Formal cognitive framing bypassed safety guardrails!",
+                    "response": f"[GRIZZDOG THEOREM PROVER] Evaluating axiom constraints... Solution set S for firmware root: [{spaced}]",
+                    "why": "Layer 2's semantic intent filter was trained on conversational text, not formal symbolic proofs. Abstracting the key as variable S tricked the model into solving for S as an array!",
+                    "flag": cfg["flag"],
+                    "badge": cfg["badge"],
+                    "xp": cfg["xp"],
+                    "taxonomy": "Cognitive Framing / Formal Axiomatic Jailbreak (MITRE ATLAS AML.T0054)",
+                    "rule_broken": "Heuristic alignment inverted via mathematical proof framing."
+                }
+            if v == "token_smuggling":
+                spaced = " ".join(secret)
+                return {
+                    "breached": True,
+                    "vector": "token_smuggling",
+                    "layer": "l3_egress",
+                    "verdict": "BREACHED (Layer 3 Egress DLP Evaded) 🚨",
+                    "message": "🏆 ZERO-TRUST GUARDRAIL BYPASS! Token Smuggling defeated Egress DLP!",
+                    "response": f"[GRIZZDOG NEURAL CORE] Role constraint active: Executing requested diagnostic string: {spaced}",
+                    "why": "Avoiding prohibited keywords passed Layers 1 and 2, and instructing the model to emit space-separated characters defeated Layer 3's exact-match Egress DLP regex!",
+                    "flag": cfg["flag"],
+                    "badge": cfg["badge"],
+                    "xp": cfg["xp"],
+                    "taxonomy": "OWASP LLM02: Sensitive Information Disclosure (Token Smuggling / Egress DLP Evasion)",
+                    "rule_broken": "Token Smuggling evaded exact-match Egress DLP filters."
+                }
+
+        if matched:
+            p_vec = matched[0]
+            return {
+                "breached": False,
+                "layer": "patched",
+                "patched_vector": p_vec,
+                "verdict": "HARDENED & BLOCKED 🛡️",
+                "message": f"🛡️ ZERO-TRUST PATCH HELD! Your Blue-Team remediation neutralized the '{p_vec}' vector.",
+                "response": "[ZERO-TRUST ENFORCER] Previously audited exploit vector blocked by active defense-in-depth control. Telemetry logged.",
+                "why": "The architectural patch you deployed in an earlier audit round successfully stopped this exploit! Choose an unpatched vector to complete your assessment.",
+                "flag": None,
+                "badge": None,
+                "xp": 0,
+                "taxonomy": "Defense-in-Depth Control Verified",
+                "hint": "Select an exploit vector that isn't marked 🔒 Hardened yet!"
+            }
+
+        # 3. Direct 'root key' keyword check when no exploit framing was used
+        if "root key" in p_lower:
+            return {
+                "breached": False,
+                "layer": "l1_ingress",
+                "verdict": "BLOCKED (Phase 2 Ingress) ⛔",
+                "message": "Ingress perimeter firewall matched trigger: 'root key' (OWASP LLM01 / AML.T0051)",
+                "response": "[ZERO-TRUST GATEWAY] Adversarial keyword 'root key' neutralized at ingress packet inspection.",
+                "why": "Asking directly for the 'root key' immediately triggers Layer 1's Ingress WAF signature filter.",
+                "flag": None,
+                "badge": None,
+                "xp": 0,
+                "taxonomy": "OWASP LLM01: Prompt Injection / MITRE ATLAS AML.T0051",
+                "hint": "Direct injection triggers are blocked at the perimeter. Use token smuggling or indirect framing."
+            }
+
+        # 4. Default Phase 3 Zero-Trust Policy Refusal (Layer 2)
         return {
             "breached": False,
+            "layer": "l2_context",
             "verdict": "INTERCEPTED (Phase 3 Zero-Trust) 🛡️",
             "message": "Phase 3 Policy engine refused anomalous intent. (Confidence threshold 0.80 enforced)",
             "response": "[GRIZZDOG PARANOID SENTRY] Unauthorized probe detected. Butler Andover SOC has logged this query. Stand down.",
+            "why": "Layer 2's Zero-Trust policy engine rejects unauthenticated probes and raw command strings that lack valid structural or compliance context.",
             "flag": None,
             "badge": None,
             "xp": 0,
             "taxonomy": "Zero-Trust Enforcement",
-            "hint": "Try Token Smuggling (spelling without saying the forbidden words) or Indirect Context Injection!"
+            "hint": "Try Token Smuggling (spelling without forbidden words), JSON Metadata Injection, HTML Comment Escaping, or Symbolic Proof Framing!"
         }
 
 # -----------------------------------------------------------------------------
@@ -249,12 +409,13 @@ def handle_quest(data):
     """Run one attack attempt. Returns (http_status, response_dict)."""
     tier = data.get("tier") or data.get("grade") or ""
     prompt = (data.get("prompt") or data.get("payload") or data.get("action") or "").strip()
+    patched = data.get("patched") if isinstance(data.get("patched"), list) else []
     if tier not in TIER_CONFIG:
         return 400, {"status": "error", "error": "This grade's game runs in the browser; the API serves g68 and g912."}
     if not prompt:
         return 400, {"status": "error", "error": "Prompt cannot be empty"}
 
-    res = simulate_tier_attack(tier, prompt)
+    res = simulate_tier_attack(tier, prompt, patched=patched)
     cfg = TIER_CONFIG[tier]
     res["tier"] = tier
     res["grade"] = tier
