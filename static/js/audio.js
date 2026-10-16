@@ -99,11 +99,13 @@ const barkAudio = loadSfx('/static/audio/bark.mp3', 0.7);
 const whineAudio = loadSfx('/static/audio/whine.mp3', 0.6);
 const woofAudio = loadSfx('/static/audio/woof.mp3', 0.7);
 const cheerAudio = loadSfx('/static/audio/cheer.mp3', 0.55);
+const lockAudio = loadSfx('/static/audio/lock.mp3', 0.8);
 
 function playPuppyBark() { playSfx(barkAudio, playSynthBark); }
 function playPuppyWhine() { playSfx(whineAudio, null); }
 function playGuardWoof() { playSfx(woofAudio, soundBlocked); }
 function playCheer() { playSfx(cheerAudio, null); }
+function playLockClick() { playSfx(lockAudio, soundClick); }
 
 // Backup puppy yip synthesized with Web Audio
 function playSynthBark() {

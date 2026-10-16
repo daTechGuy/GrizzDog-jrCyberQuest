@@ -206,6 +206,6 @@ GrizzDog-jrCyberQuest is free and open source under the [MIT License](LICENSE).
 
 You're welcome to use it, copy it, change it, and share it: in your classroom, at an outreach booth, in a camp or club, or as the starting point for your own game. No permission or fee needed; just keep the license notice with your copy.
 
-The one exception is the dog sounds in `static/audio/`, which come from Wikimedia Commons and keep their own licenses (the bark is CC BY-SA 3.0; the whine, woof, and cheer are public domain); see [static/audio/CREDITS.md](static/audio/CREDITS.md) for credit and terms.
+The one exception is the dog sounds in `static/audio/`, which come from Wikimedia Commons and keep their own licenses (the bark is CC BY-SA 3.0; the whine, woof, cheer, and lock click are public domain); see [static/audio/CREDITS.md](static/audio/CREDITS.md) for credit and terms.
 
 Ideas, fixes, and new messages or missions are welcome as issues or pull requests.

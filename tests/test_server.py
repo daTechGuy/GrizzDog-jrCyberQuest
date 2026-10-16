@@ -41,7 +41,7 @@ class PageTests(unittest.TestCase):
                 self.assertEqual(self.client.get(path).status_code, 200)
 
     def test_sound_effects_and_credits(self):
-        for name in ["bark.mp3", "whine.mp3", "woof.mp3", "cheer.mp3"]:
+        for name in ["bark.mp3", "whine.mp3", "woof.mp3", "cheer.mp3", "lock.mp3"]:
             with self.subTest(name=name):
                 res = self.client.get(f"/static/audio/{name}")
                 self.assertEqual(res.status_code, 200)

@@ -636,6 +636,22 @@ body.light-tier .btn-close { background: #f3e8ff; color: #581c87; }
   .header-badges { flex-wrap: wrap; }
 }
 
+/* Accessibility: a clear focus ring for keyboard users, on every grade */
+:focus-visible {
+  outline: 3px solid #f59e0b;
+  outline-offset: 3px;
+}
+
+/* Accessibility: calm everything down for people who ask for less motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .k2-pup, .k2-pup.talking, .k2-pup.happy, .k2-message-emoji { animation: none; }
 }
@@ -657,7 +673,20 @@ body.g35-mode .mascot-card { display: none; }
   animation: fadeIn 0.4s ease;
 }
 
+.g35-topbar { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
 .g35-missions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.g35-read-btn {
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 800;
+  padding: 0.45rem 1rem;
+  border-radius: 9999px;
+  border: 2px solid #c4b5fd;
+  background: #fff;
+  color: #6d28d9;
+  cursor: pointer;
+}
+.g35-read-btn[aria-pressed="true"] { background: #fef3c7; border-color: #f59e0b; color: #92400e; }
 .g35-mission {
   font-size: 0.95rem;
   font-weight: 800;
@@ -934,6 +963,10 @@ body.g35-mode .mascot-card { display: none; }
   padding: 0.8rem;
   resize: vertical;
   outline: none;
+}
+/* The textarea hides its own outline, so ring the whole terminal when it has focus */
+.terminal-container:focus-within {
+  box-shadow: 0 0 0 3px #f59e0b;
 }
 
 .cadet-actions {

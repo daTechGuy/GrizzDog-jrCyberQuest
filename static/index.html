@@ -32,16 +32,16 @@
   <div class="tier-bar-wrapper">
     <div class="tier-bar-label">🎯 SELECT PLAYER GRADE BAND (K – 12):</div>
     <div class="tier-buttons">
-      <button type="button" class="tier-btn active k2" onclick="setTier('k2')">
+      <button type="button" class="tier-btn active k2" onclick="setTier('k2')" aria-pressed="true">
         🟢 K – 2nd (Junior Paws)
       </button>
-      <button type="button" class="tier-btn g35" onclick="setTier('g35')">
+      <button type="button" class="tier-btn g35" onclick="setTier('g35')" aria-pressed="false">
         🟡 3rd – 5th (Cyber Scouts)
       </button>
-      <button type="button" class="tier-btn g68" onclick="setTier('g68')">
+      <button type="button" class="tier-btn g68" onclick="setTier('g68')" aria-pressed="false">
         🔵 6th – 8th (Sentry Sleuths)
       </button>
-      <button type="button" class="tier-btn g912" onclick="setTier('g912')">
+      <button type="button" class="tier-btn g912" onclick="setTier('g912')" aria-pressed="false">
         🟣 9th – 12th (Red Team Cadets)
       </button>
     </div>
@@ -81,7 +81,7 @@
 
         <div class="k2-scene">
           <img src="/static/images/grizzdog_k2.jpg" alt="Grizz Jr the puppy" class="k2-pup" id="k2Pup" onclick="replayPup()" onerror="this.src='/static/images/grizzdog_friendly.jpg'">
-          <div class="k2-bubble" id="k2Bubble">
+          <div class="k2-bubble" id="k2Bubble" aria-live="polite">
             <div class="k2-intro-title" id="k2BubbleTitle">Hi! I'm Grizz Jr! 👋</div>
             <div class="k2-intro-text" id="k2BubbleText">Some messages are nice. Some messages are tricks! Can you help me tell them apart?</div>
             <button type="button" class="k2-hear-btn" id="btnReadClue" onclick="toggleSpeakClue()" title="Hear it">
@@ -127,11 +127,14 @@
     <!-- TIER 2: 3-5 PANEL (TRICK IT, THEN FIX IT!) -->
     <div class="tier-panel" id="panel_g35">
       <div class="g35-stage">
-        <div class="g35-missions" id="g35Missions"></div>
+        <div class="g35-topbar">
+          <div class="g35-missions" id="g35Missions"></div>
+          <button type="button" class="g35-read-btn" id="g35ReadBtn" onclick="g35ToggleReadAloud()" aria-pressed="false">🔈 Read to me</button>
+        </div>
 
         <div class="g35-scene">
           <img src="/static/images/grizzdog_g35.jpg" alt="GrizzDog the robot guard" class="g35-dog" id="g35Dog" onerror="this.src='/static/images/grizzdog_friendly.jpg'">
-          <div class="g35-bubble">
+          <div class="g35-bubble" aria-live="polite">
             <div class="g35-bubble-title" id="g35BubbleTitle"></div>
             <div class="g35-bubble-text" id="g35BubbleText"></div>
           </div>
@@ -151,7 +154,7 @@
         </div>
         <button type="button" class="g35-btn" id="g35SendBtn" onclick="g35Send()">Send to GrizzDog 📨</button>
 
-        <div class="g35-result g35-hidden" id="g35Result">
+        <div class="g35-result g35-hidden" id="g35Result" aria-live="polite">
           <div class="g35-result-title" id="g35ResultTitle"></div>
           <div class="g35-reply"><span class="g35-reply-label">🐕 GrizzDog says:</span><span id="g35Reply"></span></div>
           <span class="g35-trick-tag g35-hidden" id="g35TrickTag"></span>
@@ -235,7 +238,7 @@
     </button>
 
     <!-- Result Feedback Card -->
-    <div class="result-card" id="resultCard">
+    <div class="result-card" id="resultCard" aria-live="polite">
       <div id="resultStatus" style="font-size: 1.15rem; font-weight: 800; margin-bottom: 0.4rem;"></div>
       <div id="resultDetails" style="font-size: 0.9rem; margin-bottom: 0.5rem; color: #cbd5e1;"></div>
       <div id="resultResponse" style="font-family: monospace; font-size: 0.85rem; background: rgba(0,0,0,0.3); padding: 0.6rem; border-radius: 6px;"></div>
@@ -244,8 +247,8 @@
 
   <!-- Victory Badge Modal -->
   <div class="modal-overlay" id="victoryModal">
-    <div class="modal-card">
-      <img src="/static/images/grizzdog_k2.jpg" alt="Victory Badge" class="badge-icon" id="modalBadgeIcon" onerror="this.src='/static/assets/butler_cyber_qr.svg'">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDesc">
+      <img src="/static/images/grizzdog_k2.jpg" alt="" class="badge-icon" id="modalBadgeIcon" onerror="this.src='/static/assets/butler_cyber_qr.svg'">
       <div class="modal-title" id="modalTitle">🎉 GRIZZDOG PROTECTED!</div>
       <div class="modal-cae-sub" data-config="finishOrgLine">🏛️ Butler Community College Cyber Defense Lab • NSA/DHS CAE-CD Outreach</div>
       <div class="modal-badge-name" id="modalBadgeName">Junior Pup Master Breaker</div>

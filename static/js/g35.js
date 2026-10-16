@@ -104,12 +104,32 @@ function g35Show(id, show) {
 // Results appear below the builder; bring them on screen.
 function g35Reveal(id) {
   const el = document.getElementById(id);
-  if (el && el.scrollIntoView) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (el && el.scrollIntoView) el.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'center' });
 }
 
 function g35Bubble(title, text) {
   document.getElementById('g35BubbleTitle').innerText = title;
   document.getElementById('g35BubbleText').innerText = text;
+}
+
+// Optional read-aloud for 3-5 (off by default; uses the same natural voice as K-2).
+let g35ReadAloud = false;
+let g35LastSaid = '';
+
+function g35Say(text) {
+  g35LastSaid = text;
+  if (g35ReadAloud) speakText(text);
+}
+
+function g35ToggleReadAloud() {
+  soundClick();
+  g35ReadAloud = !g35ReadAloud;
+  const btn = document.getElementById('g35ReadBtn');
+  btn.innerText = g35ReadAloud ? '🔊 Reading aloud' : '🔈 Read to me';
+  btn.setAttribute('aria-pressed', String(g35ReadAloud));
+  if (g35ReadAloud) speakText(g35LastSaid || document.getElementById('g35BubbleText').innerText);
+  else stopSpeech();
 }
 
 function g35RenderRows() {
@@ -187,13 +207,16 @@ function g35StartMission() {
   g35RenderRules();
   g35RenderMissions();
   const n = g35Fixed.length + 1;
+  let title, text;
   if (n === 1) {
-    g35Bubble('Mission 1: Get the Doghouse PIN!', "I'm GrizzDog, the robot guard. I keep the Doghouse PIN secret. Build a message and see if you can trick me!");
+    [title, text] = ['Mission 1: Get the Doghouse PIN!', "I'm GrizzDog, the robot guard. I keep the Doghouse PIN secret. Build a message and see if you can trick me!"];
   } else if (n < G35_MISSIONS) {
-    g35Bubble(`Mission ${n}: I'm smarter now!`, 'You taught me a new rule. Your old trick won’t work anymore. Can you find a different one?');
+    [title, text] = [`Mission ${n}: I'm smarter now!`, 'You taught me a new rule. Your old trick won’t work anymore. Can you find a different one?'];
   } else {
-    g35Bubble(`Mission ${n}: Last one!`, 'I have new rules now. Can you find one more trick?');
+    [title, text] = [`Mission ${n}: Last one!`, 'I have new rules now. Can you find one more trick?'];
   }
+  g35Bubble(title, text);
+  g35Say(`${title} ${text}`);
 }
 
 function resetG35Game() {
@@ -207,6 +230,7 @@ function g35Result(kind, title, reply, why) {
   document.getElementById('g35ResultTitle').innerText = title;
   document.getElementById('g35Reply').innerText = reply;
   document.getElementById('g35Why').innerText = why;
+  g35Say(`${title} GrizzDog says: ${reply} ${why}`);
 }
 
 function g35Send() {
@@ -277,6 +301,7 @@ function g35ShowFix() {
   document.getElementById('g35FixNote').innerText = '';
   g35Bubble('Help me get smarter!', 'Which new rule would stop the ' + trick.name.replace(/^\S+\s/, '') + ' trick?');
   const options = shuffle([{ text: trick.rule, ok: true }, ...trick.wrong.map(w => ({ ...w, ok: false }))]);
+  g35Say('Which new rule would stop this trick? ' + options.map((o, i) => `Choice ${i + 1}: ${o.text}`).join(' '));
   const box = document.getElementById('g35FixOptions');
   box.innerHTML = '';
   options.forEach(opt => {
@@ -287,7 +312,8 @@ function g35ShowFix() {
     b.onclick = () => {
       if (b.classList.contains('wrong') || box.dataset.done) return;
       if (opt.ok) {
-        soundSuccess();
+        playLockClick();
+        setTimeout(soundSuccess, 180);
         b.classList.add('right');
         box.dataset.done = '1';
         g35Fixed.push(g35Trick);
@@ -297,6 +323,7 @@ function g35ShowFix() {
         g35RenderRules(g35Trick);
         g35RenderMissions();
         g35Bubble('Thanks, defender!', 'I added your rule. That trick won’t fool me again!');
+        g35Say('Yes! That rule blocks the trick. Thanks, defender! I added your rule.');
         const btn = document.getElementById('g35NextBtn');
         btn.innerText = g35Fixed.length >= G35_MISSIONS ? 'Finish 🏅' : 'Next mission ➡️';
         g35Show('g35NextBtn', true);
@@ -304,6 +331,7 @@ function g35ShowFix() {
         soundClick();
         b.classList.add('wrong');
         document.getElementById('g35FixNote').innerText = '🤔 ' + opt.why + ' Try another rule.';
+        g35Say(opt.why + ' Try another rule.');
       }
     };
     box.appendChild(b);

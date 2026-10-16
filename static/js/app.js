@@ -12,8 +12,9 @@ function setTier(tier) {
 
   // Update switcher buttons
   document.querySelectorAll('.tier-btn').forEach(btn => {
-    btn.classList.remove('active');
-    if (btn.classList.contains(tier)) btn.classList.add('active');
+    const on = btn.classList.contains(tier);
+    btn.classList.toggle('active', on);
+    btn.setAttribute('aria-pressed', String(on));
   });
 
   // Show matching panel
@@ -295,6 +296,8 @@ function showModal(data) {
   if (resetBtn) resetBtn.innerText = (currentTier === 'k2' || currentTier === 'g35') ? '🔄 Play Again' : '🔄 Next Challenger / Play Again';
 
   document.getElementById('victoryModal').style.display = 'flex';
+  // Move keyboard / screen-reader focus into the popup
+  setTimeout(() => document.querySelector('#victoryModal .btn-reset').focus(), 50);
 
   // Clapping & hurray for every grade; K-5 also get a happy bark.
   playCheer();
@@ -312,6 +315,10 @@ function closeModal() {
   stopSpeech();
   document.getElementById('victoryModal').style.display = 'none';
 }
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && document.getElementById('victoryModal').style.display === 'flex') closeModal();
+});
 
 function playAgain() {
   closeModal();
@@ -335,6 +342,7 @@ window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
 function triggerConfetti() {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   confetti = [];
   const colors = ['#f59e0b', '#fbbf24', '#7e22ce', '#a855f7', '#34d399', '#38bdf8'];
   for (let i = 0; i < 90; i++) {
