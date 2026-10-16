@@ -284,7 +284,7 @@ function g68ToggleReadAloud() {
   g68ReadAloud = !g68ReadAloud;
   const btn = document.getElementById('g68ReadBtn');
   if (btn) {
-    btn.innerText = g68ReadAloud ? '🔊 Reading aloud' : '🔈 Read to me';
+    btn.innerText = g68ReadAloud ? '🔊 Audio Briefing: ON' : '🔈 Audio Briefing: OFF';
     btn.setAttribute('aria-pressed', String(g68ReadAloud));
   }
   if (g68ReadAloud) {

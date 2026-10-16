@@ -206,3 +206,19 @@ test('every onclick in the page calls a function that exists', () => {
     assert.ok(new RegExp(`function\\s+${fn}\\s*\\(`).test(code), `onclick calls missing function ${fn}()`);
   }
 });
+
+test('every g68-* and g912-* class in index.html is styled in app.css', () => {
+  const html = readFileSync(join(ROOT, 'static', 'index.html'), 'utf8');
+  const css = readFileSync(join(ROOT, 'static', 'css', 'app.css'), 'utf8');
+  const classes = new Set();
+  for (const m of html.matchAll(/class="([^"]+)"/g)) {
+    for (const cls of m[1].split(/\s+/)) {
+      if (cls.startsWith('g68-') || cls.startsWith('g912-')) classes.add(cls);
+    }
+  }
+  assert.ok(classes.size >= 25, `expected at least 25 g68/g912 classes, got ${classes.size}`);
+  for (const cls of classes) {
+    assert.ok(css.includes(`.${cls}`), `class .${cls} in index.html is missing from static/css/app.css`);
+  }
+});
+

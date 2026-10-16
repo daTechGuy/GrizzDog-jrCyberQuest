@@ -290,7 +290,7 @@ function g912ToggleReadAloud() {
   g912ReadAloud = !g912ReadAloud;
   const btn = document.getElementById('g912ReadBtn');
   if (btn) {
-    btn.innerText = g912ReadAloud ? '🔊 Reading aloud' : '🔈 Read to me';
+    btn.innerText = g912ReadAloud ? '🔊 Voice Telemetry: ON' : '🔈 Voice Telemetry: OFF';
     btn.setAttribute('aria-pressed', String(g912ReadAloud));
   }
   if (g912ReadAloud) {
@@ -309,7 +309,7 @@ function g912ToggleManual() {
   const isHidden = manual.classList.toggle('g912-hidden');
   const expanded = !isHidden;
   btn.setAttribute('aria-expanded', String(expanded));
-  btn.innerText = expanded ? '📖 Hide Field Manual' : '📖 OWASP / ATLAS Manual';
+  btn.innerText = expanded ? '📘 Close Field Manual ▴' : '📘 Field Manual: OWASP / ATLAS';
 }
 
 function g912RenderMissions() {
