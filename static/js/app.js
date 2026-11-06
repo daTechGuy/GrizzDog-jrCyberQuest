@@ -60,7 +60,7 @@ const UI_TEXT = {
     lbAdminErr: "Couldn't reach the server.",
     lbAdminEntriesWord: 'entries',
     lbColNick: 'Nickname',
-    lbColBand: 'Band',
+    lbColBand: 'Grade',
     lbColScore: 'Score',
     lbColEmail: 'Parent/guardian email',
     lbColTime: 'Time',
@@ -458,7 +458,7 @@ function renderAdmin() {
 function adminCsv() {
   soundClick();
   const cell = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
-  const rows = [['Nickname', 'Band', 'Score', 'Email', 'Time']];
+  const rows = [['Nickname', 'Grade', 'Score', 'Email', 'Time']];
   adminEntries.forEach(e => rows.push([e.nick, e.tier, e.score, e.email, e.ts]));
   const csv = rows.map(r => r.map(cell).join(',')).join('\r\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });

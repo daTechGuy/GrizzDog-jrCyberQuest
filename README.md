@@ -122,7 +122,7 @@ An optional, **fully offline** leaderboard that every kiosk on the same local se
 A **⚙️ Facilitator** button (inside the Leaderboard) opens a passcode-gated panel to run the giveaway:
 
 - **🎉 Pick a random winner** — raffles among everyone who finished a game and shows the winner's nickname and email (if given), so you can contact them.
-- **Entries table + ⬇️ Download CSV / 🖨️ Print list** — the full list (nickname, band, score, parent/guardian email, time) for your records.
+- **Entries table + ⬇️ Download CSV / 🖨️ Print list** — the full list (nickname, grade, score, parent/guardian email, time) for your records.
 - **🗑️ Reset for new event** — clears the board for the next event. The current board is **archived first** to a dated `leaderboard-<date>.json`, so nothing is lost.
 
 **Passcode**: set it per event with the `GRIZZDOG_ADMIN_KEY` environment variable; the active passcode is printed in the server's startup banner (default `grizzdog`).
