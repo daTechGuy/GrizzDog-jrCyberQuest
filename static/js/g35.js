@@ -267,6 +267,7 @@ function setG35Language(lang) {
 function toggleG35Language() {
   soundClick();
   setG35Language(g35Lang === 'en' ? 'es' : 'en');
+  if (typeof setUiLanguage === 'function') setUiLanguage(g35Lang);
 }
 
 function applyG35Language() {

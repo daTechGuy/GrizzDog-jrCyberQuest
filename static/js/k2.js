@@ -151,6 +151,7 @@ function setK2Language(lang) {
 function toggleK2Language() {
   soundClick();
   setK2Language(k2Lang === 'en' ? 'es' : 'en');
+  if (typeof setUiLanguage === 'function') setUiLanguage(k2Lang);
   if (autoReadK2) speakText(k2Say);
 }
 

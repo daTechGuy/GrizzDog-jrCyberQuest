@@ -689,6 +689,7 @@ function setG68Language(lang) {
 function toggleG68Language() {
   soundClick();
   setG68Language(g68Lang === 'en' ? 'es' : 'en');
+  if (typeof setUiLanguage === 'function') setUiLanguage(g68Lang);
 }
 
 function g68RenderMissions() {

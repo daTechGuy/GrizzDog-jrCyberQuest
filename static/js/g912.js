@@ -630,6 +630,7 @@ function setG912Language(lang) {
 function toggleG912Language() {
   soundClick();
   setG912Language(g912Lang === 'en' ? 'es' : 'en');
+  if (typeof setUiLanguage === 'function') setUiLanguage(g912Lang);
 }
 
 function g912RenderMissions() {

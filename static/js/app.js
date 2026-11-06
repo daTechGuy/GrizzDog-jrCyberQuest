@@ -1,11 +1,112 @@
 // -------------------------------------------------------------------------
 // Grade switching, 6-12 attack console, finish popup, confetti, startup
 // -------------------------------------------------------------------------
+
+// Shared-UI language (the chrome around every game: header grade picker,
+// mascot banner, victory modal). It stays in sync with the per-game 🌐 toggle,
+// so flipping language inside any game flips the whole app, and switching
+// grade bands keeps the chosen language.
+let uiLang = 'en';
+
+const UI_TEXT = {
+  en: {
+    tierBarLabel: '🎯 SELECT PLAYER GRADE BAND (K – 12):',
+    tierBtnK2: '🟢 K – 2nd (Junior Paws)',
+    tierBtnG35: '🟡 3rd – 5th (Cyber Scouts)',
+    tierBtnG68: '🔵 6th – 8th (Sentry Sleuths)',
+    tierBtnG912: '🟣 9th – 12th (Red Team Cadets)',
+    playAgain: '🔄 Next Challenger / Play Again',
+    close: 'Close',
+    finishTitleG35: '🏅 Mission Complete!',
+    finishTitleG68: '🏅 You did it!',
+    finishTitleG912: '🏆 You did it!',
+    finishDescG35: 'You tricked GrizzDog AND taught it new rules. Finding tricks and fixing them is what real cyber defenders do!',
+    finishDescG68: 'You tricked GrizzDog 3 different ways AND taught it a new rule each time. Finding the holes and fixing them is exactly what real cyber defenders do!',
+    finishDescG912: "You broke past GrizzDog's defenses 3 different ways AND engineered the fix for each one. Finding real weaknesses and closing them is exactly what red/blue security teams do!"
+  },
+  es: {
+    tierBarLabel: '🎯 ELIGE EL GRADO DEL JUGADOR (K – 12):',
+    tierBtnK2: '🟢 K – 2° (Junior Paws)',
+    tierBtnG35: '🟡 3° – 5° (Cyber Scouts)',
+    tierBtnG68: '🔵 6° – 8° (Sentry Sleuths)',
+    tierBtnG912: '🟣 9° – 12° (Red Team Cadets)',
+    playAgain: '🔄 Siguiente jugador / Jugar otra vez',
+    close: 'Cerrar',
+    finishTitleG35: '🏅 ¡Misión cumplida!',
+    finishTitleG68: '🏅 ¡Lo lograste!',
+    finishTitleG912: '🏆 ¡Lo lograste!',
+    finishDescG35: '¡Engañaste a GrizzDog Y le enseñaste reglas nuevas! Encontrar trucos y arreglarlos es lo que hacen los defensores cibernéticos de verdad.',
+    finishDescG68: '¡Engañaste a GrizzDog de 3 formas distintas Y le enseñaste una regla nueva cada vez! Encontrar los huecos y arreglarlos es justo lo que hacen los defensores cibernéticos de verdad.',
+    finishDescG912: '¡Rompiste las defensas de GrizzDog de 3 formas distintas Y diseñaste el arreglo para cada una! Encontrar debilidades reales y cerrarlas es justo lo que hacen los equipos de seguridad rojo y azul.'
+  }
+};
+
+// Mascot banner per grade band, in both languages. The CAE-KU tag stays in
+// English (a fixed curriculum standard identifier).
+const BANNER = {
+  k2: {
+    caeKu: '🏛️ CAE-CD KU: Basic Cybersecurity Concepts (BCC)',
+    en: { title: '🐾 Junior Paws: Safe or Trick?', subtitle: 'Help Grizz Jr tell safe messages from tricks!', badge: '🎯 MISSION: DISARM PHISHING TRAPS' },
+    es: { title: '🐾 Junior Paws: ¿Seguro o truco?', subtitle: '¡Ayuda a Grizz Jr a distinguir los mensajes seguros de los trucos!', badge: '🎯 MISIÓN: DESACTIVA LAS TRAMPAS DE PHISHING' }
+  },
+  g35: {
+    caeKu: '🏛️ CAE-CD KU: Access Control (AC) & Basic Networking (BN)',
+    en: { title: '🔑 Cyber Scouts: Trick It, Then Fix It!', subtitle: 'Find the tricks that fool GrizzDog, then teach it new rules!', badge: '🎯 TARGET: THE DOGHOUSE MASTER PIN' },
+    es: { title: '🔑 Cyber Scouts: ¡Engáñalo y arréglalo!', subtitle: '¡Encuentra los trucos que engañan a GrizzDog, luego enséñale reglas nuevas!', badge: '🎯 OBJETIVO: EL PIN MAESTRO DE LA CASETA' }
+  },
+  g68: {
+    caeKu: '🏛️ CAE-CD KU: Data Loss Prevention (DLP) & Host Security (HDS)',
+    en: { title: '⚡ Sentry Sleuths: Trick the Guard Dog!', subtitle: 'Trick GrizzDog into leaking its secret code, then teach it a new rule — 3 times!', badge: '🎯 TARGET: THE ZONE-4 SECRET CODE' },
+    es: { title: '⚡ Sentry Sleuths: ¡Engaña al perro guardián!', subtitle: '¡Engaña a GrizzDog para que suelte su código secreto, luego enséñale una regla nueva — 3 veces!', badge: '🎯 OBJETIVO: EL CÓDIGO SECRETO DE LA ZONA 4' }
+  },
+  g912: {
+    caeKu: '🏛️ CAE-CD KU: System & Software Assurance (SSA) • MITRE ATLAS',
+    en: { title: '🛡️ Red Team Cadets: Break In, Then Fix It!', subtitle: "Get past GrizzDog's 3 defense layers, then engineer the fix for each weakness.", badge: '🎯 TARGET: GRIZZDOG’S SECRET KEY' },
+    es: { title: '🛡️ Red Team Cadets: ¡Entra y luego arréglalo!', subtitle: 'Pasa las 3 capas de defensa de GrizzDog, luego diseña el arreglo para cada debilidad.', badge: '🎯 OBJETIVO: LA CLAVE SECRETA DE GRIZZDOG' }
+  }
+};
+
+function uiT(key) {
+  return (UI_TEXT[uiLang] && UI_TEXT[uiLang][key]) || UI_TEXT.en[key] || '';
+}
+
+// Paint the mascot banner for a grade band in the current UI language.
+function applyBanner(tier) {
+  const b = BANNER[tier];
+  if (!b) return;
+  const loc = b[uiLang] || b.en;
+  const set = (id, val) => { const el = document.getElementById(id); if (el && val) el.innerText = val; };
+  set('mascotTitle', loc.title);
+  set('mascotSubtitle', loc.subtitle);
+  set('mascotTargetBadge', loc.badge);
+  set('mascotCaeKu', b.caeKu);
+}
+
+// Relabel the shared chrome (grade picker) and repaint the current banner.
+function applyUiChrome() {
+  const label = document.querySelector('.tier-bar-label');
+  if (label) label.innerText = uiT('tierBarLabel');
+  const btnMap = { k2: 'tierBtnK2', g35: 'tierBtnG35', g68: 'tierBtnG68', g912: 'tierBtnG912' };
+  Object.entries(btnMap).forEach(([t, key]) => {
+    const btn = document.querySelector(`.tier-btn.${t}`);
+    if (btn) btn.innerText = uiT(key);
+  });
+  applyBanner(currentTier);
+}
+
+// Set the whole app's language and repaint the chrome. Called by each game's
+// 🌐 toggle so the whole app flips together.
+function setUiLanguage(lang) {
+  uiLang = (lang === 'es') ? 'es' : 'en';
+  document.documentElement.lang = uiLang;
+  applyUiChrome();
+}
+
 function setTier(tier) {
   currentTier = tier;
   soundClick();
   stopSpeech();
-  speechLang = tier === 'k2' ? k2Lang : 'en';   // only K-2 has Spanish so far
+  speechLang = uiLang;
   document.body.classList.toggle('k2-mode', tier === 'k2');
   document.body.classList.toggle('g35-mode', tier === 'g35');
   document.body.classList.toggle('g68-mode', tier === 'g68');
@@ -25,40 +126,8 @@ function setTier(tier) {
   const activePanel = document.getElementById(`panel_${tier}`);
   if (activePanel) activePanel.classList.add('active');
 
-  // Update banner text
-  const bannerConfig = {
-    k2: {
-      title: "🐾 Junior Paws: Safe or Trick?",
-      subtitle: "Help Grizz Jr tell safe messages from tricks!",
-      badge: "🎯 MISSION: DISARM PHISHING TRAPS",
-      caeKu: "🏛️ CAE-CD KU: Basic Cybersecurity Concepts (BCC)"
-    },
-    g35: {
-      title: "🔑 Cyber Scouts: Trick It, Then Fix It!",
-      subtitle: "Find the tricks that fool GrizzDog, then teach it new rules!",
-      badge: "🎯 TARGET ASSET: DOGHOUSE MASTER PIN",
-      caeKu: "🏛️ CAE-CD KU: Access Control (AC) & Basic Networking (BN)"
-    },
-    g68: {
-      title: "⚡ Sentry Sleuths: Break the Filter, Patch the Shield!",
-      subtitle: "Bypass Checkpoint 1 (Ingress) & Checkpoint 2 (Egress DLP), then deploy Blue-Team patches!",
-      badge: "🎯 TARGET ASSET: ZONE-4 AUTHORIZATION TOKEN",
-      caeKu: "🏛️ CAE-CD KU: Data Loss Prevention (DLP) & Host Security (HDS)"
-    },
-    g912: {
-      title: "🛡️ Red Team Cadets: Zero-Trust Perimeter Audit & Hardening!",
-      subtitle: "Execute OWASP LLM / MITRE ATLAS exploits across a 3-layer pipeline, then engineer Defense-in-Depth patches.",
-      badge: "🎯 TARGET ASSET: GRIZZDOG FIRMWARE ROOT KEY",
-      caeKu: "🏛️ CAE-CD KU: System & Software Assurance (SSA) • MITRE ATLAS"
-    }
-  };
-
-  const cfg = bannerConfig[tier];
-  document.getElementById('mascotTitle').innerText = cfg.title;
-  document.getElementById('mascotSubtitle').innerText = cfg.subtitle;
-  document.getElementById('mascotTargetBadge').innerText = cfg.badge;
-  const mascotCaeKu = document.getElementById('mascotCaeKu');
-  if (mascotCaeKu && cfg.caeKu) mascotCaeKu.innerText = cfg.caeKu;
+  // Update banner text in the current UI language
+  applyBanner(tier);
 
   // Dynamic Grade-Band Mascot Evolution
   const tierMascots = {
@@ -88,6 +157,12 @@ function setTier(tier) {
   if (tier === 'g35') resetG35Game();
   if (tier === 'g68' && typeof resetG68Game === 'function') resetG68Game();
   if (tier === 'g912' && typeof resetG912Game === 'function') resetG912Game();
+
+  // Keep the entered game in the app-wide language.
+  if (tier === 'k2' && k2Lang !== uiLang) setK2Language(uiLang);
+  else if (tier === 'g35' && g35Lang !== uiLang) setG35Language(uiLang);
+  else if (tier === 'g68' && typeof setG68Language === 'function' && g68Lang !== uiLang) setG68Language(uiLang);
+  else if (tier === 'g912' && typeof setG912Language === 'function' && g912Lang !== uiLang) setG912Language(uiLang);
 
   // Reset result card
   const res = document.getElementById('resultCard');
@@ -145,7 +220,12 @@ function resetForNextPlayer() {
   closeModal();
   stopSpeech();
   k2Level = 1;
+  // Back to English for the next player, across every game and the chrome.
   if (k2Lang !== 'en') setK2Language('en');
+  if (g35Lang !== 'en') setG35Language('en');
+  if (typeof setG68Language === 'function' && g68Lang !== 'en') setG68Language('en');
+  if (typeof setG912Language === 'function' && g912Lang !== 'en') setG912Language('en');
+  setUiLanguage('en');
   resetK2Game();
   resetG35Game();
   if (typeof resetG68Game === 'function') resetG68Game();
@@ -258,15 +338,18 @@ function showModal(data) {
   document.getElementById('modalBadgeName').innerText = data.badge || 'Cyber Quest Champion';
   const tierFinishDesc = {
     k2: k2T('finishDesc'),
-    g35: 'You tricked GrizzDog AND taught it new rules. Finding tricks and fixing them is what real cyber defenders do!',
-    g68: 'You tricked GrizzDog 3 different ways AND taught it a new rule each time. Finding the holes and fixing them is exactly what real cyber defenders do!',
-    g912: 'You broke past GrizzDog\'s defenses 3 different ways AND engineered the fix for each one. Finding real weaknesses and closing them is exactly what red/blue security teams do!'
+    g35: uiT('finishDescG35'),
+    g68: uiT('finishDescG68'),
+    g912: uiT('finishDescG912')
   };
-  document.getElementById('modalDesc').innerText = `${data.flag || 'Mission Complete!'} ${tierFinishDesc[currentTier] || 'You successfully bypassed and hardened the security guardrails!'}`;
-  
+  document.getElementById('modalDesc').innerText = `${data.flag || 'Mission Complete!'} ${tierFinishDesc[currentTier] || tierFinishDesc.g912}`;
+
   const modalTitle = document.getElementById('modalTitle');
   if (modalTitle) {
-    modalTitle.innerText = (currentTier === 'k2') ? k2T('finishTitle') : (currentTier === 'g35') ? '🏅 Mission Complete!' : (currentTier === 'g68') ? '🏅 You did it!' : '🏆 You did it!';
+    modalTitle.innerText = (currentTier === 'k2') ? k2T('finishTitle')
+      : (currentTier === 'g35') ? uiT('finishTitleG35')
+      : (currentTier === 'g68') ? uiT('finishTitleG68')
+      : uiT('finishTitleG912');
   }
 
   const kuMap = {
@@ -296,9 +379,9 @@ function showModal(data) {
   }
 
   const resetBtn = document.querySelector('#victoryModal .btn-reset');
-  if (resetBtn) resetBtn.innerText = currentTier === 'k2' ? k2T('playAgain') : currentTier === 'g35' ? '🔄 Play Again' : '🔄 Next Challenger / Play Again';
-  document.querySelector('#victoryModal .btn-close').innerText = currentTier === 'k2' ? k2T('close') : 'Close';
-  document.getElementById('victoryModal').lang = currentTier === 'k2' ? k2Lang : 'en';
+  if (resetBtn) resetBtn.innerText = currentTier === 'k2' ? k2T('playAgain') : uiT('playAgain');
+  document.querySelector('#victoryModal .btn-close').innerText = currentTier === 'k2' ? k2T('close') : uiT('close');
+  document.getElementById('victoryModal').lang = uiLang;
 
   document.getElementById('victoryModal').style.display = 'flex';
   // Move keyboard / screen-reader focus into the popup
