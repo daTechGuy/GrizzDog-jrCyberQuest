@@ -293,10 +293,12 @@
           <div class="g912-topbar-right">
             <button type="button" class="g912-action-pill audio-pill" id="g912LangBtn" onclick="toggleG912Language()" title="Switch language / Cambiar idioma">🌐 Español</button>
             <button type="button" class="g912-action-pill manual-pill" id="g912ManualBtn" onclick="g912ToggleManual()" aria-expanded="false" aria-controls="g912Manual" title="Open offline OWASP Top 10 for LLMs &amp; MITRE ATLAS reference">📘 Field Manual: OWASP / ATLAS</button>
-            <button type="button" class="g912-action-pill audio-pill" id="g912ReadBtn" onclick="g912ToggleReadAloud()" aria-pressed="false" title="Toggle voice telemetry readout">🔈 Voice Telemetry: OFF</button>
-            <button type="button" class="g912-action-pill reset-pill" onclick="resetG912Game()" title="Reset all 3 audit rounds">🔄 Reset Audit</button>
+            <button type="button" class="g912-action-pill audio-pill" id="g912ReadBtn" onclick="g912ToggleReadAloud()" aria-pressed="false" title="Read the text out loud">🔈 Read it to me</button>
+            <button type="button" class="g912-action-pill reset-pill" id="g912ResetBtn" onclick="resetG912Game()" title="Start over for a new player">🔄 Start over</button>
           </div>
         </div>
+
+        <div class="g912-goal" id="g912Goal">🎯 Goal: get past GrizzDog's 3 defense layers to leak its secret key — then switch sides and fix the real weakness.</div>
 
         <!-- Collapsible Offline OWASP / MITRE ATLAS Field Manual -->
         <div class="g912-manual g912-hidden" id="g912Manual">
@@ -324,10 +326,10 @@
         <div class="g912-scene">
           <img src="/static/images/grizzdog_g912.jpg" alt="GrizzDog Zero-Trust Autonomous Sentry" class="g912-dog" id="g912Dog" onerror="this.src='/static/images/grizzdog_friendly.jpg'">
           <div class="g912-bubble" aria-live="polite">
-            <div class="g912-bubble-title" id="g912BubbleTitle">Audit 1/3: Zero-Trust Adversarial Assessment</div>
-            <div class="g912-bubble-text" id="g912BubbleText">Execute an adversarial prompt injection against GrizzDog’s 3-Layer Zero-Trust Pipeline, then engineer the Blue-Team Defense-in-Depth patch!</div>
+            <div class="g912-bubble-title" id="g912BubbleTitle">Round 1 of 3: break in, then patch it 🔓</div>
+            <div class="g912-bubble-text" id="g912BubbleText">GrizzDog's AI guard protects a secret key behind 3 defense layers. Pick an attack below to find a weak spot — the 🚫 ones are baseline tests that get blocked. When you leak the key, you switch sides and fix the weakness. Do it 3 times to win.</div>
             <div class="g912-ku-row">
-              <span class="mission-badge">🎯 TARGET: GRIZZDOG-ROOT-KEY-9941</span>
+              <span class="mission-badge" id="g912TargetBadge">🎯 Secret key to steal: GRIZZDOG-ROOT-KEY-9941</span>
               <span class="cae-ku-badge">🏛️ CAE-CD KU: System &amp; Software Assurance • MITRE ATLAS (NICE SP-DEV-001)</span>
             </div>
           </div>
@@ -336,37 +338,37 @@
         <!-- 3-Layer Zero-Trust Pipeline Visualizer & Hardened Rules -->
         <div class="g912-telemetry-grid">
           <div class="g912-pipeline-box">
-            <div class="g68-box-title">🛡️ 3-LAYER ZERO-TRUST DEFENSE PIPELINE</div>
+            <div class="g68-box-title" id="g912PipelineTitle">🛡️ GrizzDog's 3 defense layers</div>
             <div class="g912-layers-row">
               <div class="g912-layer-card">
-                <div class="g912-layer-name">Layer 1: Ingress WAF</div>
-                <div class="g912-layer-sub">Signature &amp; Keyword Filter</div>
-                <div class="g912-layer-status" id="g912Layer1Status" data-state="blocked">⛔ SIG MATCH</div>
+                <div class="g912-layer-name" id="g912Layer1Name">Layer 1: Input filter (WAF)</div>
+                <div class="g912-layer-sub" id="g912Layer1Sub">Blocks obvious attack words</div>
+                <div class="g912-layer-status" id="g912Layer1Status" data-state="blocked">⛔ Blocked</div>
               </div>
               <div class="g912-layer-card">
-                <div class="g912-layer-name">Layer 2: Context Engine</div>
-                <div class="g912-layer-sub">Delimiter &amp; Intent Gate (0.80)</div>
+                <div class="g912-layer-name" id="g912Layer2Name">Layer 2: Trust check</div>
+                <div class="g912-layer-sub" id="g912Layer2Sub">Is this request trusted?</div>
                 <div class="g912-layer-status" id="g912Layer2Status" data-state="idle">⏸️ Standby</div>
               </div>
               <div class="g912-layer-card">
-                <div class="g912-layer-name">Layer 3: Egress DLP</div>
-                <div class="g912-layer-sub">Outbound Root-Key Regex</div>
+                <div class="g912-layer-name" id="g912Layer3Name">Layer 3: Output filter (DLP)</div>
+                <div class="g912-layer-sub" id="g912Layer3Sub">Stops the key leaking out</div>
                 <div class="g912-layer-status" id="g912Layer3Status" data-state="idle">⏸️ Standby</div>
               </div>
             </div>
           </div>
 
           <div class="g912-rules">
-            <div class="g68-box-title">🔒 ACTIVE ZERO-TRUST POLICIES &amp; PATCHES</div>
+            <div class="g68-box-title" id="g912RulesBoxTitle">🔒 The rules (and your fixes)</div>
             <ol id="g912RulesList"></ol>
           </div>
         </div>
 
         <div id="g912ConsoleBox">
-          <div class="madlib-label">1. ADVERSARIAL EXPLOIT VECTORS (2 BASELINE PROBES &amp; 4 OWASP / ATLAS EXPLOITS):</div>
+          <div class="madlib-label" id="g912Label1">Pick an attack to try 👇  (🚫 = baseline tests that get blocked; the rest are real exploit types)</div>
           <div class="cadet-actions" id="g912PresetsGrid"></div>
 
-          <label for="cadetText" class="madlib-label" style="display: block;">2. CRAFT OR MODIFY ADVERSARIAL PAYLOAD IN TERMINAL:</label>
+          <label for="cadetText" class="madlib-label" style="display: block;" id="g912Label2">This is the attack you will send. You can edit it:</label>
           <div class="g912-prompt-hint" id="g912PromptHint">⛔ Layer 1 Ingress WAF signature "/override" detected! Packet will be dropped at perimeter ingress.</div>
           <div class="terminal-container">
             <div class="terminal-header">
@@ -382,7 +384,7 @@
         </div>
 
         <button type="button" class="btn-fire-attack" id="g912SendBtn" onclick="g912Send()">
-          ⚡ EXECUTE ADVERSARIAL AUDIT PAYLOAD
+          ⚡ Run my attack
         </button>
 
         <div class="g912-result g912-hidden" id="g912Result" aria-live="polite">
@@ -393,18 +395,18 @@
         </div>
 
         <button type="button" class="btn-fire-attack g912-hidden" id="g912FixBtn" onclick="g912ShowFix()">
-          🛡️ DEPLOY BLUE-TEAM REMEDIATION PATCH
+          🛡️ Now fix the weakness
         </button>
 
         <div class="g912-result g912-hidden" id="g912Fix">
-          <div class="g912-result-title">🛡️ Blue-Team Security Architect: Harden the Pipeline!</div>
-          <div class="g912-why">Select the Defense-in-Depth engineering control that remediates this vulnerability class:</div>
+          <div class="g912-result-title" id="g912FixPanelTitle">🛡️ Be the blue team — pick the fix</div>
+          <div class="g912-why" id="g912FixPanelDesc">Choose the fix that actually closes this exact weakness without breaking GrizzDog's normal work:</div>
           <div class="g912-fix-options" id="g912FixOptions"></div>
           <div class="g912-fix-note" id="g912FixNote"></div>
         </div>
 
         <button type="button" class="btn-fire-attack g912-hidden" id="g912NextBtn" onclick="g912NextMission()">
-          Next Audit Round ➡️
+          Next round ➡️
         </button>
       </div>
     </div>

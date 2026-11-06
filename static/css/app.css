@@ -960,7 +960,8 @@ body.g912-mode .mascot-card { display: none; }
 }
 
 /* 6-8 beginner helpers: goal banner, guided coach, and spotlight highlight */
-.g68-goal {
+.g68-goal,
+.g912-goal {
   font-size: 1rem;
   font-weight: 800;
   color: #e0f2fe;
