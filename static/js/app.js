@@ -5,18 +5,18 @@
 // Shared-UI language (the chrome around every game: header grade picker,
 // mascot banner, victory modal). It stays in sync with the per-game 🌐 toggle,
 // so flipping language inside any game flips the whole app, and switching
-// grade bands keeps the chosen language.
+// grades keeps the chosen language.
 let uiLang = 'en';
 
-// Leaderboard: the XP the player had when they entered the current band, so a
-// band's score is the XP earned in that band (not the running cross-band total).
+// Leaderboard: the XP the player had when they entered the current grade, so a
+// grade's score is the XP earned in that grade (not the running cross-grade total).
 let tierEntryScore = 0;
 let playerNick = '';
 let playerEmail = '';
 
 const UI_TEXT = {
   en: {
-    tierBarLabel: '🎯 SELECT PLAYER GRADE BAND (K – 12):',
+    tierBarLabel: '🎯 SELECT PLAYER GRADE (K – 12):',
     tierBtnK2: '🟢 K – 2nd (Junior Paws)',
     tierBtnG35: '🟡 3rd – 5th (Cyber Scouts)',
     tierBtnG68: '🔵 6th – 8th (Sentry Sleuths)',
@@ -131,7 +131,7 @@ const UI_TEXT = {
   }
 };
 
-// Mascot banner per grade band, in both languages. The CAE-KU tag stays in
+// Mascot banner per grade, in both languages. The CAE-KU tag stays in
 // English (a fixed curriculum standard identifier).
 const BANNER = {
   k2: {
@@ -160,7 +160,7 @@ function uiT(key) {
   return (UI_TEXT[uiLang] && UI_TEXT[uiLang][key]) || UI_TEXT.en[key] || '';
 }
 
-// Paint the mascot banner for a grade band in the current UI language.
+// Paint the mascot banner for a grade in the current UI language.
 function applyBanner(tier) {
   const b = BANNER[tier];
   if (!b) return;
@@ -205,12 +205,12 @@ function lbInit() {
   } catch (e) { playerNick = ''; playerEmail = ''; }
 }
 
-// A band's leaderboard score is the XP earned in that band this visit.
+// A grade's leaderboard score is the XP earned in that grade this visit.
 function lbScoreForBand() {
   return Math.max(0, totalScore - tierEntryScore);
 }
 
-// Called at the end of showModal — a grade band was just completed.
+// Called at the end of showModal — a grade was just completed.
 function lbOnGameComplete() {
   const section = document.getElementById('lbModalSection');
   if (!section) return;
@@ -543,7 +543,7 @@ function applyLbChrome() {
 
 function setTier(tier) {
   currentTier = tier;
-  tierEntryScore = totalScore;   // snapshot so the band's leaderboard score is what's earned here
+  tierEntryScore = totalScore;   // snapshot so the grade's leaderboard score is what's earned here
   soundClick();
   stopSpeech();
   speechLang = uiLang;
@@ -569,7 +569,7 @@ function setTier(tier) {
   // Update banner text in the current UI language
   applyBanner(tier);
 
-  // Dynamic Grade-Band Mascot Evolution
+  // Dynamic Grade Mascot Evolution
   const tierMascots = {
     k2: '/static/images/grizzdog_k2.jpg',
     g35: '/static/images/grizzdog_g35.jpg',

@@ -88,7 +88,7 @@ header {
   color: var(--butler-gold-light);
 }
 
-/* Grade Band Switcher Bar */
+/* Grade Switcher Bar */
 .tier-bar-wrapper {
   padding: 0.6rem 1.5rem;
   background: rgba(26, 19, 48, 0.6);
@@ -2022,7 +2022,7 @@ body.g912-mode .mascot-card { display: none; }
 /* -------------------------------------------------------------------------
    Event leaderboard: header button, victory-modal join block, board modal.
    Colors are theme-neutral (translucent panels + inherited text) so the modal
-   reads whether it opens over a light band (K-2/3-5) or a dark one (6-8/9-12).
+   reads whether it opens over a light grade (K-2/3-5) or a dark one (6-8/9-12).
    ------------------------------------------------------------------------- */
 .lb-open-pill {
   cursor: pointer;

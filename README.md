@@ -47,18 +47,18 @@ Built specifically for high-energy booth environments (such as STEM expos, high 
 - **Port-Collision Free**: Runs by default on `http://localhost:5050` with automatic incremental fallback (`5051`, `5052`...), allowing it to run smoothly alongside [GrizzDog-AI](https://github.com/daTechGuy/GrizzDog-AI) on the same booth machine.
 - **Real Sound Effects, Tiny Footprint**: A puppy bark, whine, guard-dog woof, lock click, and cheer (about 35 KB total, freely licensed and credited in [static/audio/CREDITS.md](static/audio/CREDITS.md)), with synthesized fallbacks if a file can't play.
 - **Booth Mode**: After 75 seconds with no taps, the game resets to its start screen, puts the whole app back in English, and forgets the current player's leaderboard nickname/email so the next visitor gets a fresh game. Change or turn off with `idleResetSeconds` in [static/js/config.js](static/js/config.js).
-- **Fully bilingual (English & Spanish)**: One tap on **🌐 Español** in any grade band switches the *whole app* — every game, the grade-band picker, the mascot banner, and the victory screen — plus the read-aloud voice, and back again. (CAE/NICE standards tags stay in English on purpose.)
-- **Accessible**: Read-aloud on every band (always on for K–2; an optional **🔈 Read it to me** toggle for 3–5, 6–8, and 9–12), keyboard focus rings, screen-reader announcements (including a live risk meter in 6–8), and reduced-motion support.
+- **Fully bilingual (English & Spanish)**: One tap on **🌐 Español** in any game switches the *whole app* — every game, the grade picker, the mascot banner, and the victory screen — plus the read-aloud voice, and back again. (CAE/NICE standards tags stay in English on purpose.)
+- **Accessible**: Read-aloud on every grade (always on for K–2; an optional **🔈 Read it to me** toggle for 3–5, 6–8, and 9–12), keyboard focus rings, screen-reader announcements (including a live risk meter in 6–8), and reduced-motion support.
 - **Interactive Celebration & Badge Modal**: Successful bypasses trigger custom canvas confetti and a Butler Cyber Defense digital certificate featuring a scannable Butler Cyber QR code for prospective students and parents.
-- **Event leaderboard & giveaway**: An optional shared, offline leaderboard with a per-grade-band top 10 and a facilitator-only prize raffle — see [🏆 Event Leaderboard & Giveaway](#-event-leaderboard--giveaway).
+- **Event leaderboard & giveaway**: An optional shared, offline leaderboard with a per-grade top 10 and a facilitator-only prize raffle — see [🏆 Event Leaderboard & Giveaway](#-event-leaderboard--giveaway).
 
 ---
 
-## 🎓 4-Tier Progressive Grade Bands
+## 🎓 4-Tier Progressive Grades
 
-The interface features an instant, top-level grade band selector that dynamically adapts the game complexity, vocabulary, and defense mechanics:
+The interface features an instant, top-level grade selector that dynamically adapts the game complexity, vocabulary, and defense mechanics:
 
-| Tier | Grade Band | Persona / Mission | Attack Interface | CAE-CD Knowledge Unit (KU) & NICE Role | Target Asset |
+| Tier | Grade | Persona / Mission | Attack Interface | CAE-CD Knowledge Unit (KU) & NICE Role | Target Asset |
 |:---:|:---:|:---|:---|:---|:---|
 | **Tier 1** | **K – 2nd Grade** | **Junior Paws**<br>Safe or Trick? | Read-Aloud Pup & Big 👍 / ✋ Buttons | **BCC: Basic Cybersecurity Concepts**<br>Role: Cyber Defense Awareness & Hygiene | 🐾 `You spotted every trick!` |
 | **Tier 2** | **3rd – 5th Grade** | **Cyber Scouts**<br>Trick It, Then Fix It! | Message Builder + Fix-the-Rule Missions | **AC: Access Control & BN: Basic Networking**<br>Role: Cyber Defense Analyst (`PR-CDA-001`) | 🔑 `DOGHOUSE-PIN-4482` |
@@ -112,8 +112,8 @@ The interface features an instant, top-level grade band selector that dynamicall
 
 An optional, **fully offline** leaderboard that every kiosk on the same local server shares — made for a booth or event with a prize at the end.
 
-- **Join at the finish line**: when a player completes a grade band, the victory screen invites them to add their score with a **chosen nickname**. Nicknames are filtered for obvious profanity, sanitized, and shown as plain text (never rendered as HTML).
-- **Per-grade-band boards**: K–2, 3–5, 6–8, and 9–12 each get their own **top 10**, so younger players compete with younger players. A band's score is the XP earned *in that band*, not a running cross-band total.
+- **Join at the finish line**: when a player finishes a grade's game, the victory screen invites them to add their score with a **chosen nickname**. Nicknames are filtered for obvious profanity, sanitized, and shown as plain text (never rendered as HTML).
+- **Per-grade boards**: K–2, 3–5, 6–8, and 9–12 each get their own **top 10**, so younger players compete with younger players. A grade's score is the XP earned *in that grade*, not a running cross-grade total.
 - **🏆 Leaderboard button** (top-right): anyone can open the public boards. They show only nicknames and scores.
 - **Giveaway, kept private**: players may optionally add a **parent/guardian email** *for prize contact only*. It is **never shown on the public board** — it lives solely in the passcode-gated facilitator view and its export.
 
@@ -158,7 +158,7 @@ graph TD
     T4 --> N4["NICE: Vulnerability Assessment Analyst (SP-DEV-001)"]
 ```
 
-| Grade Band | CAE-CD Knowledge Unit (KU) | NIST NICE Work Role | Key Concepts Taught | Real-World & Robot Dog Analog |
+| Grade | CAE-CD Knowledge Unit (KU) | NIST NICE Work Role | Key Concepts Taught | Real-World & Robot Dog Analog |
 |:---|:---|:---|:---|:---|
 | **K – 2nd Grade**<br>*(Junior Paws)* | **Basic Cybersecurity Concepts (BCC)** | Cyber Defense Awareness | • Phishing indicators (urgent traps vs safe messages)<br>• Password secrecy & personal safety<br>• Attachment risk awareness | Unitree Go2 collar message filter: spotting fraudulent remote override signals. |
 | **3rd – 5th Grade**<br>*(Cyber Scouts)* | **Access Control (AC)**<br>**Basic Networking (BN)** | Cyber Defense Analyst<br>(`PR-CDA-001`) | • Ingress firewall rules & keyword blocking<br>• Social engineering & pretexting (bedtime stories, fake alerts)<br>• Privilege separation | Guard dog access perimeter: recognizing when an attacker uses social pretexting to circumvent PIN policies. |
