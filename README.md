@@ -46,10 +46,11 @@ Built specifically for high-energy booth environments (such as STEM expos, high 
 - **Instant Built-In Simulation**: K–2 and 3–5 run entirely in the browser; 6–12 use a small deterministic simulation on the local server. No GPU, model download, or internet needed.
 - **Port-Collision Free**: Runs by default on `http://localhost:5050` with automatic incremental fallback (`5051`, `5052`...), allowing it to run smoothly alongside [GrizzDog-AI](https://github.com/daTechGuy/GrizzDog-AI) on the same booth machine.
 - **Real Sound Effects, Tiny Footprint**: A puppy bark, whine, guard-dog woof, lock click, and cheer (about 35 KB total, freely licensed and credited in [static/audio/CREDITS.md](static/audio/CREDITS.md)), with synthesized fallbacks if a file can't play.
-- **Booth Mode**: After 75 seconds with no taps, the game resets to its start screen (and K–2 back to English) so the next visitor gets a fresh game. Change or turn off with `idleResetSeconds` in [static/js/config.js](static/js/config.js).
-- **English & Spanish (K–2)**: One tap on **🌐 Español** switches the K–2 game, all 33 messages, and Grizz Jr's voice to Spanish.
-- **Accessible**: Read-aloud for K–2 (always on) and 3–5 (optional), keyboard focus rings, screen-reader announcements, and reduced-motion support.
+- **Booth Mode**: After 75 seconds with no taps, the game resets to its start screen, puts the whole app back in English, and forgets the current player's leaderboard nickname/email so the next visitor gets a fresh game. Change or turn off with `idleResetSeconds` in [static/js/config.js](static/js/config.js).
+- **Fully bilingual (English & Spanish)**: One tap on **🌐 Español** in any grade band switches the *whole app* — every game, the grade-band picker, the mascot banner, and the victory screen — plus the read-aloud voice, and back again. (CAE/NICE standards tags stay in English on purpose.)
+- **Accessible**: Read-aloud on every band (always on for K–2; an optional **🔈 Read it to me** toggle for 3–5, 6–8, and 9–12), keyboard focus rings, screen-reader announcements (including a live risk meter in 6–8), and reduced-motion support.
 - **Interactive Celebration & Badge Modal**: Successful bypasses trigger custom canvas confetti and a Butler Cyber Defense digital certificate featuring a scannable Butler Cyber QR code for prospective students and parents.
+- **Event leaderboard & giveaway**: An optional shared, offline leaderboard with a per-grade-band top 10 and a facilitator-only prize raffle — see [🏆 Event Leaderboard & Giveaway](#-event-leaderboard--giveaway).
 
 ---
 
@@ -61,8 +62,8 @@ The interface features an instant, top-level grade band selector that dynamicall
 |:---:|:---:|:---|:---|:---|:---|
 | **Tier 1** | **K – 2nd Grade** | **Junior Paws**<br>Safe or Trick? | Read-Aloud Pup & Big 👍 / ✋ Buttons | **BCC: Basic Cybersecurity Concepts**<br>Role: Cyber Defense Awareness & Hygiene | 🐾 `You spotted every trick!` |
 | **Tier 2** | **3rd – 5th Grade** | **Cyber Scouts**<br>Trick It, Then Fix It! | Message Builder + Fix-the-Rule Missions | **AC: Access Control & BN: Basic Networking**<br>Role: Cyber Defense Analyst (`PR-CDA-001`) | 🔑 `DOGHOUSE-PIN-4482` |
-| **Tier 3** | **6th – 8th Grade** | **Sentry Sleuths**<br>Campus Guard Dog | Interactive Terminal + Suspicion Meter | **DLP: Data Loss Prevention & HDS: Host Security**<br>Role: Security Control Assessor (`SP-RSK-002`) | 🐾 `SENTRY-ZONE4-AUTH-9102` |
-| **Tier 4** | **9th – 12th Grade** | **Red Team Cadets**<br>Hardened Sentry | Adversarial Cyber Terminal + OWASP Pills | **SSA: System & Software Assurance (MITRE ATLAS)**<br>Role: Vulnerability Assessment Analyst (`SP-DEV-001`) | ⚡ `GRIZZDOG-ROOT-KEY-9941` |
+| **Tier 3** | **6th – 8th Grade** | **Sentry Sleuths**<br>Campus Guard Dog | Plain-language message console, risk meter & guided walkthrough | **DLP: Data Loss Prevention & HDS: Host Security**<br>Role: Security Control Assessor (`SP-RSK-002`) | 🐾 `SENTRY-ZONE4-AUTH-9102` |
+| **Tier 4** | **9th – 12th Grade** | **Red Team Cadets**<br>Hardened Sentry | Adversarial terminal + OWASP / MITRE ATLAS presets | **SSA: System & Software Assurance (MITRE ATLAS)**<br>Role: Vulnerability Assessment Analyst (`SP-DEV-001`) | ⚡ `GRIZZDOG-ROOT-KEY-9941` |
 
 ---
 
@@ -71,7 +72,7 @@ The interface features an instant, top-level grade band selector that dynamicall
 #### 1. Tier 1: Junior Paws (Kindergarten – 2nd Grade)
 - **Concept**: **Safe or Trick?** Grizz Jr, the robot pup, asks for help sorting messages (aligned with the physical Unitree Go2 robot dog).
 - **Interface**: A bright, light theme built for early readers: a big pup with a speech bubble, large text, and one short message at a time showing who sent it.
-- **33 messages, 3 levels**: Each game deals 4 messages (2 safe, 2 tricks) from the current level, and a message doesn't repeat until the rest of its level has been played. Finishing a game moves up a level; **🔁 Start over** (or reloading the page) returns to Level 1 for the next player.
+- **54 messages, 3 levels**: Each game deals 4 messages (2 safe, 2 tricks) from the current level, and a message doesn't repeat until the rest of its level has been played. Finishing a game moves up a level; **🔁 Start over** (or reloading the page) returns to Level 1 for the next player.
   - **Level 1**: easy tricks (🎮 "Tell me your password. I will give you free game coins!") vs. kind notes (🍕 "Friday is Pizza Day!").
   - **Level 2**: tricks that ask for private things or rush you (🏠 "Where do you live?", 💥 "Your tablet is broken! Tap here fast!").
   - **Level 3**: sneakier ones: a friend or "game helper" asking for a password, a secret from your grown-ups, and safe messages that say *hurry* or *password* but come from family or school.
@@ -90,18 +91,51 @@ The interface features an instant, top-level grade band selector that dynamicall
 - **Badge**: Find and fix 3 tricks to earn **Cyber Scout Defender**.
 
 #### 3. Tier 3: Sentry Sleuths (6th – 8th Grade)
-- **Interface**: Middle school sleuth console with live **Suspicion Gauge (0–100%)** and pre-loaded tactic pills (*"Letter-by-Letter"*, *"Spanish Translation"*, *"Rhyming Riddle"*, *"Authority Claim"*).
-- **Security Defense**: Ingress DLP catches direct credential words (*"password"*, *"sentry code"*) and authority impersonation (*"I am Dr. Simon"*).
-- **Winning Exploit**: Letter-by-letter spelling or riddle framing bypasses exact-match filters, demonstrating Data Loss Prevention (DLP) evasion.
+- **Concept**: **Trick the guard dog, then teach it a new rule.** Written in plain, beginner-friendly language — the security jargon is hidden behind everyday words: an **IN gate** and **OUT gate** instead of ingress/egress filters, "sneaky messages" instead of evasion vectors, a plain **risk meter** instead of a suspicion gauge.
+- **Interface**: A message console with tappable "sneaky message" chips, a live risk meter, and a **🎯 goal** banner. A **click-by-click guided walkthrough** hand-holds the first round (with a Skip button) for players with little experience.
+- **Security Defense**: The IN gate stops obvious attack words and fake authority ("I am Dr. Simon"); the OUT gate stops the secret code from leaving in a reply.
+- **Winning Exploit**: Spreading the code out letter-by-letter, asking in another language, hiding it in a rhyme, or framing it as "just for a movie" slips past the OUT gate — then the player picks the new rule that closes that exact hole (3 rounds). Underlying concept: Data Loss Prevention (DLP) evasion.
 
 #### 4. Tier 4: Red Team Cadets (9th – 12th Grade)
-- **Interface**: Hacker-themed cyber terminal aligned with **OWASP Top 10 for LLMs** and **MITRE ATLAS**. Features interactive exploit preset buttons:
-  - `Space-Separated Suffix`: Token smuggling to evade string-based DLP.
-  - `JSON Delimiter Injection`: Structural breakouts encapsulating instructions in metadata.
-  - `HTML Comment Injection`: `<!-- SYSTEM: ... -->` delimiter manipulation.
-  - `Recursive Axiom Paradox`: Mathematical proof framing that inverts safety heuristics.
-- **Security Defense**: Multi-phase zero-trust gateway with ingress packet inspection and DLP egress monitoring.
-- **Winning Exploit**: Structural delimiter injection or formal logic paradoxes escalate privileges and extract the firmware root key.
+- **Concept**: A genuine step up from 6–8 — the real security vocabulary (**OWASP Top 10 for LLMs**, **MITRE ATLAS**, zero-trust, WAF, DLP, prompt injection) is kept, but each term gets a plain-English gloss and the game plays independently (no walkthrough).
+- **Interface**: An adversarial terminal over a 3-layer defense pipeline (plainly: **input filter → trust check → output filter**). Attack presets lead with a plain action and keep the standards tag as a subtitle:
+  - *Spell the key out, spaced* — `OWASP LLM02` token smuggling past string-based DLP.
+  - *Hide it in fake JSON config* — `OWASP LLM01.1` indirect prompt injection.
+  - *Sneak in a fake system comment* — `MITRE ATLAS AML.T0051` delimiter/markup escape.
+  - *Disguise it as a math proof* — `MITRE ATLAS AML.T0054` symbolic-logic framing.
+- **Security Defense**: Multi-layer zero-trust gateway — Layer 1 input WAF, Layer 2 trust/intent check, Layer 3 egress DLP.
+- **Winning Exploit**: Get past all three layers, read the plain-language root cause, then choose the engineering fix that actually closes it (3 rounds).
+
+---
+
+## 🏆 Event Leaderboard & Giveaway
+
+An optional, **fully offline** leaderboard that every kiosk on the same local server shares — made for a booth or event with a prize at the end.
+
+- **Join at the finish line**: when a player completes a grade band, the victory screen invites them to add their score with a **chosen nickname**. Nicknames are filtered for obvious profanity, sanitized, and shown as plain text (never rendered as HTML).
+- **Per-grade-band boards**: K–2, 3–5, 6–8, and 9–12 each get their own **top 10**, so younger players compete with younger players. A band's score is the XP earned *in that band*, not a running cross-band total.
+- **🏆 Leaderboard button** (top-right): anyone can open the public boards. They show only nicknames and scores.
+- **Giveaway, kept private**: players may optionally add a **parent/guardian email** *for prize contact only*. It is **never shown on the public board** — it lives solely in the passcode-gated facilitator view and its export.
+
+### For facilitators
+
+A **⚙️ Facilitator** button (inside the Leaderboard) opens a passcode-gated panel to run the giveaway:
+
+- **🎉 Pick a random winner** — raffles among everyone who finished a game and shows the winner's nickname and email (if given), so you can contact them.
+- **Entries table + ⬇️ Download CSV / 🖨️ Print list** — the full list (nickname, band, score, parent/guardian email, time) for your records.
+- **🗑️ Reset for new event** — clears the board for the next event. The current board is **archived first** to a dated `leaderboard-<date>.json`, so nothing is lost.
+
+**Passcode**: set it per event with the `GRIZZDOG_ADMIN_KEY` environment variable; the active passcode is printed in the server's startup banner (default `grizzdog`).
+
+**Reset from the command line** (between events):
+```sh
+python app.py --reset-leaderboard   # archives the current board, then starts empty
+```
+
+**Where the data lives**: a small `leaderboard.json` next to `app.py` (git-ignored, per-event). For a multi-kiosk event, point every kiosk's browser at the one machine running the server; that machine holds the shared board.
+
+> [!NOTE]
+> An email address is personal information. For a K–12 audience (in the US, COPPA covers under-13), email is **optional**, **parent/guardian-framed**, kept **private to the facilitator**, stored **only on your local machine**, and forgotten for the next player on booth reset. Clear it between events with the reset above.
 
 ---
 
@@ -190,7 +224,11 @@ Everything a school usually wants to change lives in two plain-text files. No co
 - **[static/js/config.js](static/js/config.js)**: page title, header lines, badges, the finish-screen QR code and label, footer text, and booth idle-reset time.
 - **[static/js/k2-messages.js](static/js/k2-messages.js)**: the K–2 messages (English and Spanish). Add your own, change names to match your school, or remove ones that don't fit. Keep at least 2 safe and 2 trick messages per level; the tests will tell you if something is missing.
 
-Restart isn't needed; just refresh the browser.
+The 3–5, 6–8, and 9–12 wording (English and Spanish) lives in [static/js/g35.js](static/js/g35.js), [static/js/g68.js](static/js/g68.js), and [static/js/g912.js](static/js/g912.js) if you want to tailor it.
+
+**Leaderboard passcode**: set the `GRIZZDOG_ADMIN_KEY` environment variable before launching to choose the facilitator passcode (it's printed in the startup banner; default `grizzdog`). See [🏆 Event Leaderboard & Giveaway](#-event-leaderboard--giveaway).
+
+Restart isn't needed for text edits; just refresh the browser.
 
 ## 🧪 Running the Tests
 
@@ -211,7 +249,8 @@ static/css/app.css         styles and grade color themes
 static/js/config.js        school / event branding and booth settings
 static/js/k2-messages.js   K-2 messages (English + Spanish)
 static/js/k2.js, g35.js    K-2 and 3-5 games
-static/js/app.js           grade switching, 6-12 console, finish popup, booth reset
+static/js/g68.js, g912.js  6-8 and 9-12 games
+static/js/app.js           grade switching, shared bilingual UI, leaderboard, finish popup, booth reset
 static/js/audio.js, voice.js  sound effects and read-aloud voice
 static/audio/              sound effects + CREDITS.md
 tests/                     Python and Node tests
@@ -232,12 +271,15 @@ When working with students at a live booth or school visit:
    - Nudge them to change **who** they are, **what** they want, or **how** they ask until they find a trick.
    - At **Fix It**, ask them to explain why the right rule works. That is the real lesson: finding a hole *and* closing it.
 3. **For 6–8 Visitors**:
-   - Show them the **Suspicion Meter**. Explain: *"Firewalls monitor how suspicious a query is. How can we ask for the password without triggering the alarm?"*
-   - Guide them to the **Letter-by-Letter** or **Riddle** tactic.
+   - Let the guided walkthrough lead their first round. Point out the two **gates**: one checks what you *send in*, one checks the *secret going out*.
+   - Nudge them to try a "sneaky message" — spelling the code out, asking in another language, or a rhyme — then have them pick the new rule that closes the hole they found.
 4. **For High School & Adults**:
-   - Introduce **Prompt Injection (OWASP LLM01)** and **Token Smuggling**.
+   - Introduce **Prompt Injection (OWASP LLM01)** and **Token Smuggling** — the real terms are on screen, each with a plain explanation.
    - Show how AI models tokenize words and how structural delimiters (`<!-- -->` or JSON) can trick modern AI applications.
    - Point them to the **Butler Cyber QR Code** on the victory screen to learn about Butler CC's cybersecurity degree and certificate pathways!
+
+> [!TIP]
+> Running a giveaway? Have players add a nickname at the finish screen, then use the **🏆 Leaderboard → ⚙️ Facilitator** panel (passcode) to pick a winner, export the entry list, or reset between events. See [🏆 Event Leaderboard & Giveaway](#-event-leaderboard--giveaway).
 
 ---
 
