@@ -197,7 +197,6 @@ function setUiLanguage(lang) {
 // Event leaderboard (server-backed, shared across kiosks)
 // -------------------------------------------------------------------------
 const LB_TIERS = ['k2', 'g35', 'g68', 'g912'];
-let lbFinishers = [];
 
 function lbInit() {
   try {
@@ -293,8 +292,6 @@ async function openLeaderboard() {
   const modal = document.getElementById('leaderboardModal');
   if (!modal) return;
   modal.style.display = 'flex';
-  const raffle = document.getElementById('lbRaffleResult');
-  if (raffle) raffle.innerText = '';
   let data = null;
   try {
     const res = await fetch('/api/leaderboard');
@@ -307,7 +304,6 @@ function renderLeaderboard(data) {
   const boards = document.getElementById('lbBoards');
   if (!boards) return;
   boards.innerHTML = '';
-  lbFinishers = (data && Array.isArray(data.finishers)) ? data.finishers : [];
   const bandKey = { k2: 'lbBandK2', g35: 'lbBandG35', g68: 'lbBandG68', g912: 'lbBandG912' };
   LB_TIERS.forEach(t => {
     const rows = (data && data.boards && data.boards[t]) || [];
@@ -342,13 +338,17 @@ function renderLeaderboard(data) {
   });
 }
 
+// Raffle among finishers, drawn from the facilitator's loaded entries so it
+// lives behind the passcode. Shows the winner's email (if given) to contact them.
 function lbRaffle() {
   soundClick();
   const out = document.getElementById('lbRaffleResult');
   if (!out) return;
-  if (!lbFinishers.length) { out.innerText = uiT('lbRaffleEmpty'); return; }
-  const winner = lbFinishers[Math.floor(Math.random() * lbFinishers.length)];
-  out.textContent = uiT('lbRaffleWinnerPrefix') + winner;   // textContent: untrusted
+  const pool = [...new Set(adminEntries.filter(e => e.completed).map(e => e.nick))];
+  if (!pool.length) { out.innerText = uiT('lbRaffleEmpty'); return; }
+  const winner = pool[Math.floor(Math.random() * pool.length)];
+  const email = (adminEntries.find(e => e.nick === winner && e.email) || {}).email || '';
+  out.textContent = uiT('lbRaffleWinnerPrefix') + winner + (email ? ' — ' + email : '');  // textContent: untrusted
   if (typeof triggerConfetti === 'function') triggerConfetti();
   if (typeof soundSuccess === 'function') soundSuccess();
 }
@@ -377,6 +377,7 @@ function openAdmin() {
   const msg = document.getElementById('adminMsg'); if (msg) msg.innerText = '';
   const pass = document.getElementById('adminPass'); if (pass) pass.value = '';
   const note = document.getElementById('adminResetNote'); if (note) note.innerText = '';
+  const raffle = document.getElementById('lbRaffleResult'); if (raffle) raffle.innerText = '';
   modal.style.display = 'flex';
 }
 

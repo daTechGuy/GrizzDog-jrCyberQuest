@@ -480,10 +480,6 @@
     <div class="modal-card lb-card" role="dialog" aria-modal="true" aria-labelledby="lbModalTitle">
       <div class="modal-title" id="lbModalTitle">🏆 Event Leaderboard</div>
       <div class="lb-boards" id="lbBoards"></div>
-      <div class="lb-raffle">
-        <button type="button" class="btn-modal lb-raffle-btn" id="lbRaffleBtn" onclick="lbRaffle()">🎉 Pick a random winner</button>
-        <div class="lb-raffle-result" id="lbRaffleResult" aria-live="polite"></div>
-      </div>
       <div class="modal-btn-row">
         <button type="button" class="btn-modal lb-admin-open" id="lbAdminOpenBtn" onclick="openAdmin()">⚙️ Facilitator</button>
         <button type="button" class="btn-modal btn-close" id="lbCloseBtn" onclick="closeLeaderboard()">Close</button>
@@ -504,6 +500,10 @@
 
       <div class="admin-panel" id="adminPanel" style="display: none;">
         <div class="admin-count" id="adminCount"></div>
+        <div class="lb-raffle">
+          <button type="button" class="btn-modal lb-raffle-btn" id="lbRaffleBtn" onclick="lbRaffle()">🎉 Pick a random winner</button>
+          <div class="lb-raffle-result" id="lbRaffleResult" aria-live="polite"></div>
+        </div>
         <div class="admin-table-wrap" id="adminTableWrap"></div>
         <div class="admin-actions">
           <button type="button" class="btn-modal" id="adminCsvBtn" onclick="adminCsv()">⬇️ Download CSV</button>
