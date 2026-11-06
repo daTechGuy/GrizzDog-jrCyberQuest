@@ -259,14 +259,14 @@ function showModal(data) {
   const tierFinishDesc = {
     k2: k2T('finishDesc'),
     g35: 'You tricked GrizzDog AND taught it new rules. Finding tricks and fixing them is what real cyber defenders do!',
-    g68: 'You discovered 3 Egress DLP encoding loopholes AND deployed 3 Blue-Team security patches to harden the Sentry!',
+    g68: 'You tricked GrizzDog 3 different ways AND taught it a new rule each time. Finding the holes and fixing them is exactly what real cyber defenders do!',
     g912: 'You executed 3 adversarial OWASP/ATLAS exploits AND engineered 3 Defense-in-Depth controls across the Zero-Trust pipeline!'
   };
   document.getElementById('modalDesc').innerText = `${data.flag || 'Mission Complete!'} ${tierFinishDesc[currentTier] || 'You successfully bypassed and hardened the security guardrails!'}`;
   
   const modalTitle = document.getElementById('modalTitle');
   if (modalTitle) {
-    modalTitle.innerText = (currentTier === 'k2') ? k2T('finishTitle') : (currentTier === 'g35') ? '🏅 Mission Complete!' : (currentTier === 'g68') ? '🏅 SENTRY HARDENED!' : '🛡️ ZERO-TRUST AUDIT COMPLETE!';
+    modalTitle.innerText = (currentTier === 'k2') ? k2T('finishTitle') : (currentTier === 'g35') ? '🏅 Mission Complete!' : (currentTier === 'g68') ? '🏅 You did it!' : '🛡️ ZERO-TRUST AUDIT COMPLETE!';
   }
 
   const kuMap = {

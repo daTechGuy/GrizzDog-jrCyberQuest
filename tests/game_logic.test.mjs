@@ -164,7 +164,7 @@ test('6-8: baseline and decoy tactics are blocked, and all 4 egress vectors are 
     for (const w of vec.wrong) assert.ok(w.text && w.why, `6-8 ${key}: wrong fix needs text and why`);
     const patchedEval = run(`g68AnalyzePrompt(G68_TACTICS.find(t => t.id === ${JSON.stringify(key)}).prompt, [${JSON.stringify(key)}])`);
     assert.equal(patchedEval.unpatched.length, 0, `6-8 ${key} should have no unpatched vectors after Blue-Team fix`);
-    assert.ok(patchedEval.egressStatus.includes('Patched'), `6-8 ${key} should show Patched status`);
+    assert.ok(patchedEval.egressStatus.includes('🛡️'), `6-8 ${key} should show a fixed/safe (🛡️) status`);
   }
 });
 
