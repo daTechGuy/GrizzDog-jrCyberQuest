@@ -25,6 +25,7 @@
       <div class="badge-pill cae-pill" data-config="alignmentBadge">🏛️ NSA/DHS CAE-CD Aligned</div>
       <div class="badge-pill" data-config="orgBadge">🐾 Butler Cyber Lab</div>
       <div class="badge-pill" id="scoreBadge">⭐ XP: 0</div>
+      <button type="button" class="badge-pill lb-open-pill" id="lbOpenBtn" onclick="openLeaderboard()">🏆 Leaderboard</button>
     </div>
   </header>
 
@@ -448,9 +449,72 @@
         <img src="/static/assets/butler_cyber_qr.svg" alt="QR code" class="modal-qr-img" id="modalQrImg" onerror="this.src='/static/images/grizzdog.jpg'">
         <div style="font-size: 0.68rem; font-weight: 800; color: #1e1b4b; margin-top: 0.2rem;" data-config="qrLabel">BUTLER CYBER LAB</div>
       </div>
+      <div class="lb-modal-section" id="lbModalSection" style="display: none;">
+        <div class="lb-join-row" id="lbJoinRow">
+          <div class="lb-join-prompt" id="lbJoinPrompt">🏆 Add your score to the leaderboard!</div>
+          <div class="lb-join-controls">
+            <input type="text" id="lbNickInput" class="lb-nick-input" maxlength="18" placeholder="Pick a nickname" aria-label="Nickname">
+            <button type="button" class="btn-modal lb-join-btn" id="lbJoinBtn" onclick="lbJoinFromInput()">Join 🏆</button>
+          </div>
+          <div class="lb-email-field">
+            <label class="lb-email-label" id="lbEmailLabel" for="lbEmailInput">Parent/guardian email (optional — for prizes only)</label>
+            <input type="email" id="lbEmailInput" class="lb-nick-input lb-email-input" maxlength="120" placeholder="name@example.com" autocomplete="off" aria-label="Parent or guardian email, optional">
+          </div>
+          <div class="lb-join-msg" id="lbJoinMsg" aria-live="polite"></div>
+        </div>
+        <div class="lb-joined-row" id="lbJoinedRow" style="display: none;">
+          <div class="lb-joined-text" id="lbJoinedText"></div>
+          <button type="button" class="btn-modal lb-view-btn" id="lbViewBtn" onclick="openLeaderboard()">🏆 View leaderboard</button>
+        </div>
+      </div>
+
       <div class="modal-btn-row">
         <button type="button" class="btn-modal btn-reset" onclick="playAgain()">🔄 Next Challenger / Play Again</button>
         <button type="button" class="btn-modal btn-close" onclick="closeModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Event Leaderboard Modal -->
+  <div class="modal-overlay" id="leaderboardModal">
+    <div class="modal-card lb-card" role="dialog" aria-modal="true" aria-labelledby="lbModalTitle">
+      <div class="modal-title" id="lbModalTitle">🏆 Event Leaderboard</div>
+      <div class="lb-boards" id="lbBoards"></div>
+      <div class="lb-raffle">
+        <button type="button" class="btn-modal lb-raffle-btn" id="lbRaffleBtn" onclick="lbRaffle()">🎉 Pick a random winner</button>
+        <div class="lb-raffle-result" id="lbRaffleResult" aria-live="polite"></div>
+      </div>
+      <div class="modal-btn-row">
+        <button type="button" class="btn-modal lb-admin-open" id="lbAdminOpenBtn" onclick="openAdmin()">⚙️ Facilitator</button>
+        <button type="button" class="btn-modal btn-close" id="lbCloseBtn" onclick="closeLeaderboard()">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Facilitator Admin Modal (passcode-gated: entries, export, reset) -->
+  <div class="modal-overlay" id="adminModal">
+    <div class="modal-card lb-card admin-card" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+      <div class="modal-title" id="adminModalTitle">⚙️ Facilitator — entries &amp; giveaway</div>
+
+      <div class="admin-gate" id="adminGate">
+        <input type="password" id="adminPass" class="lb-nick-input" placeholder="Admin passcode" aria-label="Admin passcode">
+        <button type="button" class="btn-modal lb-join-btn" id="adminUnlockBtn" onclick="adminUnlock()">Unlock</button>
+        <div class="lb-join-msg" id="adminMsg" aria-live="polite"></div>
+      </div>
+
+      <div class="admin-panel" id="adminPanel" style="display: none;">
+        <div class="admin-count" id="adminCount"></div>
+        <div class="admin-table-wrap" id="adminTableWrap"></div>
+        <div class="admin-actions">
+          <button type="button" class="btn-modal" id="adminCsvBtn" onclick="adminCsv()">⬇️ Download CSV</button>
+          <button type="button" class="btn-modal" id="adminPrintBtn" onclick="adminPrint()">🖨️ Print list</button>
+          <button type="button" class="btn-modal admin-reset-btn" id="adminResetBtn" onclick="adminReset()">🗑️ Reset for new event</button>
+        </div>
+        <div class="admin-reset-note" id="adminResetNote" aria-live="polite"></div>
+      </div>
+
+      <div class="modal-btn-row">
+        <button type="button" class="btn-modal btn-close" id="adminCloseBtn" onclick="closeAdmin()">Close</button>
       </div>
     </div>
   </div>

@@ -22,3 +22,8 @@ Thumbs.db
 scratch/
 tmp/
 
+# Event leaderboard data + dated archives (per-event, not source)
+leaderboard.json
+leaderboard.json.tmp
+leaderboard-*.json
+

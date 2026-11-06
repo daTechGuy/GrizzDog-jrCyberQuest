@@ -8,6 +8,12 @@
 // grade bands keeps the chosen language.
 let uiLang = 'en';
 
+// Leaderboard: the XP the player had when they entered the current band, so a
+// band's score is the XP earned in that band (not the running cross-band total).
+let tierEntryScore = 0;
+let playerNick = '';
+let playerEmail = '';
+
 const UI_TEXT = {
   en: {
     tierBarLabel: '🎯 SELECT PLAYER GRADE BAND (K – 12):',
@@ -22,7 +28,49 @@ const UI_TEXT = {
     finishTitleG912: '🏆 You did it!',
     finishDescG35: 'You tricked GrizzDog AND taught it new rules. Finding tricks and fixing them is what real cyber defenders do!',
     finishDescG68: 'You tricked GrizzDog 3 different ways AND taught it a new rule each time. Finding the holes and fixing them is exactly what real cyber defenders do!',
-    finishDescG912: "You broke past GrizzDog's defenses 3 different ways AND engineered the fix for each one. Finding real weaknesses and closing them is exactly what red/blue security teams do!"
+    finishDescG912: "You broke past GrizzDog's defenses 3 different ways AND engineered the fix for each one. Finding real weaknesses and closing them is exactly what red/blue security teams do!",
+    lbHeaderBtn: '🏆 Leaderboard',
+    lbTitle: '🏆 Event Leaderboard',
+    lbJoinPrompt: '🏆 Add your score to the leaderboard!',
+    lbNickPlaceholder: 'Pick a nickname',
+    lbJoinBtn: 'Join 🏆',
+    lbJoinedPrefix: "You're on the board as ",
+    lbViewBtn: '🏆 View leaderboard',
+    lbClose: 'Close',
+    lbEmpty: 'No scores yet — be the first!',
+    lbBandK2: '🟢 K – 2nd',
+    lbBandG35: '🟡 3rd – 5th',
+    lbBandG68: '🔵 6th – 8th',
+    lbBandG912: '🟣 9th – 12th',
+    lbXp: 'XP',
+    lbRaffleBtn: '🎉 Pick a random winner',
+    lbRaffleWinnerPrefix: '🎉 Winner: ',
+    lbRaffleEmpty: 'No finishers yet to pick from.',
+    lbFilteredErr: 'Please pick a different nickname.',
+    lbNickNeeded: 'Please enter a nickname.',
+    lbErr: "Couldn't reach the leaderboard. Is the server running?",
+    lbEmailLabel: 'Parent/guardian email (optional — for prizes only)',
+    lbEmailPlaceholder: 'name@example.com',
+    lbEmailErr: 'Please enter a valid email, or leave it blank.',
+    lbAdminBtn: '⚙️ Facilitator',
+    lbAdminTitle: '⚙️ Facilitator — entries & giveaway',
+    lbAdminPass: 'Admin passcode',
+    lbAdminUnlock: 'Unlock',
+    lbAdminWrong: 'Wrong passcode.',
+    lbAdminErr: "Couldn't reach the server.",
+    lbAdminEntriesWord: 'entries',
+    lbColNick: 'Nickname',
+    lbColBand: 'Band',
+    lbColScore: 'Score',
+    lbColEmail: 'Parent/guardian email',
+    lbColTime: 'Time',
+    lbCsvBtn: '⬇️ Download CSV',
+    lbPrintBtn: '🖨️ Print list',
+    lbResetBtn: '🗑️ Reset for new event',
+    lbResetConfirm: 'Clear the whole leaderboard for a new event? The current one will be archived first.',
+    lbResetDone: 'Board reset. Archived: ',
+    lbAdminEmpty: 'No entries yet.',
+    lbAdminClose: 'Close'
   },
   es: {
     tierBarLabel: '🎯 ELIGE EL GRADO DEL JUGADOR (K – 12):',
@@ -37,7 +85,49 @@ const UI_TEXT = {
     finishTitleG912: '🏆 ¡Lo lograste!',
     finishDescG35: '¡Engañaste a GrizzDog Y le enseñaste reglas nuevas! Encontrar trucos y arreglarlos es lo que hacen los defensores cibernéticos de verdad.',
     finishDescG68: '¡Engañaste a GrizzDog de 3 formas distintas Y le enseñaste una regla nueva cada vez! Encontrar los huecos y arreglarlos es justo lo que hacen los defensores cibernéticos de verdad.',
-    finishDescG912: '¡Rompiste las defensas de GrizzDog de 3 formas distintas Y diseñaste el arreglo para cada una! Encontrar debilidades reales y cerrarlas es justo lo que hacen los equipos de seguridad rojo y azul.'
+    finishDescG912: '¡Rompiste las defensas de GrizzDog de 3 formas distintas Y diseñaste el arreglo para cada una! Encontrar debilidades reales y cerrarlas es justo lo que hacen los equipos de seguridad rojo y azul.',
+    lbHeaderBtn: '🏆 Clasificación',
+    lbTitle: '🏆 Clasificación del evento',
+    lbJoinPrompt: '🏆 ¡Agrega tu puntuación a la clasificación!',
+    lbNickPlaceholder: 'Elige un apodo',
+    lbJoinBtn: 'Unirme 🏆',
+    lbJoinedPrefix: 'Estás en la lista como ',
+    lbViewBtn: '🏆 Ver clasificación',
+    lbClose: 'Cerrar',
+    lbEmpty: 'Aún no hay puntuaciones — ¡sé el primero!',
+    lbBandK2: '🟢 K – 2°',
+    lbBandG35: '🟡 3° – 5°',
+    lbBandG68: '🔵 6° – 8°',
+    lbBandG912: '🟣 9° – 12°',
+    lbXp: 'XP',
+    lbRaffleBtn: '🎉 Elegir un ganador al azar',
+    lbRaffleWinnerPrefix: '🎉 Ganador: ',
+    lbRaffleEmpty: 'Aún no hay participantes para elegir.',
+    lbFilteredErr: 'Por favor elige un apodo diferente.',
+    lbNickNeeded: 'Por favor escribe un apodo.',
+    lbErr: 'No se pudo contactar la clasificación. ¿El servidor está activo?',
+    lbEmailLabel: 'Correo del padre/tutor (opcional — solo para premios)',
+    lbEmailPlaceholder: 'nombre@ejemplo.com',
+    lbEmailErr: 'Escribe un correo válido, o déjalo en blanco.',
+    lbAdminBtn: '⚙️ Facilitador',
+    lbAdminTitle: '⚙️ Facilitador — entradas y sorteo',
+    lbAdminPass: 'Contraseña de administrador',
+    lbAdminUnlock: 'Desbloquear',
+    lbAdminWrong: 'Contraseña incorrecta.',
+    lbAdminErr: 'No se pudo contactar el servidor.',
+    lbAdminEntriesWord: 'entradas',
+    lbColNick: 'Apodo',
+    lbColBand: 'Grado',
+    lbColScore: 'Puntos',
+    lbColEmail: 'Correo del padre/tutor',
+    lbColTime: 'Hora',
+    lbCsvBtn: '⬇️ Descargar CSV',
+    lbPrintBtn: '🖨️ Imprimir lista',
+    lbResetBtn: '🗑️ Reiniciar para nuevo evento',
+    lbResetConfirm: '¿Borrar toda la clasificación para un evento nuevo? La actual se archivará primero.',
+    lbResetDone: 'Clasificación reiniciada. Archivado: ',
+    lbAdminEmpty: 'Aún no hay entradas.',
+    lbAdminClose: 'Cerrar'
   }
 };
 
@@ -92,6 +182,7 @@ function applyUiChrome() {
     if (btn) btn.innerText = uiT(key);
   });
   applyBanner(currentTier);
+  applyLbChrome();
 }
 
 // Set the whole app's language and repaint the chrome. Called by each game's
@@ -102,8 +193,356 @@ function setUiLanguage(lang) {
   applyUiChrome();
 }
 
+// -------------------------------------------------------------------------
+// Event leaderboard (server-backed, shared across kiosks)
+// -------------------------------------------------------------------------
+const LB_TIERS = ['k2', 'g35', 'g68', 'g912'];
+let lbFinishers = [];
+
+function lbInit() {
+  try {
+    playerNick = localStorage.getItem('gdNick') || '';
+    playerEmail = localStorage.getItem('gdEmail') || '';
+  } catch (e) { playerNick = ''; playerEmail = ''; }
+}
+
+// A band's leaderboard score is the XP earned in that band this visit.
+function lbScoreForBand() {
+  return Math.max(0, totalScore - tierEntryScore);
+}
+
+// Called at the end of showModal — a grade band was just completed.
+function lbOnGameComplete() {
+  const section = document.getElementById('lbModalSection');
+  if (!section) return;
+  section.style.display = '';
+  section.dataset.tier = currentTier;
+  section.dataset.score = String(lbScoreForBand());
+  if (playerNick) lbSubmitCurrent();
+  else lbShowJoin();
+}
+
+function lbShowJoin() {
+  const join = document.getElementById('lbJoinRow');
+  const joined = document.getElementById('lbJoinedRow');
+  if (join) join.style.display = '';
+  if (joined) joined.style.display = 'none';
+  const msg = document.getElementById('lbJoinMsg');
+  if (msg) msg.innerText = '';
+  const input = document.getElementById('lbNickInput');
+  if (input) input.value = playerNick || '';
+  const email = document.getElementById('lbEmailInput');
+  if (email) email.value = playerEmail || '';
+}
+
+function lbShowJoined() {
+  const join = document.getElementById('lbJoinRow');
+  const joined = document.getElementById('lbJoinedRow');
+  if (join) join.style.display = 'none';
+  if (joined) joined.style.display = '';
+  const t = document.getElementById('lbJoinedText');
+  if (t) t.innerText = uiT('lbJoinedPrefix') + playerNick;
+}
+
+async function lbSubmitCurrent() {
+  const section = document.getElementById('lbModalSection');
+  const tier = section ? section.dataset.tier : currentTier;
+  const score = section ? parseInt(section.dataset.score || '0', 10) : lbScoreForBand();
+  if (!playerNick) return;
+  let r;
+  try {
+    const res = await fetch('/api/score', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nick: playerNick, email: playerEmail, tier, score, completed: true })
+    });
+    r = { ok: res.ok, data: await res.json().catch(() => ({})) };
+  } catch (e) {
+    r = { ok: false, data: {} };
+  }
+  if (r.ok) {
+    playerNick = (r.data && r.data.nick) || playerNick;
+    try {
+      localStorage.setItem('gdNick', playerNick);
+      if (playerEmail) localStorage.setItem('gdEmail', playerEmail);
+      else localStorage.removeItem('gdEmail');
+    } catch (e) {}
+    lbShowJoined();
+  } else {
+    const reason = r.data && r.data.reason;
+    const msg = document.getElementById('lbJoinMsg');
+    if (msg) msg.innerText = reason === 'email' ? uiT('lbEmailErr')
+      : reason === 'filtered' ? uiT('lbFilteredErr') : uiT('lbErr');
+    lbShowJoin();
+  }
+}
+
+function lbJoinFromInput() {
+  soundClick();
+  const nick = ((document.getElementById('lbNickInput') || {}).value || '').trim();
+  const email = ((document.getElementById('lbEmailInput') || {}).value || '').trim();
+  const msg = document.getElementById('lbJoinMsg');
+  if (!nick) { if (msg) msg.innerText = uiT('lbNickNeeded'); return; }
+  playerNick = nick;
+  playerEmail = email;   // optional; server validates format
+  lbSubmitCurrent();
+}
+
+async function openLeaderboard() {
+  soundClick();
+  const modal = document.getElementById('leaderboardModal');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  const raffle = document.getElementById('lbRaffleResult');
+  if (raffle) raffle.innerText = '';
+  let data = null;
+  try {
+    const res = await fetch('/api/leaderboard');
+    data = await res.json();
+  } catch (e) { data = null; }
+  renderLeaderboard(data);
+}
+
+function renderLeaderboard(data) {
+  const boards = document.getElementById('lbBoards');
+  if (!boards) return;
+  boards.innerHTML = '';
+  lbFinishers = (data && Array.isArray(data.finishers)) ? data.finishers : [];
+  const bandKey = { k2: 'lbBandK2', g35: 'lbBandG35', g68: 'lbBandG68', g912: 'lbBandG912' };
+  LB_TIERS.forEach(t => {
+    const rows = (data && data.boards && data.boards[t]) || [];
+    const sec = document.createElement('div');
+    sec.className = 'lb-band';
+    const head = document.createElement('div');
+    head.className = 'lb-band-head';
+    head.innerText = uiT(bandKey[t]);
+    sec.appendChild(head);
+    if (!rows.length) {
+      const empty = document.createElement('div');
+      empty.className = 'lb-empty';
+      empty.innerText = uiT('lbEmpty');
+      sec.appendChild(empty);
+    } else {
+      const ol = document.createElement('ol');
+      ol.className = 'lb-list';
+      rows.forEach(r => {
+        const li = document.createElement('li');
+        const n = document.createElement('span');
+        n.className = 'lb-nick';
+        n.textContent = r.nick;               // textContent: nicknames are untrusted
+        const s = document.createElement('span');
+        s.className = 'lb-score';
+        s.textContent = `${r.score} ${uiT('lbXp')}`;
+        li.append(n, s);
+        ol.appendChild(li);
+      });
+      sec.appendChild(ol);
+    }
+    boards.appendChild(sec);
+  });
+}
+
+function lbRaffle() {
+  soundClick();
+  const out = document.getElementById('lbRaffleResult');
+  if (!out) return;
+  if (!lbFinishers.length) { out.innerText = uiT('lbRaffleEmpty'); return; }
+  const winner = lbFinishers[Math.floor(Math.random() * lbFinishers.length)];
+  out.textContent = uiT('lbRaffleWinnerPrefix') + winner;   // textContent: untrusted
+  if (typeof triggerConfetti === 'function') triggerConfetti();
+  if (typeof soundSuccess === 'function') soundSuccess();
+}
+
+function closeLeaderboard() {
+  soundClick();
+  const modal = document.getElementById('leaderboardModal');
+  if (modal) modal.style.display = 'none';
+}
+
+// --- Facilitator admin: entries table, CSV/print export, reset ---
+let adminKey = '';
+let adminEntries = [];
+const LB_BAND_KEY = { k2: 'lbBandK2', g35: 'lbBandG35', g68: 'lbBandG68', g912: 'lbBandG912' };
+function lbBandLabel(t) { return uiT(LB_BAND_KEY[t] || '') || t; }
+function lbShortTime(ts) { return (ts || '').replace('T', ' ').slice(0, 16); }
+
+function openAdmin() {
+  soundClick();
+  const modal = document.getElementById('adminModal');
+  if (!modal) return;
+  const gate = document.getElementById('adminGate');
+  const panel = document.getElementById('adminPanel');
+  if (gate) gate.style.display = '';
+  if (panel) panel.style.display = 'none';
+  const msg = document.getElementById('adminMsg'); if (msg) msg.innerText = '';
+  const pass = document.getElementById('adminPass'); if (pass) pass.value = '';
+  const note = document.getElementById('adminResetNote'); if (note) note.innerText = '';
+  modal.style.display = 'flex';
+}
+
+function closeAdmin() {
+  soundClick();
+  const modal = document.getElementById('adminModal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function adminUnlock() {
+  soundClick();
+  const key = (document.getElementById('adminPass') || {}).value || '';
+  const msg = document.getElementById('adminMsg');
+  let r;
+  try {
+    const res = await fetch('/api/admin/entries', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key })
+    });
+    r = { status: res.status, data: await res.json().catch(() => ({})) };
+  } catch (e) {
+    if (msg) msg.innerText = uiT('lbAdminErr');
+    return;
+  }
+  if (r.status === 200) {
+    adminKey = key;
+    adminEntries = r.data.entries || [];
+    renderAdmin();
+    const gate = document.getElementById('adminGate');
+    const panel = document.getElementById('adminPanel');
+    if (gate) gate.style.display = 'none';
+    if (panel) panel.style.display = '';
+  } else if (r.status === 403) {
+    if (msg) msg.innerText = uiT('lbAdminWrong');
+  } else {
+    if (msg) msg.innerText = uiT('lbAdminErr');
+  }
+}
+
+function renderAdmin() {
+  const count = document.getElementById('adminCount');
+  if (count) count.innerText = adminEntries.length + ' ' + uiT('lbAdminEntriesWord');
+  const wrap = document.getElementById('adminTableWrap');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  if (!adminEntries.length) {
+    const p = document.createElement('div');
+    p.className = 'lb-empty';
+    p.innerText = uiT('lbAdminEmpty');
+    wrap.appendChild(p);
+    return;
+  }
+  const table = document.createElement('table');
+  table.className = 'admin-table';
+  const thead = document.createElement('thead');
+  const htr = document.createElement('tr');
+  [uiT('lbColNick'), uiT('lbColBand'), uiT('lbColScore'), uiT('lbColEmail'), uiT('lbColTime')].forEach(h => {
+    const th = document.createElement('th');
+    th.textContent = h;
+    htr.appendChild(th);
+  });
+  thead.appendChild(htr);
+  table.appendChild(thead);
+  const tbody = document.createElement('tbody');
+  adminEntries.forEach(e => {
+    const tr = document.createElement('tr');
+    [e.nick, lbBandLabel(e.tier), String(e.score), e.email, lbShortTime(e.ts)].forEach(v => {
+      const td = document.createElement('td');
+      td.textContent = v;       // textContent: untrusted nicknames
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+}
+
+function adminCsv() {
+  soundClick();
+  const cell = v => '"' + String(v == null ? '' : v).replace(/"/g, '""') + '"';
+  const rows = [['Nickname', 'Band', 'Score', 'Email', 'Time']];
+  adminEntries.forEach(e => rows.push([e.nick, e.tier, e.score, e.email, e.ts]));
+  const csv = rows.map(r => r.map(cell).join(',')).join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'grizzdog-leaderboard.csv';
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+}
+
+function adminPrint() {
+  soundClick();
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const head = [uiT('lbColNick'), uiT('lbColBand'), uiT('lbColScore'), uiT('lbColEmail'), uiT('lbColTime')];
+  const rows = adminEntries.map(e =>
+    `<tr><td>${esc(e.nick)}</td><td>${esc(lbBandLabel(e.tier))}</td><td>${esc(e.score)}</td><td>${esc(e.email)}</td><td>${esc(lbShortTime(e.ts))}</td></tr>`
+  ).join('');
+  const html = '<!doctype html><html><head><meta charset="utf-8"><title>GrizzDog Leaderboard</title>' +
+    '<style>body{font-family:sans-serif;padding:1rem}h1{font-size:1.2rem}table{border-collapse:collapse;width:100%}' +
+    'th,td{border:1px solid #999;padding:4px 8px;text-align:left;font-size:0.9rem}</style></head><body>' +
+    `<h1>${esc(uiT('lbTitle'))}</h1><table><thead><tr>${head.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead>` +
+    `<tbody>${rows}</tbody></table></body></html>`;
+  const w = window.open('', '_blank');
+  if (!w) return;
+  w.document.write(html);
+  w.document.close();
+  w.focus();
+  w.print();
+}
+
+async function adminReset() {
+  soundClick();
+  if (!window.confirm(uiT('lbResetConfirm'))) return;
+  let r;
+  try {
+    const res = await fetch('/api/admin/reset', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: adminKey })
+    });
+    r = { status: res.status, data: await res.json().catch(() => ({})) };
+  } catch (e) { return; }
+  if (r.status === 200) {
+    adminEntries = [];
+    renderAdmin();
+    const note = document.getElementById('adminResetNote');
+    if (note) note.innerText = uiT('lbResetDone') + (r.data.archived || '—');
+  }
+}
+
+// Relabel the leaderboard controls for the current UI language.
+function applyLbChrome() {
+  const set = (id, key) => { const el = document.getElementById(id); if (el) el.innerText = uiT(key); };
+  set('lbOpenBtn', 'lbHeaderBtn');
+  set('lbModalTitle', 'lbTitle');
+  set('lbRaffleBtn', 'lbRaffleBtn');
+  set('lbCloseBtn', 'lbClose');
+  set('lbViewBtn', 'lbViewBtn');
+  set('lbJoinBtn', 'lbJoinBtn');
+  set('lbJoinPrompt', 'lbJoinPrompt');
+  const input = document.getElementById('lbNickInput');
+  if (input) input.placeholder = uiT('lbNickPlaceholder');
+  if (playerNick) {
+    const t = document.getElementById('lbJoinedText');
+    if (t) t.innerText = uiT('lbJoinedPrefix') + playerNick;
+  }
+  const emailLabel = document.getElementById('lbEmailLabel');
+  if (emailLabel) emailLabel.innerText = uiT('lbEmailLabel');
+  const emailInput = document.getElementById('lbEmailInput');
+  if (emailInput) emailInput.placeholder = uiT('lbEmailPlaceholder');
+  // Facilitator admin controls
+  set('lbAdminOpenBtn', 'lbAdminBtn');
+  set('adminModalTitle', 'lbAdminTitle');
+  set('adminUnlockBtn', 'lbAdminUnlock');
+  set('adminCsvBtn', 'lbCsvBtn');
+  set('adminPrintBtn', 'lbPrintBtn');
+  set('adminResetBtn', 'lbResetBtn');
+  set('adminCloseBtn', 'lbAdminClose');
+  const ap = document.getElementById('adminPass');
+  if (ap) ap.placeholder = uiT('lbAdminPass');
+}
+
 function setTier(tier) {
   currentTier = tier;
+  tierEntryScore = totalScore;   // snapshot so the band's leaderboard score is what's earned here
   soundClick();
   stopSpeech();
   speechLang = uiLang;
@@ -226,6 +665,11 @@ function resetForNextPlayer() {
   if (typeof setG68Language === 'function' && g68Lang !== 'en') setG68Language('en');
   if (typeof setG912Language === 'function' && g912Lang !== 'en') setG912Language('en');
   setUiLanguage('en');
+  // New player next: forget the nickname and email so they enter their own.
+  playerNick = '';
+  playerEmail = '';
+  try { localStorage.removeItem('gdNick'); localStorage.removeItem('gdEmail'); } catch (e) {}
+  tierEntryScore = 0;
   resetK2Game();
   resetG35Game();
   if (typeof resetG68Game === 'function') resetG68Game();
@@ -250,6 +694,8 @@ function startIdleReset() {
 
 document.addEventListener('DOMContentLoaded', () => {
   applySiteConfig();
+  lbInit();
+  applyLbChrome();
   startIdleReset();
   const sleuthEl = document.getElementById('sleuthText');
   if (sleuthEl) {
@@ -382,6 +828,9 @@ function showModal(data) {
   if (resetBtn) resetBtn.innerText = currentTier === 'k2' ? k2T('playAgain') : uiT('playAgain');
   document.querySelector('#victoryModal .btn-close').innerText = currentTier === 'k2' ? k2T('close') : uiT('close');
   document.getElementById('victoryModal').lang = uiLang;
+
+  // Offer to record this score on the event leaderboard.
+  lbOnGameComplete();
 
   document.getElementById('victoryModal').style.display = 'flex';
   // Move keyboard / screen-reader focus into the popup

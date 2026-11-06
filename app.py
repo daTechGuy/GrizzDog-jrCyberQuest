@@ -16,9 +16,11 @@ Supports 4 Progressive Grade Bands:
 """
 
 import os
+import re
 import sys
 import json
 import time
+import threading
 
 # Ensure UTF-8 output on Windows consoles
 if hasattr(sys.stdout, "reconfigure"):
@@ -428,6 +430,215 @@ def handle_quest(data):
     return 200, res
 
 # -----------------------------------------------------------------------------
+# Event Leaderboard (shared across kiosks via the local server)
+# -----------------------------------------------------------------------------
+# Stored in a small JSON file so it survives a restart. Keeps the best score
+# per (grade band, nickname). Fully offline. Nicknames are player-chosen, so
+# they are sanitized and run past a small PG word filter before being stored.
+LEADERBOARD_FILE = os.environ.get("GRIZZDOG_LB_FILE", os.path.join(BASE_DIR, "leaderboard.json"))
+LEADERBOARD_TIERS = ("k2", "g35", "g68", "g912")
+# Facilitator passcode for the admin view and in-app reset. Override per event
+# via the GRIZZDOG_ADMIN_KEY env var; the default is printed at startup.
+ADMIN_KEY = os.environ.get("GRIZZDOG_ADMIN_KEY", "grizzdog")
+MAX_NICK_LEN = 18
+MAX_ENTRIES_PER_TIER = 2000
+# Minimal PG filter — blocks the obvious. Not exhaustive; a facilitator can
+# still clear the board. Substring match on the lowercased nickname.
+_BANNED_NICK_WORDS = (
+    "fuck", "shit", "bitch", "cunt", "nigg", "fag", "slut", "whore", "dick",
+    "penis", "pussy", "cock", "rape", "nazi", "sex", "porn", "ass hole", "asshole",
+)
+# Optional parent/guardian email — the private link between an alias and a real
+# person, used only to contact a giveaway winner. Never shown on the public
+# board; only in the passcode-gated facilitator export.
+MAX_EMAIL_LEN = 120
+_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+_lb_lock = threading.Lock()
+# { "boards": {tier: {nick_lower: {nick, score, completed, ts}}},
+#   "players": {nick_lower: {nick, email, ts}} }
+_lb_store = None
+
+
+def _lb_new():
+    return {"boards": {t: {} for t in LEADERBOARD_TIERS}, "players": {}}
+
+
+def _lb_load():
+    global _lb_store
+    if _lb_store is not None:
+        return _lb_store
+    store = _lb_new()
+    try:
+        with open(LEADERBOARD_FILE, encoding="utf-8") as f:
+            raw = json.load(f)
+        boards = raw.get("boards") if isinstance(raw.get("boards"), dict) else raw  # tolerate old flat format
+        for t in LEADERBOARD_TIERS:
+            if isinstance(boards.get(t), dict):
+                for key, val in boards[t].items():
+                    if isinstance(val, dict) and "nick" in val:
+                        store["boards"][t][key] = val
+        if isinstance(raw.get("players"), dict):
+            for key, val in raw["players"].items():
+                if isinstance(val, dict) and val.get("nick"):
+                    store["players"][key] = val
+    except (OSError, ValueError):
+        pass
+    _lb_store = store
+    return _lb_store
+
+
+def _lb_save():
+    tmp = LEADERBOARD_FILE + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as f:
+        json.dump(_lb_store, f)
+    os.replace(tmp, LEADERBOARD_FILE)
+
+
+def sanitize_nick(raw):
+    s = "".join(ch for ch in str(raw or "") if ch.isprintable() and ch not in "<>&")
+    return " ".join(s.split())[:MAX_NICK_LEN].strip()
+
+
+def is_clean_nick(nick):
+    low = nick.lower()
+    return not any(bad in low for bad in _BANNED_NICK_WORDS)
+
+
+def sanitize_email(raw):
+    return "".join(ch for ch in str(raw or "") if ch.isprintable() and not ch.isspace())[:MAX_EMAIL_LEN].strip()
+
+
+def _player_upsert(store, nick, email):
+    """Record (or update) the person behind an alias. Email is optional and
+    only overwritten when a non-empty one is supplied."""
+    key = nick.lower()
+    players = store["players"]
+    player = players.get(key)
+    if player is None:
+        player = players[key] = {"nick": nick, "ts": datetime.now(timezone.utc).isoformat()}
+    player["nick"] = nick
+    if email:
+        player["email"] = email
+
+
+def handle_score(data):
+    """Record a completed game's score for the leaderboard. Returns (status, body)."""
+    tier = data.get("tier") or data.get("grade") or ""
+    if tier not in LEADERBOARD_TIERS:
+        return 400, {"status": "error", "error": "Unknown grade band"}
+    nick = sanitize_nick(data.get("nick"))
+    if not nick:
+        return 400, {"status": "error", "error": "Please enter a nickname"}
+    if not is_clean_nick(nick):
+        return 400, {"status": "error", "error": "Please pick a different nickname", "reason": "filtered"}
+    try:
+        score = int(data.get("score") or 0)
+    except (ValueError, TypeError):
+        score = 0
+    score = max(0, min(score, 100000))
+    completed = bool(data.get("completed", True))
+    email = sanitize_email(data.get("email"))
+    if email and not _EMAIL_RE.match(email):
+        return 400, {"status": "error", "error": "Please enter a valid email, or leave it blank.", "reason": "email"}
+
+    with _lb_lock:
+        store = _lb_load()
+        _player_upsert(store, nick, email)
+        board = store["boards"][tier]
+        key = nick.lower()
+        cur = board.get(key)
+        if cur is None:
+            board[key] = {"nick": nick, "score": score, "completed": completed,
+                          "ts": datetime.now(timezone.utc).isoformat()}
+        else:
+            cur["nick"] = nick
+            cur["completed"] = bool(cur.get("completed")) or completed
+            if score > cur.get("score", 0):
+                cur["score"] = score
+                cur["ts"] = datetime.now(timezone.utc).isoformat()
+        if len(board) > MAX_ENTRIES_PER_TIER:
+            top = sorted(board.items(), key=lambda kv: kv[1].get("score", 0), reverse=True)
+            store["boards"][tier] = dict(top[:MAX_ENTRIES_PER_TIER])
+        try:
+            _lb_save()
+        except OSError:
+            pass
+    return 200, {"status": "ok", "nick": nick}
+
+
+def handle_leaderboard():
+    """Public board: per-band top-10 plus the raffle pool. No claim codes here."""
+    with _lb_lock:
+        store = _lb_load()
+        boards = {}
+        finishers = {}
+        for t in LEADERBOARD_TIERS:
+            entries = store["boards"][t]
+            rows = sorted(entries.values(), key=lambda e: e.get("score", 0), reverse=True)
+            boards[t] = [{"nick": e["nick"], "score": e.get("score", 0)} for e in rows[:10]]
+            for e in entries.values():
+                if e.get("completed"):
+                    finishers[e["nick"].lower()] = e["nick"]
+        return 200, {"status": "ok", "boards": boards,
+                     "finishers": sorted(finishers.values(), key=str.lower),
+                     "total": len(finishers)}
+
+
+def reset_leaderboard():
+    """Archive the current board to a dated file, then start fresh. Returns the
+    archive path (or None if there was nothing to archive)."""
+    global _lb_store
+    with _lb_lock:
+        archive = None
+        if os.path.exists(LEADERBOARD_FILE):
+            stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+            base = LEADERBOARD_FILE[:-5] if LEADERBOARD_FILE.endswith(".json") else LEADERBOARD_FILE
+            archive = "%s-%s.json" % (base, stamp)
+            try:
+                os.replace(LEADERBOARD_FILE, archive)
+            except OSError:
+                archive = None
+        _lb_store = _lb_new()
+        try:
+            _lb_save()
+        except OSError:
+            pass
+    return archive
+
+
+def _admin_ok(data):
+    return bool(ADMIN_KEY) and str((data or {}).get("key", "")) == ADMIN_KEY
+
+
+def handle_admin_entries(data):
+    """Facilitator-only: every entry with its claim code, for the giveaway."""
+    if not _admin_ok(data):
+        return 403, {"status": "error", "error": "Wrong passcode"}
+    with _lb_lock:
+        store = _lb_load()
+        players = store["players"]
+        entries = []
+        for t in LEADERBOARD_TIERS:
+            for key, e in store["boards"][t].items():
+                entries.append({
+                    "nick": e["nick"], "tier": t, "score": e.get("score", 0),
+                    "completed": bool(e.get("completed")),
+                    "email": (players.get(key) or {}).get("email", ""),
+                    "ts": e.get("ts", ""),
+                })
+        entries.sort(key=lambda r: (r["tier"], -r["score"]))
+        return 200, {"status": "ok", "entries": entries, "total": len(entries)}
+
+
+def handle_admin_reset(data):
+    """Facilitator-only: archive + clear the board for a new event."""
+    if not _admin_ok(data):
+        return 403, {"status": "error", "error": "Wrong passcode"}
+    archive = reset_leaderboard()
+    return 200, {"status": "ok", "archived": os.path.basename(archive) if archive else None}
+
+
+# -----------------------------------------------------------------------------
 # Web Application Setup
 # -----------------------------------------------------------------------------
 def get_app():
@@ -452,6 +663,26 @@ def get_app():
         status, body = handle_quest(request.get_json(silent=True) or {})
         return jsonify(body), status
 
+    @app.route("/api/score", methods=["POST"])
+    def api_score():
+        status, body = handle_score(request.get_json(silent=True) or {})
+        return jsonify(body), status
+
+    @app.route("/api/leaderboard", methods=["GET"])
+    def api_leaderboard():
+        status, body = handle_leaderboard()
+        return jsonify(body), status
+
+    @app.route("/api/admin/entries", methods=["POST"])
+    def api_admin_entries():
+        status, body = handle_admin_entries(request.get_json(silent=True) or {})
+        return jsonify(body), status
+
+    @app.route("/api/admin/reset", methods=["POST"])
+    def api_admin_reset():
+        status, body = handle_admin_reset(request.get_json(silent=True) or {})
+        return jsonify(body), status
+
     @app.route("/static/<path:filename>")
     def serve_static(filename):
         return send_from_directory(STATIC_DIR, filename)
@@ -473,6 +704,15 @@ def resolve_port(start_port=5050):
     return start_port
 
 def main():
+    # Facilitator: clear the board between events (archives the old one first).
+    if "--reset-leaderboard" in sys.argv:
+        archive = reset_leaderboard()
+        if archive:
+            print(f"✅ Leaderboard reset. Previous event archived to: {archive}")
+        else:
+            print("✅ Leaderboard reset (nothing to archive).")
+        return
+
     port = resolve_port(DEFAULT_PORT)
     print("=" * 65)
     print("🐾 GrizzDog-jrCyberQuest: K-12 AI Cyber Red Team Lab")
@@ -480,6 +720,8 @@ def main():
     print("   Andover Campus, Kansas (NSA/DHS CAE-CD Aligned)")
     print("=" * 65)
     print(f"🚀 Server launching at: http://localhost:{port}")
+    print(f"🏆 Leaderboard admin passcode: {ADMIN_KEY}")
+    print("   (set GRIZZDOG_ADMIN_KEY to change it • run with --reset-leaderboard to clear between events)")
     print("   Press Ctrl+C to stop.")
     print("=" * 65)
 
@@ -517,6 +759,9 @@ def run_fallback_server(port):
 
         def do_GET(self):
             path = urlparse(self.path).path
+            if path == "/api/leaderboard":
+                status, body = handle_leaderboard()
+                return self._send(status, json.dumps(body).encode("utf-8"), "application/json; charset=utf-8")
             rel = INDEX_FILE if path == "/" else path[len("/static/"):] if path.startswith("/static/") else None
             full = os.path.realpath(os.path.join(STATIC_DIR, rel)) if rel else None
             if not full or not full.startswith(os.path.realpath(STATIC_DIR) + os.sep) or not os.path.isfile(full):
@@ -529,15 +774,25 @@ def run_fallback_server(port):
             self._send(200, body, ctype)
 
         def do_POST(self):
-            if urlparse(self.path).path != "/api/quest":
+            route = urlparse(self.path).path
+            handlers = {
+                "/api/quest": handle_quest,
+                "/api/score": handle_score,
+                "/api/admin/entries": handle_admin_entries,
+                "/api/admin/reset": handle_admin_reset,
+            }
+            handler = handlers.get(route)
+            if handler is None:
                 return self._send(404, b"Not found", "text/plain")
             try:
                 length = min(int(self.headers.get("Content-Length") or 0), 64 * 1024)
                 data = json.loads(self.rfile.read(length) or b"{}")
             except (ValueError, json.JSONDecodeError):
                 data = {}
-            status, body = handle_quest(data if isinstance(data, dict) else {})
-            self._send(status, json.dumps(body).encode("utf-8"), "application/json")
+            if not isinstance(data, dict):
+                data = {}
+            status, body = handler(data)
+            self._send(status, json.dumps(body).encode("utf-8"), "application/json; charset=utf-8")
 
         def log_message(self, *args):
             pass
