@@ -763,6 +763,45 @@ body.g35-mode .mascot-card { display: none; }
 .g35-rules li { font-size: 1.02rem; font-weight: 700; }
 .g35-rules li.new { color: #6ee7b7; animation: fadeIn 0.5s ease; }
 
+/* 3-5 beginner helpers: goal banner + dismissible first-mission tip */
+.g35-goal {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #5b21b6;
+  background: #ede9fe;
+  border: 2px solid #c4b5fd;
+  border-radius: 16px;
+  padding: 0.7rem 1.1rem;
+  text-align: center;
+}
+.g35-hint {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #92400e;
+  background: #fef3c7;
+  border: 2px solid #fbbf24;
+  border-radius: 16px;
+  padding: 0.7rem 1.1rem;
+}
+.g35-hint-text { flex: 1; }
+.g35-hint-dismiss {
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 800;
+  flex-shrink: 0;
+  padding: 0.4rem 0.9rem;
+  border-radius: 9999px;
+  border: 2px solid #f59e0b;
+  background: #fff;
+  color: #92400e;
+  cursor: pointer;
+}
+.g35-hint-dismiss:hover { background: #fffbeb; }
+
 .g35-row-label { font-size: 1.1rem; font-weight: 900; color: var(--g35-purple); margin-bottom: 0.45rem; }
 .g35-row { margin-bottom: 0.9rem; }
 .g35-chips { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.55rem; }
@@ -1808,6 +1847,9 @@ body.g912-mode .mascot-card { display: none; }
   .g68-scene, .g912-scene { flex-direction: column; text-align: center; }
   .g68-target-row, .g912-target-row { justify-content: center; }
   .g68-dog, .g912-dog { width: 92px; height: 92px; }
+  /* Let the beginner helper banners stack their button under the text on phones */
+  .g68-coach, .g35-hint { flex-wrap: wrap; }
+  .g68-coach-skip, .g35-hint-dismiss { margin-left: auto; }
 }
 
 /* Common Compiled Payload Box */

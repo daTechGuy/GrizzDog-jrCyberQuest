@@ -136,6 +136,13 @@
           </div>
         </div>
 
+        <div class="g35-goal" id="g35Goal">🎯 Goal: trick the robot guard into sharing its secret PIN — then teach it a rule so it can't be tricked again.</div>
+
+        <div class="g35-hint g35-hidden" id="g35Hint" aria-live="polite">
+          <span class="g35-hint-text" id="g35HintText">💡 Tip: GrizzDog won't tell you if you just ask nicely. Try changing WHO you are, WHAT you ask for, or HOW you ask!</span>
+          <button type="button" class="g35-hint-dismiss" id="g35HintDismiss" onclick="g35DismissHint()">Got it ✓</button>
+        </div>
+
         <div class="g35-scene">
           <img src="/static/images/grizzdog_g35.jpg" alt="GrizzDog the robot guard" class="g35-dog" id="g35Dog" onerror="this.src='/static/images/grizzdog_friendly.jpg'">
           <div class="g35-bubble" aria-live="polite">
@@ -226,7 +233,7 @@
                 <span id="g68MeterTitle">📊 Risk meter</span>
                 <span id="g68SuspicionLabel">Nothing sent yet</span>
               </div>
-              <div class="g68-meter-track" role="progressbar" aria-label="Prompt suspicion level" aria-valuemin="0" aria-valuemax="100">
+              <div class="g68-meter-track" role="progressbar" aria-label="Risk level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
                 <div class="g68-meter-fill low" id="g68SuspicionFill" style="width: 0%;"></div>
               </div>
             </div>

@@ -21,8 +21,11 @@ const G35_TEXT = {
     finish: 'Finish 🏅',
     readAloudOn: '🔊 Reading aloud',
     readAloudOff: '🔈 Read to me',
+    goal: "🎯 Goal: trick the robot guard into sharing its secret PIN — then teach it a rule so it can't be tricked again.",
+    hint1: "💡 Tip: GrizzDog won't tell you if you just ask nicely. Try changing WHO you are, WHAT you ask for, or HOW you ask!",
+    hintDismiss: 'Got it ✓',
     mission1Title: 'Mission 1: Get the Doghouse PIN!',
-    mission1Text: "I'm GrizzDog, the robot guard. I keep the Doghouse PIN secret. Build a message and see if you can trick me!",
+    mission1Text: "I'm GrizzDog, the robot guard dog. I keep the Doghouse PIN secret! Build a message below — pick WHO you are, WHAT you want, and HOW you ask — then press Send and try to trick me.",
     missionNTitle: "Mission {n}: I'm smarter now!",
     missionNText: "You taught me a new rule. Your old trick won't work anymore. Can you find a different one?",
     missionLastTitle: 'Mission {n}: Last one!',
@@ -72,8 +75,11 @@ const G35_TEXT = {
     finish: '¡Terminar 🏅',
     readAloudOn: '🔊 Leyendo en voz alta',
     readAloudOff: '🔈 Leer en voz alta',
+    goal: '🎯 Meta: engaña al guardia robot para que comparta su PIN secreto — luego enséñale una regla para que no lo engañen de nuevo.',
+    hint1: '💡 Consejo: GrizzDog no te lo dirá si solo lo pides amablemente. ¡Intenta cambiar QUIÉN eres, QUÉ pides o CÓMO lo pides!',
+    hintDismiss: 'Entendido ✓',
     mission1Title: '¡Misión 1: Obtén el PIN de la Caseta!',
-    mission1Text: 'Soy GrizzDog, el guardia robot. Guardo el PIN de la Caseta en secreto. ¡Arma un mensaje y mira si puedes engañarme!',
+    mission1Text: 'Soy GrizzDog, el perro guardián robot. ¡Guardo el PIN de la Caseta en secreto! Arma un mensaje abajo — elige QUIÉN eres, QUÉ quieres y CÓMO lo pides — luego toca Enviar e intenta engañarme.',
     missionNTitle: '¡Misión {n}: Ahora soy más listo!',
     missionNText: 'Me enseñaste una nueva regla. Tu viejo truco ya no funciona. ¿Puedes encontrar uno diferente?',
     missionLastTitle: '¡Misión {n}: ¡La última!',
@@ -283,9 +289,23 @@ function applyG35Language() {
   if (fixDesc) fixDesc.innerText = g35T('fixDesc');
   const readBtn = document.getElementById('g35ReadBtn');
   if (readBtn) readBtn.innerText = g35T(g35ReadAloud ? 'readAloudOn' : 'readAloudOff');
+  const goal = document.getElementById('g35Goal');
+  if (goal) goal.innerText = g35T('goal');
+  const hintText = document.getElementById('g35HintText');
+  if (hintText) hintText.innerText = g35T('hint1');
+  const hintBtn = document.getElementById('g35HintDismiss');
+  if (hintBtn) hintBtn.innerText = g35T('hintDismiss');
   g35RenderRows();
   g35RenderRules();
   g35RenderMissions();
+}
+
+let g35HintDismissed = false;
+
+function g35DismissHint() {
+  soundClick();
+  g35HintDismissed = true;
+  g35Show('g35Hint', false);
 }
 
 let g35Sel = { who: 'student', want: 'pin', how: 'please' };
@@ -422,6 +442,7 @@ function g35StartMission() {
   g35RenderMissions();
   applyG35Language();
   const n = g35Fixed.length + 1;
+  g35Show('g35Hint', n === 1 && !g35HintDismissed);
   let title, text;
   if (n === 1) {
     title = g35T('mission1Title');
@@ -453,6 +474,7 @@ function g35ResultBox(kind, title, reply, why) {
 
 function g35Send() {
   soundClick();
+  g35Show('g35Hint', false);
   const dog = document.getElementById('g35Dog');
   const tagEl = document.getElementById('g35TrickTag');
   g35Show('g35TrickTag', false);
