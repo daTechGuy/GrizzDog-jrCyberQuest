@@ -130,7 +130,10 @@
       <div class="g35-stage">
         <div class="g35-topbar">
           <div class="g35-missions" id="g35Missions"></div>
-          <button type="button" class="g35-read-btn" id="g35ReadBtn" onclick="g35ToggleReadAloud()" aria-pressed="false">🔈 Read to me</button>
+          <div class="g35-topbar-right">
+            <button type="button" class="g35-read-btn" id="g35LangBtn" onclick="toggleG35Language()">🌐 Español</button>
+            <button type="button" class="g35-read-btn" id="g35ReadBtn" onclick="g35ToggleReadAloud()" aria-pressed="false">🔈 Read to me</button>
+          </div>
         </div>
 
         <div class="g35-scene">
@@ -142,14 +145,14 @@
         </div>
 
         <div class="g35-rules">
-          <div class="g35-rules-title">🛡️ GrizzDog's Rules</div>
+          <div class="g35-rules-title" id="g35RulesTitle">🛡️ GrizzDog's Rules</div>
           <ol id="g35RulesList"></ol>
         </div>
 
         <div id="g35Builder">
           <div id="g35Rows"></div>
           <div class="g35-preview">
-            <span class="g35-preview-label">📨 Your message to GrizzDog:</span>
+            <span class="g35-preview-label" id="g35PreviewLabel">📨 Your message to GrizzDog:</span>
             <span id="g35Preview"></span>
           </div>
         </div>
@@ -164,8 +167,8 @@
         <button type="button" class="g35-btn g35-hidden" id="g35FixBtn" onclick="g35ShowFix()">🔧 Now fix it!</button>
 
         <div class="g35-result g35-hidden" id="g35Fix">
-          <div class="g35-result-title">🔧 Fix It! You're the defender now.</div>
-          <div class="g35-why">Pick the best new rule so this trick can't fool GrizzDog again.</div>
+          <div class="g35-result-title" id="g35FixTitle">🔧 Fix It! You're the defender now.</div>
+          <div class="g35-why" id="g35FixDesc">Pick the best new rule so this trick can't fool GrizzDog again.</div>
           <div class="g35-fix-options" id="g35FixOptions"></div>
           <div class="g35-fix-note" id="g35FixNote"></div>
         </div>
@@ -179,6 +182,7 @@
         <div class="g68-topbar">
           <div class="g68-missions" id="g68Missions"></div>
           <div class="g68-topbar-right">
+            <button type="button" class="g68-action-pill audio-pill" id="g68LangBtn" onclick="toggleG68Language()" title="Switch language / Cambiar idioma">🌐 Español</button>
             <button type="button" class="g68-action-pill audio-pill" id="g68ReadBtn" onclick="g68ToggleReadAloud()" aria-pressed="false" title="Toggle voice briefing for Sentry Sleuths">🔈 Audio Briefing: OFF</button>
             <button type="button" class="g68-action-pill reset-pill" onclick="resetG68Game()" title="Reset all 3 missions for a new player">🔄 Reboot Lab</button>
           </div>
@@ -280,6 +284,7 @@
         <div class="g912-topbar">
           <div class="g912-missions" id="g912Missions"></div>
           <div class="g912-topbar-right">
+            <button type="button" class="g912-action-pill audio-pill" id="g912LangBtn" onclick="toggleG912Language()" title="Switch language / Cambiar idioma">🌐 Español</button>
             <button type="button" class="g912-action-pill manual-pill" id="g912ManualBtn" onclick="g912ToggleManual()" aria-expanded="false" aria-controls="g912Manual" title="Open offline OWASP Top 10 for LLMs &amp; MITRE ATLAS reference">📘 Field Manual: OWASP / ATLAS</button>
             <button type="button" class="g912-action-pill audio-pill" id="g912ReadBtn" onclick="g912ToggleReadAloud()" aria-pressed="false" title="Toggle voice telemetry readout">🔈 Voice Telemetry: OFF</button>
             <button type="button" class="g912-action-pill reset-pill" onclick="resetG912Game()" title="Reset all 3 audit rounds">🔄 Reset Audit</button>
